@@ -1,0 +1,637 @@
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Página inicial</title>
+    <link rel="stylesheet" href="{% static 'assets/css/index.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/tabelas.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script>
+        const cargosUrl = "{% url 'cargos_vieww' %}";
+        const enderecoUrl = "{% url 'endereco_view' %}";
+		const colaboradoresUrl = "{% url 'colaboradores_view' %}";
+        var keepModalOpen = {% if keep_modal_open %}true{% else %}false{% endif %};
+        var messagesExist = {% if messages %}true{% else %}false{% endif %};
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>     
+    <script defer src="{% static 'assets/js/script_index.js' %}"></script>
+    <script defer src="{% static 'assets/js/script_tabelas.js' %}"></script>
+    <script defer src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script defer src="{% static 'assets/js/Simple-Slider-swiper-bundle.min.js' %}"></script>
+    <script defer src="{% static 'assets/js/Simple-Slider.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome5-overrides.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/swiper-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Navbar-With-Button-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Simple-Slider-swiper-bundle.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Simple-Slider.css' %}">
+</head>
+
+<body class="fundo">
+    <header>
+        <div class="d-flex flex-row justify-content-end align-items-center header">
+            <p class="p-header">Bem vindo, </p>
+            <p class="userName">{{ user.username }}.</p>
+            <i class="far fa-user"></i>
+        </div>
+    </header>
+    <div class="offcanvas-sm offcanvas-start bg-body" tabindex="-1" data-bs-scroll="true" data-bs-backdrop="false" id="offcanvas-menu">
+        <div class="offcanvas-body d-flex flex-column justify-content-between pt-0">
+            <div class="div-logo"></div>
+            <div>
+                <hr class="mt-0">
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <a class="a-titulo" href="#" aria-current="page">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-house-door me-2">
+                                <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146ZM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5Z"></path>
+                            </svg>Home </a></li>
+                    <li class="nav-item">
+                        <div class="teste">
+                        <a class="a-titulo" href="#cadastrosCollapse" aria-expanded="false" data-bs-toggle="collapse" role="button" aria-controls="cadastrosCollapse">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-people-fill me-2">
+                                <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"></path>
+                            </svg>Cadastros</a>
+                        <div id="cadastrosCollapse" class="collapse">
+                            <ul class="ul-item">
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalCadastros">Empresa</a></li>
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalMaoDeObra">Colaborador</a></li>
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalEndereco">Endereço</a></li> 
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalSenha">Alterar Senha</a></li>
+                            </ul>
+                        </div>
+                        </div>                        
+                    </li>
+                    <li class="nav-item">
+                        <a class="a-titulo" data-bs-toggle="collapse" role="button" aria-expanded="false" href="#maoDeObraCollapse" aria-controls="maoDeObraCollapse">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-tools me-2">
+                                <path d="M1 0 0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.27 3.27a.997.997 0 0 0 1.414 0l1.586-1.586a.997.997 0 0 0 0-1.414l-3.27-3.27a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3c0-.269-.035-.53-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814L1 0Zm9.646 10.646a.5.5 0 0 1 .708 0l2.914 2.915a.5.5 0 0 1-.707.707l-2.915-2.914a.5.5 0 0 1 0-.708ZM3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026L3 11Z"></path>
+                            </svg>Mão de Obra</a>
+                        <div id="maoDeObraCollapse" class="collapse">
+                            <ul class="ul-item">
+                                <li class="li-pad"><a class="nav-sub" id="openModalButton">Cargo / Salário</a></li>
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalPerfilBeneficio">Benefícios</a></li>
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalPerfilEncargo">Encargos</a></li>
+                            </ul>
+                        </div>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="a-titulo" href="#horasProdutivasCollapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="horasProdutivasCollapse">
+                            <i class="fa fa-calendar"></i>Horas Produtivas</a>
+                        <div id="horasProdutivasCollapse" class="collapse">
+                            <ul class="ul-item">
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalCalendario">Calendário mensal</a></li>
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalHorasProdutivas">Jornada de trabalho diária</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="a-titulo" href="#despesasFixasCollapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="despesasFixasCollapse">
+                            <i class="fa fa-dollar"></i>Despesas Fixas</a>
+                        <div id="despesasFixasCollapse" class="collapse">
+                            <ul class="ul-item">
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalDespesasFixas">Cadastrar</a></li>
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalHoraFixa">Valor Hora Fixa</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="a-titulo" href="#precificacaoCollapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="precificacaoCollapse">
+                            <i class="fa fa-clipboard"></i>Orçamento</a>
+                        <div id="precificacaoCollapse" class="collapse">
+                            <ul class="ul-item">
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalPrecificacao">Cadastrar Orçamento</a></li>
+                                <li class="li-pad"><a class="nav-sub" href="#">Memórias de Cálculos</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="a-titulo" href="#relatorioCollapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="relatorioCollapse">
+                        <i class="fa fa-print"></i>Relatórios</a>
+                        <div id="relatorioCollapse" class="collapse">
+                            <ul class="ul-item">
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalRelatorios">DRE</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="a-titulo" href="{% url 'logout' %}">
+                            <i class="fa fa-sign-in me-2"></i>Sair</a>
+                        <ul style="font-size: 20px;font-weight: bold;"></ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!--Começo Modal Cadastro Empresa-->
+    <div class="modal fade" id="modalCadastros" tabindex="-1" aria-labelledby="modalCadastros" aria-hidden="true">  
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCadastrosLabel">Cadastrar Empresa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_empresa' %}">
+                        {% csrf_token %}
+                        <div class="empresa-container">
+                            <div class="mb-3">
+                                <label for="cnpj" class="form-label">CNPJ</label>
+                                <input type="text" class="form-control" name="cnpj" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="numero_empresa" class="form-label">Número da Empresa</label>
+                                <input type="number" class="form-control" name="numero_empresa" max="9999" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nome_empresa" class="form-label">Nome da Empresa</label>
+                                <input type="text" class="form-control" name="nome_empresa" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nome_fantasia" class="form-label">Nome Fantasia</label>
+                                <input type="text" class="form-control" name="nome_fantasia" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="telefone" class="form-label">Telefone</label>
+                                <input type="text" class="form-control" name="telefone" required>
+                            </div>
+                            <div class="mb-3 form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="ativa">
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Ativa</label>
+                            </div>
+                            <div class="mb-3">
+                                <label for="endereco" class="form-label">Endereço</label>
+                                <select class="form-select" name="endereco" required>
+                                    <option value="" selected disabled>Selecione um endereço</option>
+                                    {% for endereco in enderecos %}
+                                        <option value="{{ endereco.id }}">{{ endereco.endereco }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                        {% if request.GET.success %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            Empresa cadastrada com sucesso!
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <script>
+                                // Após 3 segundos, redirecionar para o dashboard sem parâmetros
+                                setTimeout(function () {
+                                    window.location.href = "{% url 'dashboard' %}";
+                                }, 3000);
+                            </script>
+                        </div>
+                        {% endif %}                                           
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <!--Fim modal Cadastro Empresa -->
+
+    <!-- Modal para inserir gastos fixos -->
+    <div class="modal fade" id="modalDespesasFixas" tabindex="-1" aria-labelledby="modalDespesasFixasLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDespesasFixasLabel">Cadastrar Despesa Fixa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_gasto_fixo' %}">
+                        {% csrf_token %}
+                        <div class="despesa-container">
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label">Descrição</label>
+                                <input type="text" class="form-control" name="descricao" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="valor" class="form-label">Valor</label>
+                                <input type="number" class="form-control" name="valor" step="0.01" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="maisDespesasFixas">Acionar Mais Despesas</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fim do modal para inserir gastos fixos, colocar  isso para o arquivo js depois -->
+
+    <!-- Começo da Modal Mão de Obra-->
+    <div class="modal fade" id="modalMaoDeObra" tabindex="-1" aria-labelledby="modalMaoDeObraLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalMaoDeObraLabel">Cadastrar Mão de Obra</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_mao_de_obra' %}">
+                        {% csrf_token %}
+                        <div class="mao-de-obra-container">
+                            <div class="mb-3">
+                                <label for="matricula" class="form-label">Matrícula</label>
+                                <input type="text" class="form-control" name="matricula" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nome" class="form-label">Nome</label>
+                                <input type="text" class="form-control" name="nome" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cpf" class="form-label">CPF</label>
+                                <input type="text" class="form-control" name="cpf" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="salario" class="form-label">Salário</label>
+                                <input type="number" class="form-control" name="salario" step="0.01" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="beneficios" class="form-label">Benefícios</label>
+                                <input type="number" class="form-control" name="beneficios" step="0.01" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="encargos" class="form-label">Encargos</label>
+                                <input type="number" class="form-control" name="encargos" step="0.01" required>
+                            </div>
+                            <div class="mb-3">
+                                <select class="form-select" name="cargo" required>
+                                    <option value="" selected disabled>Selecione um cargo</option>
+                                    {% for cargo in cargos %}
+                                        <option value="{{ cargo.id }}">{{ cargo.nome_cargo }}</option>
+                                    {% endfor %}
+                                </select>                               
+                            </div>                           
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="maisMaoDeObra">Acionar Mais Mão de Obra</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Começo Modal endereço-->
+    <div class="modal fade" id="modalEndereco" tabindex="-1" aria-labelledby="modalEnderecoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEnderecoLabel">Cadastrar Endereço</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_endereco' %}">
+                        {% csrf_token %}
+                        <div class="endereco-container">
+                            <div class="mb-3">
+                                <label for="cep" class="form-label">CEP</label>
+                                <input type="text" class="form-control" id="cepInput" name="cep" required>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="btnBuscarCEP">Buscar CEP</button>
+                        
+                            <div class="mb-3">
+                                <label for="logradouro" class="form-label">Logradouro</label>
+                                <input type="text" class="form-control" id="logradouro" name="logradouro" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="numero" class="form-label">Número</label>
+                                <input type="text" class="form-control" name="numero" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="complemento" class="form-label">Complemento</label>
+                                <input type="text" class="form-control" name="complemento">
+                            </div>
+                            <div class="mb-3">
+                                <label for="bairro" class="form-label">Bairro</label>
+                                <input type="text" class="form-control" id="bairro" name="bairro" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cidade" class="form-label">Cidade</label>
+                                <input type="text" class="form-control" id="cidade" name="cidade" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="estado" class="form-label">Estado</label>
+                                <input type="text" class="form-control" id="estado" name="estado" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cadastrar Endereço</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim modal Endereço-->
+
+    <!-- Começo Modal Alterar Senha -->
+    <div class="modal fade" id="modalSenha" tabindex="-1" aria-labelledby="modalSenhaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalSenhaLabel">Alterar Senha</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'alterar_senha' %}">
+                        {% csrf_token %}
+                        <div class="cargo-container">
+                            <div class="mb-3">
+                                <label for="novaSenha" class="form-label">Nova senha</label>
+                                <input type="text" class="form-control" id="novaSenhaInput" name="novaSenha" required>
+                            </div>                       
+                        </div>
+                        <div class="cargo-container">
+                            <div class="mb-3">
+                                <label for="repetirSenha" class="form-label">Repetir senha</label>
+                                <input type="text" class="form-control" id="repetirSenhaInput" name="repetirSenha" required>
+                            </div>                       
+                        </div>
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-danger">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim modal Alterar Senha -->
+
+
+    <!--Início modal Personalizado/ CARGOS E SALÁRIOS -->
+    <div id="myModal" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Cargos / Salários</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchForm" method="get" action="{% url 'busca' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Cargos">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCargoSalario">Cadastrar Cargo</button>
+                    </div>
+                </div>
+            </form>
+            <table id="searchResultsTable">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim modal Personalizado / CARGOS E SALÁRIOS -->
+
+    <!-- Começo Modal / CARGOS E SALÁRIOS -->
+    <div class="modal fade" id="modalCargoSalario" tabindex="-1" aria-labelledby="modalCargoSalarioLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCargoSalarioLabel">Cadastrar Cargos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_cargo' %}">
+                        {% csrf_token %}
+                        <div class="cargo-container">
+                            <div class="mb-3">
+                                <label for="dataCadastro" class="form-label">Data Cadastro</label>
+                                <input type="text" class="form-control" id="dataCadastroInput" name="dataCadastro" required>
+                            </div>                       
+                            <div class="mb-3">
+                                <label for="nomeCargo" class="form-label">Nome Cargo</label>
+                                <input type="text" class="form-control" id="nomeCargo" name="nomeCargo" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="selectPerfilBeneficio" class="form-label">Perfil Benefício</label>
+                                <select class="form-select" name="selectPerfilBeneficio" required>
+                                    <option value="" selected disabled>Selecione um perfil</option> 
+                                    {% comment %} {% for endereco in enderecos %}
+                                        <option value="{{ endereco.id }}">{{ endereco.endereco }}</option>
+                                    {% endfor %} {% endcomment %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="selectPerfilEncargo" class="form-label">Perfil Encargo</label>
+                                <select class="form-select" name="selectPerfilEncargo" required>
+                                    <option value="" selected disabled>Selecione um perfil</option>
+                                    {% comment %} {% for endereco in enderecos %}
+                                        <option value="{{ endereco.id }}">{{ endereco.endereco }}</option>
+                                    {% endfor %} {% endcomment %}
+                                </select>
+                            </div>
+                            <div class="mb-3 form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="ativa">
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Considerar no Rateio</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cadastrar Cargo</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim modal / CARGOS E SALÁRIOS -->
+
+
+    <!-- Começo Modal Perfil Benefício -->
+    <div class="modal fade" id="modalPerfilBeneficio" tabindex="-1" aria-labelledby="modalPerfilBeneficioLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalPerfilBeneficioLabel">Cadastrar Benefício</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_beneficio' %}">
+                        {% csrf_token %}
+                        <div class="beneficio-container">
+                            <div class="mb-3">
+                                <label for="dataCadastro" class="form-label">Data Cadastro</label>
+                                <input type="text" class="form-control" id="dataCadastroInput" name="dataCadastro" required>
+                            </div>                       
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cadastrar Benefício</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim modal Perfil Benefício -->
+
+    <!-- Começo Modal Perfil Encargo -->
+    <div class="modal fade" id="modalPerfilEncargo" tabindex="-1" aria-labelledby="modalPerfilEncargoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalPerfilEncargoLabel">Cadastrar Encargos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                    <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_encargo' %}">
+                        {% csrf_token %}
+                        <div class="encargo-container">
+                            <div class="mb-3">
+                                <label for="dataCadastro" class="form-label">Data Cadastro</label>
+                                <input type="text" class="form-control" id="dataCadastroInput" name="dataCadastro" required>
+                            </div>                       
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cadastrar Encargos</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim modal Perfil Encargo -->
+
+    <!-- Começo Modal Calendário -->
+	
+    <div class="modal fade" id="modalCalendario" tabindex="-1" aria-labelledby="modalCalendarioLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCalendarioLabel">Cadastrar Dias Úteis</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_calendario' %}" id="calendarioForm">
+                        {% csrf_token %}
+                        <div class="calendario-container">
+                            <div class="mb-3">
+                                <label for="mes" class="form-label">Mês</label>
+                                <input type="number" class="form-control" id="mes" name="mes" min="1" max="12" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="ano" class="form-label">Ano</label>
+                                <input type="number" class="form-control" id="ano" name="ano" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="jornada_diaria" class="form-label">Jornada Diária</label>
+                                <input type="number" class="form-control" id="jornada_diaria" name="jornada_diaria" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="funcionario" class="form-label">Funcionário</label>
+                                <select class="form-select" id="funcionario" name="funcionario" required>
+                                    <option value="" disabled selected>Selecione um funcionário</option>
+                                    <!-- Dados dos colaboradores serão preenchidos dinamicamente aqui -->
+                                </select>
+                            </div>
+                        </div>
+                        <input type="hidden" id="horas_produtivas" name="horas_produtivas">
+                        <input type="hidden" id="dias_uteis" name="dias_uteis">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Salvar</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+	<!--Fim modal Calendário->
+   
+	<!-- Começo Modal Jornada -->
+	<div class="modal fade" id="modalHorasProdutivas" tabindex="-1" aria-labelledby="modalHorasProdutivasLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalHorasProdutivasLabel">Cadastrar Jornada de Trabalho</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form method="post" action="{% url 'inserir_jornada' %}">
+						{% csrf_token %}
+						<div class="jornada-container">
+							<div class="mb-3">
+								<label for="jornada_diaria" class="form-label">Jornada Diária (horas)</label>
+								<input type="number" class="form-control" id="jornada_diaria" name="jornada_diaria" step="0.01" required>
+							</div>
+						</div>
+						<button type="submit" class="btn btn-primary">Salvar</button>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+<!-- Fim modal Jornada -->
+
+    <!--Fim modal Jornada->
+
+    <! Começo Modal Hora Fixa -->
+    <div class="modal fade" id="modalHoraFixa" tabindex="-1" aria-labelledby="modalHoraFixasLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalHoraFixaLabel">Cadastrar Horas Produtivas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_jornada' %}">
+                        {% csrf_token %}
+                        <div class="jornada-container">
+                            {% comment %} <div class="mb-3">
+                                <label for="calendario" class="form-label">Data Cadastro</label>
+                                <input type="text" class="form-control" id="calendarioInput" name="calendario" required>
+                            </div>                        {% endcomment %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim modal Jornada-->
+</body>
+</html>
