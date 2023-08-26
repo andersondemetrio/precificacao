@@ -14,7 +14,8 @@ from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.conf import settings
 import random
-from .models import GastosFixos,Colaboradores,Cargos, Endereco, Empresa,CalendarioMensal
+from .forms import EmployeeForm
+from .models import GastosFixos,Colaboradores,Cargos, Endereco, Empresa,CalendarioMensal,Employee
 
 @login_required
 def dashboard_view(request):
@@ -200,8 +201,52 @@ def alterar_senha(request):
 def inserir_beneficio(request):
     return render(request, 'dashboard1.html', context={})
 
+
 def inserir_encargo(request):
-    return render(request, 'dashboard1.html', context={})
+    if request.method == 'POST':
+        colaborador_id = request.POST['funcionario']
+        colaborador = Colaboradores.objects.get(id=colaborador_id)
+        setor = request.POST['setor']
+        cargo = request.POST['cargo']
+        
+        # Cálculo do salário nominal
+        salario_nominal = float(colaborador.salario)
+        
+        # Cálculo da periculosidade
+        periculosidade = salario_nominal * 0.3
+
+        # Resto do cálculo...
+        fgts = (salario_nominal + periculosidade) * 0.08
+        terco_ferias = (salario_nominal + periculosidade) * (3 / 12)
+        fgts_ferias = terco_ferias * 0.08
+        decimo_terceiro = (salario_nominal + periculosidade) / 12
+        fgts_decimo_terceiro = decimo_terceiro * 0.08
+        multa_rescisoria = (fgts + fgts_ferias + fgts_decimo_terceiro) * 0.4
+        rateio = (salario_nominal + periculosidade + fgts + terco_ferias +
+                  fgts_ferias + decimo_terceiro + fgts_decimo_terceiro +
+                  multa_rescisoria)
+        custo_mes = (salario_nominal + periculosidade + fgts + terco_ferias +
+                     fgts_ferias + decimo_terceiro + fgts_decimo_terceiro +
+                     multa_rescisoria + rateio)
+
+        # Agora, você pode criar um registro na tabela Employee com os cálculos
+        employee = Employee.objects.create(
+            colaborador=colaborador,
+            setor=setor,
+            cargo=cargo,
+            periculosidade=periculosidade,
+            fgts=fgts,
+            um_terco_ferias=terco_ferias,
+            fgts_ferias=fgts_ferias,
+            decimo_terceiro=decimo_terceiro,
+            fgts_decimo_terceiro=fgts_decimo_terceiro,
+            multa_rescisoria=multa_rescisoria,
+            rateio=rateio,
+            custo_mes=custo_mes,
+        )
+        # Redirecionar para a página desejada após a inserção
+    return render(request, 'dashboard1.html')
+
 
 def inserir_data(request):
     return render(request, 'dashboard1.html', context={})    

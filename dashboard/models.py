@@ -79,3 +79,36 @@ class CalendarioMensal(models.Model):
     horas_produtivas = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
 
+
+class Employee(models.Model):
+    SETOR_CHOICES = (
+        ('Prestador de Serviço', 'Prestador de Serviço'),
+        ('Gestores', 'Gestores'),
+    )
+
+    CARGO_CHOICES = (
+        ('Auxiliar', 'Auxiliar'),
+        ('Assistente Técnico', 'Assistente Técnico'),
+        ('Técnico N1', 'Técnico N1'),
+        ('Técnico N2', 'Técnico N2'),
+        ('Técnico N3', 'Técnico N3'),
+        ('Coordenador', 'Coordenador'),
+        ('Gerente', 'Gerente'),
+        ('Diretor', 'Diretor'),
+        # Outras opções de cargo aqui...
+    )
+
+    setor = models.CharField(max_length=50, choices=SETOR_CHOICES)
+    cargo = models.CharField(max_length=50, choices=CARGO_CHOICES)
+    # Campos específicos do Employee
+    periculosidade = models.DecimalField(max_digits=10, decimal_places=2)
+    fgts = models.DecimalField(max_digits=10, decimal_places=2)
+    um_terco_ferias = models.DecimalField(max_digits=10, decimal_places=2)
+    fgts_ferias = models.DecimalField(max_digits=10, decimal_places=2)
+    decimo_terceiro = models.DecimalField(max_digits=10, decimal_places=2)
+    fgts_decimo_terceiro = models.DecimalField(max_digits=10, decimal_places=2)
+    multa_rescisoria = models.DecimalField(max_digits=10, decimal_places=2)
+    rateio = models.DecimalField(max_digits=10, decimal_places=2)
+    custo_mes = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    colaborador = models.ForeignKey(Colaboradores, on_delete=models.CASCADE)

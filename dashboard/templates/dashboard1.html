@@ -122,6 +122,7 @@
                             </ul>
                         </div>
                     </li>
+                    
                     <li class="nav-item">
                         <a class="a-titulo" href="{% url 'logout' %}">
                             <i class="fa fa-sign-in me-2"></i>Sair</a>
@@ -514,6 +515,55 @@
                     <h5 class="modal-title" id="modalPerfilEncargoLabel">Cadastrar Encargos</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_encargo' %}">
+                        {% csrf_token %}
+                        <div class="encargo-container">
+                            <div class="mb-3">
+                                <label for="setor" class="form-label">Setor</label>
+                                <select class="form-select" id="setorInput" name="setor" required>
+                                    <option value="Gestores">Gestores</option>
+                                    <option value="Prestador de Serviço">Prestador de Serviço</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cargo" class="form-label">Cargo</label>
+                                <select class="form-select" id="cargoInput" name="cargo" required>
+                                    <option value="Auxiliar">Auxiliar</option>
+                                    <option value="Assistente Técnico">Assistente Técnico</option>
+                                    <option value="Técnico N1">Técnico N1</option>
+                                    <option value="Técnico N2">Técnico N2</option>
+                                    <option value="Técnico N3">Técnico N3</option>
+                                    <option value="Coordenador">Coordenador</option>
+                                    <option value="Gerente">Gerente</option>
+                                    <option value="Diretor">Diretor</option>
+                                    <!-- Adicione aqui as outras opções de cargo -->
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="funcionario" class="form-label">Funcionário</label>
+                                <select class="form-select" id="funcionarioInput" name="funcionario" required>
+                                    <!-- Popule as opções usando o JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cadastrar Encargos</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% comment %} <div class="modal fade" id="modalPerfilEncargo" tabindex="-1" aria-labelledby="modalPerfilEncargoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalPerfilEncargoLabel">Cadastrar Encargos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
                     <div class="modal-body">
                     <form method="post" action="{% url 'inserir_encargo' %}">
                         {% csrf_token %}
@@ -531,7 +581,11 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> {% endcomment %}
+
+
+
+
     <!--Fim modal Perfil Encargo -->
 
     <!-- Começo Modal Calendário -->
