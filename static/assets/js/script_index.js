@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-
+// Função para abrir modal personalizado
 const openModalButton = document.getElementById("openModalButton");
 const modal = document.getElementById("myModal");
 const closeButtons = document.getElementsByClassName("close");

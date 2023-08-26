@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseNotFound
 from django.core.mail import EmailMessage
 from django.contrib.auth import authenticate, login, logout
@@ -71,34 +71,42 @@ def inserir_mao_de_obra(request):
 # Funções do CRUD de cargos
 
 def inserir_cargo(request):
+    print("request.POST")
     if request.method == 'POST':
         nome_cargo = request.POST['nome_cargo']
 
         cargo = Cargos(
             nome_cargo=nome_cargo,
-        )
-        
+        )        
         cargo.save()
         return redirect('dashboard')
 
     return render(request, 'dashboard1.html', context={}) 
 
-def editar_cargo(request):
-    cargo = Cargo.objects.get(pk=cargo_id)
+def detalhes_cargo(request, id):
+    cargo = Cargos.objects.get(id=id)
+    return render(request, 'detalhes_cargo.html', {'cargo':cargo})
+
+def editar_cargo(request, id):
+    cargo = Cargos.objects.get(id=id)
     if request.method == 'POST':
-        nome_cargo = request.POST.get['nome_cargo']
+        nome_cargo = request.POST.get('nome_cargo')
 
-        cargo.nome_cargo = nome_cargo
-        
+        cargo.nome_cargo = nome_cargo        
         cargo.save()
         return redirect('dashboard')
 
-    return render(request, 'dashboard1.html', context={}) 
+    return render(request, 'dashboard1.html', {'cargo': cargo})
 
 def cargos_vieww(request):
     cargos = Cargos.objects.all()
     cargos_list = [{'id': cargo.id, 'nome_cargo': cargo.nome_cargo} for cargo in cargos]
     return JsonResponse({'cargos': cargos_list})
+
+def busca_cargo(request): 
+    q = request.GET.get('search')   
+    cargos = Cargos.objects.filter(nome_cargo__icontains=q).order_by('id')
+    return render(request, 'pesquisa_cargo.html', {'cargo': cargos})
 
 def deletar_cargo(request, cargo_id):
     if request.method == 'POST':
@@ -106,7 +114,7 @@ def deletar_cargo(request, cargo_id):
             cargo = Cargos.objects.get(pk=cargo_id)
             cargo.delete()
             return redirect('dashboard')
-        except Cargo.DoesNotExist:
+        except Cargos.DoesNotExist:
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
     else:
         try:
@@ -238,12 +246,3 @@ def colaboradores_view(request):
     colaboradores = Colaboradores.objects.all()
     colaboradores_list = [{'id': colaborador.id, 'nome': colaborador.nome} for colaborador in colaboradores]
     return JsonResponse({'colaboradores': colaboradores_list})
-
-def search(request): 
-    q = request.GET.get('search')   
-    cargos = Cargos.objects.filter(nome_cargo__icontains=q)
-    
-    paginator = Paginator(cargos, 100)  # 5 itens por página
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number) 
-    return render(request, 'pesquisa_cargo.html', {'page_obj': page_obj})

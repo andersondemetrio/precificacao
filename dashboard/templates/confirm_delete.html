@@ -3,18 +3,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Confirmação de Exclusão</title>
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/edicao.css' %}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="{% static 'assets/js/script_edicao.js' %}"></script>
 </head>
+<body class="fundo">
+    <div class="container pl-0 pr-0">
+      <div class="row justify-content-center pl-0 pr-0 no-gutters">
+        <div class="div-column">
+          <div class="d-flex flex-column justify-content-between align-items-center">
+            <div class="d-flex flex-column align-items-center div-right-int">
+            <div class="div-logo"></div>
+            <h2>Confirmação de Exclusão</h2>
+            <h5>Tem certeza de que deseja excluir?</h5>
+                <div class="d-flex flex-row justify-content-center div-button">
+                    <form method="post">
+                        {% csrf_token %}
+                    <button type="submit" class="btn btn-success" id="alterar-btn">Confirmar</button>
+                    <button type="button" class="btn btn-danger"><a href="/dashboard/">Cancelar</a></button>
+                </form>
+                </div>
+            </form>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
 <body>
     <h1>Confirmação de Exclusão</h1>
     <p>Tem certeza de que deseja excluir?</p>
     
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit">Confirmar</button>
-        <button><a href="/dashboard/">Cancelar</a>
-    </form>
+
 </body>
 </html>
