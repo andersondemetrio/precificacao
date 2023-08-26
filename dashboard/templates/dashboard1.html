@@ -396,7 +396,7 @@
             <span class="close">&times;</span>
           </div>
           <div class="modal-body">
-            <form id="searchForm" method="get" action="{% url 'busca' %}">
+            <form id="searchForm" method="get" action="{% url 'busca_cargo' %}">
                 <div class="">
                     <div class="input-group div-modal-person">
                         <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Cargos">
@@ -417,12 +417,12 @@
     </div>
     <!--Fim modal Personalizado / CARGOS E SALÁRIOS -->
 
-    <!-- Começo Modal / CARGOS E SALÁRIOS -->
+    <!-- Começo Modal Cadastro / CARGOS E SALÁRIOS -->
     <div class="modal fade" id="modalCargoSalario" tabindex="-1" aria-labelledby="modalCargoSalarioLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalCargoSalarioLabel">Cadastrar Cargos</h5>
+                    <h5 class="modal-title" id="modalCargoSalarioLabel">Novo Cadastro</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -445,7 +445,37 @@
             </div>
         </div>
     </div>
-    <!--Fim modal / CARGOS E SALÁRIOS -->
+    <!--Fim Modal Cadastro / CARGOS E SALÁRIOS -->
+
+    <!-- Começo Modal Editar Cadastro / CARGOS E SALÁRIOS -->
+    {% comment %} <div class="modal fade" id="modalEditCargoSalario" tabindex="-1" aria-labelledby="modalEditCargoSalarioLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditCargoSalarioLabel">Alterar Cadastro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'detalhes_cargo' 36 %}">
+                        {% csrf_token %}
+                        <div class="cargo-container">
+
+                            <div class="mb-3">
+                                <label for="nome_cargo" class="form-label">Nome Cargo</label>
+                                <input type="text" class="form-control" id="nome_cargo" name="nome_cargo" required>
+                            </div>
+
+                        </div>
+                        <button type="submit" class="btn btn-primary">Alterar Cargo</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div> {% endcomment %}
+    <!--Fim Modal Editar Cadastro / CARGOS E SALÁRIOS -->
 
 
     <!-- Começo Modal Perfil Benefício -->

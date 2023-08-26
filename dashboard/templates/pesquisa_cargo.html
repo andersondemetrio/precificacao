@@ -21,15 +21,15 @@
             <th></th>
         </tr>
     </thead>    
-    {% for cargo in page_obj %}
+    {% for cargo in cargo %}
         <tr>
             <td>{{ cargo.id }}</td>
             <td>{{ cargo.nome_cargo }}</td>
             <td>
-                {% comment %} <a href="{% url 'editar_cargo' cargo.id %}" class="edit-link" data-bs-toggle="modal" data-bs-target="#modalCargoSalario"> {% endcomment %}
+                <a href="{% url 'detalhes_cargo' cargo.id %}">
                     <i class="bi bi-pencil-fill"></i>
                 </a>
-                <a href="{% url 'deletar_cargo' cargo.id %}" class="delete-link">
+                <a href="{% url 'deletar_cargo' cargo.id %}">
                     <i class="bi bi-trash-fill delete-icon"></i>
                 </a>
             </td>
