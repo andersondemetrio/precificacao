@@ -75,7 +75,8 @@ def inserir_mao_de_obra(request):
             # endereco_id=endereco_id
         )
         mao_de_obra.save()
-        return HttpResponse("Mão de obra cadastrada com sucesso!")
+        return redirect('dashboard')
+    return render(request, 'dashboard1.html')
 
 # Funções do CRUD de cargos
 

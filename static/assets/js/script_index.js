@@ -121,20 +121,21 @@ $(document).ready(function() {
     });
 });
 
-fetch(colaboradoresUrl)
+console.log(colaboradoresUrl)
+document.addEventListener('DOMContentLoaded', function () {
+    const funcionarioSelect = document.getElementById('funcionario');
+
+    fetch(colaboradoresUrl)
         .then(response => response.json())
         .then(data => {
-            const colaboradoresSelect = document.querySelector('select[name="funcionario"]');
             data.colaboradores.forEach(colaborador => {
                 const option = document.createElement('option');
                 option.value = colaborador.id;
                 option.textContent = colaborador.nome;
-                colaboradoresSelect.appendChild(option);
+                funcionarioSelect.appendChild(option);
             });
         });
-
-
- // função para calcular dias uteis do funcionario
+});
  
  function calcularDiasUteis(ano, mes) {
     const inicioMes = new Date(ano, mes - 1, 1);
@@ -195,3 +196,36 @@ for (const closeButton of closeButtons) {
     modal.style.display = "none";
   });
 }
+
+// Cadastro OK Mão de obra, mesma função no .html trocar 
+// document.addEventListener('DOMContentLoaded', function () {
+//     const form = document.getElementById('maoDeObraForm');
+//     const successMessage = document.getElementById('successMessage');
+//     const submitBtn = document.getElementById('submitBtn');
+
+//     form.addEventListener('submit', async function (event) {
+//         event.preventDefault();
+//         submitBtn.disabled = true;
+
+//         const formData = new FormData(form);
+
+//         try {
+//             const response = await fetch(form.action, {
+//                 method: 'POST',
+//                 body: formData
+//             });
+
+//             if (response.ok) {
+//                 successMessage.style.display = 'block';
+//                 form.reset();
+//             } else {
+//                 alert('Ocorreu um erro ao cadastrar a mão de obra.');
+//             }
+//         } catch (error) {
+//             console.error('Erro:', error);
+//             alert('Ocorreu um erro ao cadastrar a mão de obra.');
+//         } finally {
+//             submitBtn.disabled = false;
+//         }
+//     });
+// });
