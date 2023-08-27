@@ -388,3 +388,9 @@ def export_pdf(request):
     buffer.close()
 
     return response
+
+#create a function to list all the employees
+
+def list_employee(request):
+    employees = Colaboradores.objects.all()
+    return render(request, 'list_employee.html', {'employees': employees})
