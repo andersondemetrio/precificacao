@@ -21,8 +21,9 @@ import csv
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-
 import io
+from reportlab.lib.pagesizes import landscape, A3
+
 
 @login_required
 def dashboard_view(request):
@@ -208,6 +209,8 @@ def alterar_senha(request):
 def inserir_beneficio(request):
     return render(request, 'dashboard1.html', context={})
 
+# função para inserir o encargo trabalhista para o funcionário
+
 def inserir_encargo(request):
     if request.method == 'POST':
         colaborador_id = request.POST['funcionario']
@@ -314,8 +317,7 @@ def colaboradores_view(request):
     return JsonResponse({'colaboradores': colaboradores_list})
 
 
-# Função para listar os encargos 
-
+# Função para listar os encargos dos colaboradores
 def lista_salarios_view(request):
     # Consulta para buscar os registros da tabela Employee juntamente com os dados dos colaboradores
     employees = Employee.objects.select_related('colaborador').all()
@@ -326,7 +328,7 @@ def lista_salarios_view(request):
 
     return render(request, 'lista_salarios.html', context)
 
-# Função para exportar os dados para o CSV
+# Função para exportar os encargos para o CSV
 def export_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="encargos_funcionarios.csv"'
@@ -340,12 +342,7 @@ def export_csv(request):
 
     return response
 
-from django.http import HttpResponse
-from reportlab.lib.pagesizes import landscape, A3
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-from reportlab.lib import colors
-import io
-
+# funcão para exportar os encargos para o PDF
 def export_pdf(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="salaries.pdf"'
