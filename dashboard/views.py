@@ -213,20 +213,28 @@ def inserir_encargo(request):
             # Lidar com encargo já existente (pode ser uma renderização de erro ou outra ação)
             return render(request, 'encargo_duplicado.html')
 
-        # Cálculo do salário nominal e periculosidade
+        # Cálculo do salário nominal
         salario_nominal = float(colaborador.salario)
-        periculosidade = salario_nominal * 0.3
+        
+        # Definir valores padrão para periculosidade e rateio
+        periculosidade = 0
+        rateio = 0
+
+        # Verificar se o setor é "Gestores" e ajustar a periculosidade e rateio
+        if setor == "Gestores":
+            periculosidade = 0
+            rateio = 0
+        else:
+            periculosidade = salario_nominal * 0.3
+            rateio = (salario_nominal + periculosidade) * 0.2  # Exemplo de cálculo para o rateio
 
         # Cálculos dos outros campos...
         fgts = (salario_nominal + periculosidade) * 0.08
-        terco_ferias = (salario_nominal + periculosidade) * (3 / 12)
+        terco_ferias = (salario_nominal + periculosidade)/3 / 12
         fgts_ferias = terco_ferias * 0.08
         decimo_terceiro = (salario_nominal + periculosidade) / 12
         fgts_decimo_terceiro = decimo_terceiro * 0.08
         multa_rescisoria = (fgts + fgts_ferias + fgts_decimo_terceiro) * 0.4
-        rateio = (salario_nominal + periculosidade + fgts + terco_ferias +
-                  fgts_ferias + decimo_terceiro + fgts_decimo_terceiro +
-                  multa_rescisoria)
         custo_mes = (salario_nominal + periculosidade + fgts + terco_ferias +
                      fgts_ferias + decimo_terceiro + fgts_decimo_terceiro +
                      multa_rescisoria + rateio)
@@ -250,6 +258,7 @@ def inserir_encargo(request):
         return redirect('dashboard')
     
     return render(request, 'dashboard1.html')
+
 
 
 
@@ -296,3 +305,16 @@ def colaboradores_view(request):
     colaboradores = Colaboradores.objects.all()
     colaboradores_list = [{'id': colaborador.id, 'nome': colaborador.nome} for colaborador in colaboradores]
     return JsonResponse({'colaboradores': colaboradores_list})
+
+
+# Função para listar os encargos 
+
+def lista_salarios_view(request):
+    # Consulta para buscar os registros da tabela Employee juntamente com os dados dos colaboradores
+    employees = Employee.objects.select_related('colaborador').all()
+
+    context = {
+        'employees': employees
+    }
+
+    return render(request, 'lista_salarios.html', context)

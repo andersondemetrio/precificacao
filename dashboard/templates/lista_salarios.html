@@ -1,0 +1,72 @@
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Listar Salários</title>
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/edicao.css' %}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="{% static 'assets/js/script_edicao.js' %}"></script>
+</head>
+<body class="fundo">
+    <div class="container pl-0 pr-0">
+        <div class="row justify-content-center pl-0 pr-0 no-gutters">
+            <div class="div-column">
+                <div class="d-flex flex-column justify-content-between align-items-center">
+                    <div class="d-flex flex-column align-items-center div-right-int">
+                        <div class="div-logo"></div>
+                        <h2 class="mb-4">Lista de Salários</h2>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Colaborador</th>
+                                    <th>Salário</th>
+                                    <th>Setor</th>
+                                    <th>Cargo</th>
+                                    <th>Periculosidade</th>
+                                    <th>FGTS</th>
+                                    <th>1/3 Férias</th>
+                                    <th>FGTS Férias</th>
+                                    <th>13º Salário</th>
+                                    <th>FGTS 13º</th>
+                                    <th>Multa Rescisória</th>
+                                    <th>Rateio</th>
+                                    <th class="text-monospace">Custo Mês</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for employee in employees %}
+                                <tr>
+                                    <td>{{ employee.colaborador.nome }}</td>
+                                    <td class="font-weight-bold">R$ {{ employee.colaborador.salario|floatformat:2 }}</td>
+                                    <td>{{ employee.setor }}</td>
+                                    <td>{{ employee.cargo }}</td>
+                                    <td class="text-success">R$ {{ employee.periculosidade|floatformat:2 }}</td>
+                                    <td class="text-info">R$ {{ employee.fgts|floatformat:2 }}</td>
+                                    <td class="text-primary">R$ {{ employee.um_terco_ferias|floatformat:2 }}</td>
+                                    <td class="text-warning">R$ {{ employee.fgts_ferias|floatformat:2 }}</td>
+                                    <td class="text-success">R$ {{ employee.decimo_terceiro|floatformat:2 }}</td>
+                                    <td class="text-info">R$ {{ employee.fgts_decimo_terceiro|floatformat:2 }}</td>
+                                    <td class="text-danger">R$ {{ employee.multa_rescisoria|floatformat:2 }}</td>
+                                    <td>R$ {{ employee.rateio|floatformat:2 }}</td>
+                                    <td class="text-monospace">R$ {{ employee.custo_mes|floatformat:2 }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar para o Dashboard</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

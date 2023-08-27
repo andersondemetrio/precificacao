@@ -15,6 +15,8 @@
         const cargosUrl = "{% url 'cargos_vieww' %}";
         const enderecoUrl = "{% url 'endereco_view' %}";
 		const colaboradoresUrl = "{% url 'colaboradores_view' %}";
+        const lista_salariosUrl = "{% url 'lista_salarios_view' %}";
+
         var keepModalOpen = {% if keep_modal_open %}true{% else %}false{% endif %};
         var messagesExist = {% if messages %}true{% else %}false{% endif %};
     </script>
@@ -115,13 +117,15 @@
                     </li>
                     <li class="nav-item">
                         <a class="a-titulo" href="#relatorioCollapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="relatorioCollapse">
-                        <i class="fa fa-print"></i>Relatórios</a>
+                            <i class="fa fa-print"></i>Relatórios</a>
                         <div id="relatorioCollapse" class="collapse">
                             <ul class="ul-item">
                                 <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalRelatorios">DRE</a></li>
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalEngargoslista">Encargos</a></li>
                             </ul>
                         </div>
                     </li>
+                    
                     
                     <li class="nav-item">
                         <a class="a-titulo" href="{% url 'logout' %}">
@@ -693,5 +697,30 @@
         </div>
     </div>
     <!--Fim modal Jornada-->
+
+    <!-- Começo Modal Relatórios -->
+    <div class="modal fade" id="modalEngargoslista" tabindex="-1" aria-labelledby="modalEngargoslistaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <!-- Conteúdo da modal -->
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'lista_salarios_view' %}" class="btn btn-primary">
+                        <i class="fa fa-print"></i> Gerar Relatório
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar para o Dashboard</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    
+
+    
+    <!-- Fim Modal Relatórios-->
 </body>
 </html>
