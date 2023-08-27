@@ -197,6 +197,20 @@ for (const closeButton of closeButtons) {
   });
 }
 
+fetch(colaboradoresUrl)
+        .then(response => response.json())
+        .then(data => {
+            const colaboradoresSelect = document.querySelector('select[name="funcionario"]');
+            data.colaboradores.forEach(colaborador => {
+                const option = document.createElement('option');
+                option.value = colaborador.id;
+                option.textContent = colaborador.nome;
+                colaboradoresSelect.appendChild(option);
+            });
+        });
+
+// Função para calcular horas produtivas do funcionario
+
 // Cadastro OK Mão de obra, mesma função no .html trocar 
 // document.addEventListener('DOMContentLoaded', function () {
 //     const form = document.getElementById('maoDeObraForm');
