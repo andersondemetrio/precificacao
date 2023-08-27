@@ -352,6 +352,14 @@ def export_pdf(request):
 
     data = []
     employees = Employee.objects.all()  # Use appropriate queryset here
+
+    # Adicionar os nomes das colunas como a primeira linha dos dados
+    data.append([
+        'Colaborador', 'Salário', 'Setor', 'Cargo', 'Periculosidade', 'FGTS',
+        '1/3 Férias', 'FGTS Férias', '13º Salário', 'FGTS 13º',
+        'Multa Rescisória', 'Rateio', 'Custo Mês'
+    ])
+
     for employee in employees:
         data.append([
             employee.colaborador.nome,
@@ -388,7 +396,6 @@ def export_pdf(request):
     buffer.close()
 
     return response
-
 #create a function to list all the employees
 
 def list_employee(request):
