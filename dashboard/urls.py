@@ -21,4 +21,5 @@ urlpatterns = [
     path('inserir_calendario/',inserir_calendario,name='inserir_calendario'),
     path('colaboradores_view/',colaboradores_view,name='colaboradores_view'),
     path('busca_cargo/', busca_cargo, name='busca_cargo'),
+    path('lista_salarios_view/', lista_salarios_view, name='lista_salarios_view'),
 ]

@@ -95,7 +95,7 @@ class Employee(models.Model):
         ('Coordenador', 'Coordenador'),
         ('Gerente', 'Gerente'),
         ('Diretor', 'Diretor'),
-        # Outras opções de cargo aqui...
+       
     )
 
     setor = models.CharField(max_length=50, choices=SETOR_CHOICES)
