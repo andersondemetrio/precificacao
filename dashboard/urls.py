@@ -22,4 +22,6 @@ urlpatterns = [
     path('colaboradores_view/',colaboradores_view,name='colaboradores_view'),
     path('busca_cargo/', busca_cargo, name='busca_cargo'),
     path('lista_salarios_view/', lista_salarios_view, name='lista_salarios_view'),
+    path('export_csv/',export_csv, name='export_csv'),
+    path('export_pdf/', export_pdf, name='export_pdf'),
 ]

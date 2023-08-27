@@ -16,6 +16,13 @@ from django.conf import settings
 import random
 from .forms import EmployeeForm
 from .models import GastosFixos,Colaboradores,Cargos, Endereco, Empresa,CalendarioMensal,Employee
+import csv
+
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+
+import io
 
 @login_required
 def dashboard_view(request):
@@ -318,3 +325,69 @@ def lista_salarios_view(request):
     }
 
     return render(request, 'lista_salarios.html', context)
+
+# Função para exportar os dados para o CSV
+def export_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="encargos_funcionarios.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Colaborador', 'Salário', 'Setor', 'Cargo', 'Periculosidade', 'FGTS', '1/3 Férias', 'FGTS Férias', '13º Salário', 'FGTS 13º', 'Multa Rescisória', 'Rateio', 'Custo Mês'])
+
+    employees = Employee.objects.all()  # Use apropriate queryset here
+    for employee in employees:
+        writer.writerow([employee.colaborador.nome, employee.colaborador.salario, employee.setor, employee.cargo, employee.periculosidade, employee.fgts, employee.um_terco_ferias, employee.fgts_ferias, employee.decimo_terceiro, employee.fgts_decimo_terceiro, employee.multa_rescisoria, employee.rateio, employee.custo_mes])
+
+    return response
+
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import landscape, A3
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.lib import colors
+import io
+
+def export_pdf(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="salaries.pdf"'
+
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(A3))
+
+    data = []
+    employees = Employee.objects.all()  # Use appropriate queryset here
+    for employee in employees:
+        data.append([
+            employee.colaborador.nome,
+            f"R$ {employee.colaborador.salario:.2f}",
+            employee.setor,
+            employee.cargo,
+            f"R$ {employee.periculosidade:.2f}",
+            f"R$ {employee.fgts:.2f}",
+            f"R$ {employee.um_terco_ferias:.2f}",
+            f"R$ {employee.fgts_ferias:.2f}",
+            f"R$ {employee.decimo_terceiro:.2f}",
+            f"R$ {employee.fgts_decimo_terceiro:.2f}",
+            f"R$ {employee.multa_rescisoria:.2f}",
+            f"R$ {employee.rateio:.2f}",
+            f"R$ {employee.custo_mes:.2f}"
+        ])
+
+    table = Table(data)
+    style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ])
+
+    table.setStyle(style)
+    elements = [table]
+
+    doc.build(elements)
+    response.write(buffer.getvalue())
+    buffer.close()
+
+    return response
