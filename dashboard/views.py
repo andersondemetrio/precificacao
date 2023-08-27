@@ -201,21 +201,23 @@ def alterar_senha(request):
 def inserir_beneficio(request):
     return render(request, 'dashboard1.html', context={})
 
-
 def inserir_encargo(request):
     if request.method == 'POST':
         colaborador_id = request.POST['funcionario']
         colaborador = Colaboradores.objects.get(id=colaborador_id)
         setor = request.POST['setor']
         cargo = request.POST['cargo']
-        
-        # Cálculo do salário nominal
+
+        # Verificar se já existe um encargo para o mesmo colaborador, setor e cargo
+        if Employee.objects.filter(colaborador=colaborador, setor=setor, cargo=cargo).exists():
+            # Lidar com encargo já existente (pode ser uma renderização de erro ou outra ação)
+            return render(request, 'encargo_duplicado.html')
+
+        # Cálculo do salário nominal e periculosidade
         salario_nominal = float(colaborador.salario)
-        
-        # Cálculo da periculosidade
         periculosidade = salario_nominal * 0.3
 
-        # Resto do cálculo...
+        # Cálculos dos outros campos...
         fgts = (salario_nominal + periculosidade) * 0.08
         terco_ferias = (salario_nominal + periculosidade) * (3 / 12)
         fgts_ferias = terco_ferias * 0.08
@@ -229,7 +231,7 @@ def inserir_encargo(request):
                      fgts_ferias + decimo_terceiro + fgts_decimo_terceiro +
                      multa_rescisoria + rateio)
 
-        # Agora, você pode criar um registro na tabela Employee com os cálculos
+        # Criação do registro na tabela Employee e redirecionamento após a inserção
         employee = Employee.objects.create(
             colaborador=colaborador,
             setor=setor,
@@ -245,7 +247,10 @@ def inserir_encargo(request):
             custo_mes=custo_mes,
         )
         # Redirecionar para a página desejada após a inserção
+        return redirect('dashboard')
+    
     return render(request, 'dashboard1.html')
+
 
 
 def inserir_data(request):
