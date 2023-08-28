@@ -23,6 +23,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 import io
 from reportlab.lib.pagesizes import landscape, A3
+from django.utils.encoding import smart_str
 
 
 @login_required
@@ -334,7 +335,7 @@ def export_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="encargos_funcionarios.csv"'
 
-    writer = csv.writer(response)
+    writer = csv.writer(response, delimiter=';')
     writer.writerow(['Colaborador', 'Salário', 'Setor', 'Cargo', 'Periculosidade', 'FGTS', '1/3 Férias', 'FGTS Férias', '13º Salário', 'FGTS 13º', 'Multa Rescisória', 'Rateio', 'Custo Mês'])
 
     employees = Employee.objects.all()  # Use apropriate queryset here
