@@ -182,18 +182,33 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Função para abrir modal personalizado
-const openModalButton = document.getElementById("openModalButton");
-const modal = document.getElementById("myModal");
-const closeButtons = document.getElementsByClassName("close");
+// Função para abrir modal personalizado Colaboradores
+const openModalButtonColaboradores = document.getElementById("openModalButtonColaboradores");
+const modalColaboradores = document.getElementById("myModalColaboradores");
+const closeButtonsColaboradores = document.getElementsByClassName("close");
 
-openModalButton.addEventListener("click", () => {
-  modal.style.display = "block";
+openModalButtonColaboradores.addEventListener("click", () => {
+    modalColaboradores.style.display = "block";
 });
 
-for (const closeButton of closeButtons) {
-  closeButton.addEventListener("click", () => {
-    modal.style.display = "none";
+for (const closeButtonsCol of closeButtonsColaboradores) {
+    closeButtonsCol.addEventListener("click", () => {
+        modalColaboradores.style.display = "none";
+  });
+}
+
+// Função para abrir modal personalizado Cargo
+const openModalButtonCargo = document.getElementById("openModalButtonCargo");
+const modalCargo = document.getElementById("myModalCargo");
+const closeButtonsCargo = document.getElementsByClassName("close");
+
+openModalButtonCargo.addEventListener("click", () => {
+    modalCargo.style.display = "block";
+});
+
+for (const closeButtonCa of closeButtonsCargo) {
+  closeButtonCa.addEventListener("click", () => {
+    modalCargo.style.display = "none";
   });
 }
 
@@ -212,34 +227,34 @@ fetch(colaboradoresUrl)
 // Função para calcular horas produtivas do funcionario
 
 // Cadastro OK Mão de obra, mesma função no .html trocar 
-// document.addEventListener('DOMContentLoaded', function () {
-//     const form = document.getElementById('maoDeObraForm');
-//     const successMessage = document.getElementById('successMessage');
-//     const submitBtn = document.getElementById('submitBtn');
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('maoDeObraForm');
+    const successMessage = document.getElementById('successMessage');
+    const submitBtn = document.getElementById('submitBtn');
 
-//     form.addEventListener('submit', async function (event) {
-//         event.preventDefault();
-//         submitBtn.disabled = true;
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        submitBtn.disabled = true;
 
-//         const formData = new FormData(form);
+        const formData = new FormData(form);
 
-//         try {
-//             const response = await fetch(form.action, {
-//                 method: 'POST',
-//                 body: formData
-//             });
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData
+            });
 
-//             if (response.ok) {
-//                 successMessage.style.display = 'block';
-//                 form.reset();
-//             } else {
-//                 alert('Ocorreu um erro ao cadastrar a mão de obra.');
-//             }
-//         } catch (error) {
-//             console.error('Erro:', error);
-//             alert('Ocorreu um erro ao cadastrar a mão de obra.');
-//         } finally {
-//             submitBtn.disabled = false;
-//         }
-//     });
-// });
+            if (response.ok) {
+                successMessage.style.display = 'block';
+                form.reset();
+            } else {
+                alert('Ocorreu um erro ao cadastrar a mão de obra.');
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('Ocorreu um erro ao cadastrar a mão de obra.');
+        } finally {
+            submitBtn.disabled = false;
+        }
+    });
+});

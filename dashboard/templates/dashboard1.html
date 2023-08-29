@@ -64,7 +64,7 @@
                         <div id="cadastrosCollapse" class="collapse">
                             <ul class="ul-item">
                                 <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalCadastros">Empresa</a></li>
-                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalMaoDeObra">Colaborador</a></li>
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonColaboradores">Colaborador</a></li>
                                 <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalEndereco">Endereço</a></li> 
                                 <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalSenha">Alterar Senha</a></li>
                             </ul>
@@ -78,7 +78,7 @@
                             </svg>Mão de Obra</a>
                         <div id="maoDeObraCollapse" class="collapse">
                             <ul class="ul-item">
-                                <li class="li-pad"><a class="nav-sub" id="openModalButton">Cargo / Salário</a></li>
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonCargo">Cargo / Salário</a></li>
                                 <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalPerfilBeneficio">Benefícios</a></li>
                                 <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalPerfilEncargo">Encargos</a></li>
                             </ul>
@@ -243,7 +243,35 @@
     </div>
     <!-- Fim do modal para inserir gastos fixos, colocar  isso para o arquivo js depois -->
 
-    <!-- Começo da Modal Mão de Obra-->
+    <!--Início modal Personalizado/ MÃO DE OBRA -->
+    <div id="myModalColaboradores" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Mão de Obra</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormColaboradores" method="get" action="{% url 'buscar_colaborador' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Mão de Obra">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalMaoDeObra">Cadastrar Mão de Obra</button>
+                    </div>
+                </div>
+            </form>
+            <table id="searchResultsTableColaboradores">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim modal Personalizado / MÃO DE OBRA -->
+    <!-- Começo da Modal / MÃO DE OBRA -->
     <div class="modal fade" id="modalMaoDeObra" tabindex="-1" aria-labelledby="modalMaoDeObraLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -268,18 +296,6 @@
                                 <input type="text" class="form-control" name="cpf" required>
                             </div>
                             <div class="mb-3">
-                                <label for="salario" class="form-label">Salário</label>
-                                <input type="number" class="form-control" name="salario" step="0.01" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="beneficios" class="form-label">Benefícios</label>
-                                <input type="number" class="form-control" name="beneficios" step="0.01" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="encargos" class="form-label">Encargos</label>
-                                <input type="number" class="form-control" name="encargos" step="0.01" required>
-                            </div>
-                            <div class="mb-3">
                                 <label for="cargo" class="form-label">Cargo</label>
                                 <select class="form-select" name="cargo" required>
                                     <option value="" selected disabled>Selecione um cargo</option>
@@ -300,44 +316,9 @@
             </div>
         </div>
     </div>
-    
-    <!-- Fazer funcionar nos arquivos scripts-->
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.getElementById('maoDeObraForm');
-        const successMessage = document.getElementById('successMessage');
-        const submitBtn = document.getElementById('submitBtn');
-    
-        form.addEventListener('submit', async function (event) {
-            event.preventDefault();
-            submitBtn.disabled = true;
-    
-            const formData = new FormData(form);
-    
-            try {
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formData
-                });
-    
-                if (response.ok) {
-                    successMessage.style.display = 'block';
-                    form.reset();
-                } else {
-                    alert('Ocorreu um erro ao cadastrar a mão de obra.');
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('Ocorreu um erro ao cadastrar a mão de obra.');
-            } finally {
-                submitBtn.disabled = false;
-            }
-        });
-    });
-    </script>
-        <!-- Fazer funcionar nos arquivos scripts-->
+    <!--Fim do modal / MÃO DE OBRA -->
 
-
+  
     <!-- Começo Modal endereço-->
     <div class="modal fade" id="modalEndereco" tabindex="-1" aria-labelledby="modalEnderecoLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -392,6 +373,7 @@
     </div>
     <!--Fim modal Endereço-->
 
+
     <!-- Começo Modal Alterar Senha -->
     <div class="modal fade" id="modalSenha" tabindex="-1" aria-labelledby="modalSenhaLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -433,14 +415,14 @@
 
 
     <!--Início modal Personalizado/ CARGOS E SALÁRIOS -->
-    <div id="myModal" class="modal">
+    <div id="myModalCargo" class="modal">
         <div class="modal-personalizado">
           <div class="modal-header">
             <p class="p-modal-person mb-0">Cargos / Salários</p>
             <span class="close">&times;</span>
           </div>
           <div class="modal-body">
-            <form id="searchForm" method="get" action="{% url 'busca_cargo' %}">
+            <form id="searchFormCargo" method="get" action="{% url 'buscar_cargo' %}">
                 <div class="">
                     <div class="input-group div-modal-person">
                         <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Cargos">
@@ -460,7 +442,6 @@
       </div>
     </div>
     <!--Fim modal Personalizado / CARGOS E SALÁRIOS -->
-
     <!-- Começo Modal Cadastro / CARGOS E SALÁRIOS -->
     <div class="modal fade" id="modalCargoSalario" tabindex="-1" aria-labelledby="modalCargoSalarioLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -478,7 +459,10 @@
                                 <label for="nome_cargo" class="form-label">Nome Cargo</label>
                                 <input type="text" class="form-control" id="nome_cargo" name="nome_cargo" required>
                             </div>
-
+                            <div class="mb-3">
+                                <label for="salario" class="form-label">Salário</label>
+                                <input type="number" class="form-control" name="salario" step="0.01" required>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Cadastrar Cargo</button>
                     </form>
@@ -490,36 +474,6 @@
         </div>
     </div>
     <!--Fim Modal Cadastro / CARGOS E SALÁRIOS -->
-
-    <!-- Começo Modal Editar Cadastro / CARGOS E SALÁRIOS -->
-    {% comment %} <div class="modal fade" id="modalEditCargoSalario" tabindex="-1" aria-labelledby="modalEditCargoSalarioLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalEditCargoSalarioLabel">Alterar Cadastro</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" action="{% url 'detalhes_cargo' 36 %}">
-                        {% csrf_token %}
-                        <div class="cargo-container">
-
-                            <div class="mb-3">
-                                <label for="nome_cargo" class="form-label">Nome Cargo</label>
-                                <input type="text" class="form-control" id="nome_cargo" name="nome_cargo" required>
-                            </div>
-
-                        </div>
-                        <button type="submit" class="btn btn-primary">Alterar Cargo</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
-    </div> {% endcomment %}
-    <!--Fim Modal Editar Cadastro / CARGOS E SALÁRIOS -->
 
 
     <!-- Começo Modal Perfil Benefício -->
@@ -708,14 +662,21 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <!-- Conteúdo da modal -->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalMaoDeObraLabel">Retatório Encargos</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
                 </div>
-                <div class="modal-footer">
+                <div>
+                    <p class="p-rel-encargos">
+                        Emissão da estrutura de RH, com os encargos e rateio de cada funcionário (Custos de Mão de Obra)
+                    </p>
+                </div>
+                <div class="modal-footer d-flex flex-row justify-content-between align-items-center">
                     <a href="{% url 'lista_salarios_view' %}" class="btn btn-primary">
                         <i class="fa fa-print"></i> Gerar Relatório
                     </a>
                     <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar para o Dashboard</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                 </div>
             </div>
         </div>
