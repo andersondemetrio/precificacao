@@ -22,6 +22,7 @@ class Usuarios(models.Model):
 
 class Cargos(models.Model):
     nome_cargo = models.CharField(max_length=100)
+    salario = models.DecimalField(max_digits=10, decimal_places=2)
 
 class HorasProdutivas(models.Model):
     data = models.DateField()
@@ -50,9 +51,9 @@ class Colaboradores(models.Model):
     matricula = models.CharField(max_length=12)
     cpf = models.CharField(max_length=14)
     cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE)
-    salario = models.DecimalField(max_digits=10, decimal_places=2)
-    beneficios = models.DecimalField(max_digits=10, decimal_places=2)
-    encargos = models.DecimalField(max_digits=10, decimal_places=2)
+    # salario = models.DecimalField(max_digits=10, decimal_places=2)
+    # beneficios = models.DecimalField(max_digits=10, decimal_places=2)
+    # encargos = models.DecimalField(max_digits=10, decimal_places=2)
     #endereco = models.ForeignKey(Endereco, on_delete=models.CASCADE)
     usuario = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
 

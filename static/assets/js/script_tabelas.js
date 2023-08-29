@@ -1,5 +1,30 @@
+// Busca dinâmica de dados nas tabelas Colaboradores
 document.addEventListener("DOMContentLoaded", function () {
-    const searchForm = document.getElementById("searchForm");
+    const searchFormColaboradores = document.getElementById("searchFormColaboradores");
+    const modal = document.getElementById("myModal");
+
+    searchFormColaboradores.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(searchFormColaboradores);
+
+        fetch(searchFormColaboradores.action + '?' + new URLSearchParams(formData), {
+            method: 'GET'
+        })
+            .then(response => response.text())
+            .then(data => {
+                const searchResultsTableColaboradores = document.getElementById("searchResultsTableColaboradores");
+                searchResultsTableColaboradores.innerHTML = data; // Atualiza a tabela de resultados
+            })
+            .catch(error => {
+                console.error('Erro na busca:', error);
+            });
+    });
+});
+
+// Busca dinâmica de dados nas tabelas Cargos
+document.addEventListener("DOMContentLoaded", function () {
+    const searchFormCargo = document.getElementById("searchFormCargo");
     const modal = document.getElementById("myModal");
 
     // modal.addEventListener("click", function (event) {
@@ -9,12 +34,12 @@ document.addEventListener("DOMContentLoaded", function () {
     //     }
     // });
 
-    searchForm.addEventListener("submit", function (event) {
+    searchFormCargo.addEventListener("submit", function (event) {
         event.preventDefault();
 
-        const formData = new FormData(searchForm);
+        const formData = new FormData(searchFormCargo);
 
-        fetch(searchForm.action + '?' + new URLSearchParams(formData), {
+        fetch(searchFormCargo.action + '?' + new URLSearchParams(formData), {
             method: 'GET'
         })
             .then(response => response.text())

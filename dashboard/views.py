@@ -24,6 +24,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 import io
 from reportlab.lib.pagesizes import landscape, A3
 from django.utils.encoding import smart_str
+import codecs
 
 
 @login_required
@@ -52,16 +53,14 @@ def inserir_gasto_fixo(request):
         return redirect('dashboard')
     return render(request, 'dashboard1.html', context={})
 
+# Funções do CRUD de Mão de Obra
+
 def inserir_mao_de_obra(request):
     if request.method == 'POST':
         matricula = request.POST['matricula']
         nome = request.POST['nome']
         cpf = request.POST['cpf']
-        salario = request.POST['salario']
-        beneficios = request.POST['beneficios']
-        encargos = request.POST['encargos']
-        cargo_id = request.POST['cargo']  # Certifique-se de que esse é o nome correto do campo
-        # endereco_id = request.POST['endereco']
+        cargo_id = request.POST['cargo']
 
         cargo = Cargos.objects.get(id=cargo_id)
         
@@ -69,15 +68,60 @@ def inserir_mao_de_obra(request):
             matricula=matricula,
             nome=nome,
             cpf=cpf,
-            salario=salario,
-            beneficios=beneficios,
-            encargos=encargos,
             cargo=cargo,  # Associando o cargo à mão de obra
-            # endereco_id=endereco_id
         )
         mao_de_obra.save()
         return redirect('dashboard')
     return render(request, 'dashboard1.html')
+
+def buscar_colaborador(request): 
+    q = request.GET.get('search')   
+    colaboradores = Colaboradores.objects.filter(nome__icontains=q).order_by('id')
+    return render(request, 'pesquisa_colaborador.html', {'colaborador': colaboradores})
+
+def colaboradores_vieww(request):
+    colaboradores = Colaboradores.objects.all()
+    colaboradores_list = [{'id': colaboradores.id, 'nome': colaboradores.nome, 'matricula': colaboradores.matricula, 'cargo': colaboradores.cargo} for colaborador in colaboradores]
+    return JsonResponse({'colaboradores': colaboradores_list})
+
+def detalhes_colaborador(request, id):
+    colaborador = Colaboradores.objects.get(id=id)
+    return render(request, 'detalhes_colaborador.html', {'colaborador':colaborador})
+
+def editar_colaborador(request, id):
+    colaborador = Colaboradores.objects.get(id=id)
+    if request.method == 'POST':
+        nome = request.POST.get('nome')
+        matricula = request.POST.get('matricula')
+        cpf = request.POST.get('cpf')
+        cargo_id = request.POST.get('cargo')
+        
+        # cargo = Cargos.objects.get(id=cargo_id)
+
+        # Atualize os campos do colaborador existente
+        colaborador.nome = nome
+        colaborador.matricula = matricula
+        colaborador.cpf = cpf
+        # colaborador.cargo = cargo
+        colaborador.save()
+        return redirect('dashboard')
+
+    return render(request, 'dashboard1.html', {'colaborador': colaborador})
+
+def deletar_colaborador(request, colaborador_id):
+    if request.method == 'POST':
+        try:
+            colaborador = Colaboradores.objects.get(pk=colaborador_id)
+            colaborador.delete()
+            return redirect('dashboard')
+        except Colaboradores.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
+    else:
+        try:
+            colaborador = Colaboradores.objects.get(pk=colaborador_id)
+            return render(request, 'confirm_delete.html')
+        except colaborador.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
 
 # Funções do CRUD de cargos
 
@@ -114,7 +158,7 @@ def cargos_vieww(request):
     cargos_list = [{'id': cargo.id, 'nome_cargo': cargo.nome_cargo} for cargo in cargos]
     return JsonResponse({'cargos': cargos_list})
 
-def busca_cargo(request): 
+def buscar_cargo(request): 
     q = request.GET.get('search')   
     cargos = Cargos.objects.filter(nome_cargo__icontains=q).order_by('id')
     return render(request, 'pesquisa_cargo.html', {'cargo': cargos})
@@ -335,6 +379,7 @@ def export_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="encargos_funcionarios.csv"'
 
+    response.write(codecs.BOM_UTF8)
     writer = csv.writer(response, delimiter=';')
     writer.writerow(['Colaborador', 'Salário', 'Setor', 'Cargo', 'Periculosidade', 'FGTS', '1/3 Férias', 'FGTS Férias', '13º Salário', 'FGTS 13º', 'Multa Rescisória', 'Rateio', 'Custo Mês'])
 
