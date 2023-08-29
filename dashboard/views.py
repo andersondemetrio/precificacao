@@ -91,18 +91,18 @@ def detalhes_colaborador(request, id):
 def editar_colaborador(request, id):
     colaborador = Colaboradores.objects.get(id=id)
     if request.method == 'POST':
-        nome = request.POST.get('nome')
-        matricula = request.POST.get('matricula')
-        cpf = request.POST.get('cpf')
-        cargo_id = request.POST.get('cargo')
+        matricula = request.POST['matricula']
+        nome = request.POST['nome']
+        cpf = request.POST['cpf']
+        cargo_id = request.POST['cargo']
         
-        # cargo = Cargos.objects.get(id=cargo_id)
+        cargo = Cargos.objects.get(id=cargo_id)
 
         # Atualize os campos do colaborador existente
         colaborador.nome = nome
         colaborador.matricula = matricula
         colaborador.cpf = cpf
-        # colaborador.cargo = cargo
+        colaborador.cargo = cargo
         colaborador.save()
         return redirect('dashboard')
 
