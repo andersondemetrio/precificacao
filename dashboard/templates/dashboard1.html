@@ -64,9 +64,9 @@
                             </svg>Cadastros</a>
                         <div id="cadastrosCollapse" class="collapse">
                             <ul class="ul-item">
-                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalCadastros">Empresa</a></li>
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonEmpresa">Empresa</a></li>
                                 <li class="li-pad"><a class="nav-sub" id="openModalButtonColaboradores">Colaborador</a></li>
-                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalEndereco">Endereço</a></li> 
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonEndereco">Endereço</a></li> 
                                 <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalSenha">Alterar Senha</a></li>
                             </ul>
                         </div>
@@ -138,7 +138,35 @@
         </div>
     </div>
 
-    <!--Começo Modal Cadastro Empresa-->
+    <!--Início Modal Personalizado / CADASTRO EMPRESA -->
+    <div id="myModalEmpresa" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Empresa</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormEmpresa" method="get" action="">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Empresa">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCadastros">Cadastrar Empresa</button>
+                    </div>
+                </div>
+            </form>
+            <table id="searchResultsTableEmpresa">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim Modal Personalizado / CADASTRO EMPRESA -->
+    <!--Começo Modal / CADASTRO EMPRESA -->
     <div class="modal fade" id="modalCadastros" tabindex="-1" aria-labelledby="modalCadastros" aria-hidden="true">  
         <div class="modal-dialog">
             <div class="modal-content">
@@ -209,7 +237,8 @@
             </div>
         </div>
     </div> 
-    <!--Fim modal Cadastro Empresa -->
+    <!--Fim modal / CADASTRO EMPRESA -->
+
 
     <!-- Modal para inserir gastos fixos -->
     <div class="modal fade" id="modalDespesasFixas" tabindex="-1" aria-labelledby="modalDespesasFixasLabel" aria-hidden="true">
@@ -244,20 +273,21 @@
     </div>
     <!-- Fim do modal para inserir gastos fixos, colocar  isso para o arquivo js depois -->
 
+
     <!--Início modal Personalizado/ MÃO DE OBRA -->
     <div id="myModalColaboradores" class="modal">
         <div class="modal-personalizado">
           <div class="modal-header">
-            <p class="p-modal-person mb-0">Mão de Obra</p>
+            <p class="p-modal-person mb-0">Colaborador</p>
             <span class="close">&times;</span>
           </div>
           <div class="modal-body">
             <form id="searchFormColaboradores" method="get" action="{% url 'buscar_colaborador' %}">
                 <div class="">
                     <div class="input-group div-modal-person">
-                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Mão de Obra">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Colaborador">
                         <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalMaoDeObra">Cadastrar Mão de Obra</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalMaoDeObra">Cadastrar Colaborador</button>
                     </div>
                 </div>
             </form>
@@ -277,7 +307,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalMaoDeObraLabel">Cadastrar Mão de Obra</h5>
+                    <h5 class="modal-title" id="modalMaoDeObraLabel">Cadastrar Colaborador</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -296,7 +326,7 @@
                                 <label for="cpf" class="form-label">CPF</label>
                                 <input type="text" class="form-control" name="cpf" required>
                             </div>
-                            <div class="mb-3 d-flex flex-row">
+                            <div class="mb-3 d-flex flex-column">
                                 <label for="cargo" class="form-label">Cargo</label>
                                 <select class="form-select" name="cargo" required>
                                     <option value="" selected disabled>Selecione um cargo</option>
@@ -319,8 +349,36 @@
     </div>
     <!--Fim do modal / MÃO DE OBRA -->
 
-  
-    <!-- Começo Modal endereço-->
+
+    <!--Início Modal Personalizado / ENDEREÇO -->
+    <div id="myModalEndereco" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Endereço</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormEndereco" method="get" action="">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Endereço">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalEndereco">Cadastrar Endereço</button>
+                    </div>
+                </div>
+            </form>
+            <table id="searchResultsTableEmpresa">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim Modal Personalizado / ENDEREÇO -->
+    <!-- Começo Modal / ENDEREÇO -->
     <div class="modal fade" id="modalEndereco" tabindex="-1" aria-labelledby="modalEnderecoLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -372,7 +430,7 @@
             </div>
         </div>
     </div>
-    <!--Fim modal Endereço-->
+    <!--Fim modal / ENDEREÇO -->
 
 
     <!-- Começo Modal Alterar Senha -->

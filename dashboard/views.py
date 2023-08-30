@@ -151,7 +151,7 @@ def editar_cargo(request, id):
         salario= request.POST.get('salario')
 
         cargo.nome_cargo = nome_cargo
-        salario=salario        
+        cargo.salario = salario        
         cargo.save()
         return redirect('dashboard')
 
@@ -159,7 +159,7 @@ def editar_cargo(request, id):
 
 def cargos_vieww(request):
     cargos = Cargos.objects.all()
-    cargos_list = [{'id': cargo.id, 'nome_cargo': cargo.nome_cargo} for cargo in cargos]
+    cargos_list = [{'id': cargo.id, 'nome_cargo': cargo.nome_cargo, 'salario': cargo.salario} for cargo in cargos]
     return JsonResponse({'cargos': cargos_list})
 
 def buscar_cargo(request): 

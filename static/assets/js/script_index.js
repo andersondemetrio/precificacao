@@ -182,6 +182,21 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// Função para abrir modal personalizado Empresa
+const openModalButtonEmpresa = document.getElementById("openModalButtonEmpresa");
+const modalEmpresa = document.getElementById("myModalEmpresa");
+const closeButtonsEmpresa = document.getElementsByClassName("close");
+
+openModalButtonEmpresa.addEventListener("click", () => {
+    modalEmpresa.style.display = "block";
+});
+
+for (const closeButtonsEmp of closeButtonsEmpresa) {
+    closeButtonsEmp.addEventListener("click", () => {
+        modalEmpresa.style.display = "none";
+  });
+}
+
 // Função para abrir modal personalizado Colaboradores
 const openModalButtonColaboradores = document.getElementById("openModalButtonColaboradores");
 const modalColaboradores = document.getElementById("myModalColaboradores");
@@ -194,6 +209,21 @@ openModalButtonColaboradores.addEventListener("click", () => {
 for (const closeButtonsCol of closeButtonsColaboradores) {
     closeButtonsCol.addEventListener("click", () => {
         modalColaboradores.style.display = "none";
+  });
+}
+
+// Função para abrir modal personalizado Empresa
+const openModalButtonEndereco = document.getElementById("openModalButtonEndereco");
+const modalEndereco = document.getElementById("myModalEndereco");
+const closeButtonsEndereco = document.getElementsByClassName("close");
+
+openModalButtonEndereco.addEventListener("click", () => {
+    modalEndereco.style.display = "block";
+});
+
+for (const closeButtonsEnd of closeButtonsEndereco) {
+    closeButtonsEnd.addEventListener("click", () => {
+        modalEndereco.style.display = "none";
   });
 }
 
