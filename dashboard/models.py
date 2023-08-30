@@ -87,21 +87,7 @@ class Employee(models.Model):
         ('Gestores', 'Gestores'),
     )
 
-    CARGO_CHOICES = (
-        ('Auxiliar', 'Auxiliar'),
-        ('Assistente Técnico', 'Assistente Técnico'),
-        ('Técnico N1', 'Técnico N1'),
-        ('Técnico N2', 'Técnico N2'),
-        ('Técnico N3', 'Técnico N3'),
-        ('Coordenador', 'Coordenador'),
-        ('Gerente', 'Gerente'),
-        ('Diretor', 'Diretor'),
-       
-    )
-
     setor = models.CharField(max_length=50, choices=SETOR_CHOICES)
-    cargo = models.CharField(max_length=50, choices=CARGO_CHOICES)
-    # Campos específicos do Employee
     periculosidade = models.DecimalField(max_digits=10, decimal_places=2)
     fgts = models.DecimalField(max_digits=10, decimal_places=2)
     um_terco_ferias = models.DecimalField(max_digits=10, decimal_places=2)
@@ -110,6 +96,6 @@ class Employee(models.Model):
     fgts_decimo_terceiro = models.DecimalField(max_digits=10, decimal_places=2)
     multa_rescisoria = models.DecimalField(max_digits=10, decimal_places=2)
     rateio = models.DecimalField(max_digits=10, decimal_places=2)
-    custo_mes = models.DecimalField(max_digits=10, decimal_places=2)
-    
+    custo_mes = models.DecimalField(max_digits=10, decimal_places=2)    
     colaborador = models.ForeignKey(Colaboradores, on_delete=models.CASCADE)
+    cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE)
