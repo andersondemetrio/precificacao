@@ -14,7 +14,7 @@ from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.conf import settings
 import random
-from .forms import EmployeeForm
+# from .forms import EmployeeForm
 from .models import GastosFixos,Colaboradores,Cargos, Endereco, Empresa,CalendarioMensal,Employee
 import csv
 
@@ -129,9 +129,11 @@ def inserir_cargo(request):
     print("request.POST")
     if request.method == 'POST':
         nome_cargo = request.POST['nome_cargo']
+        salario = request.POST['salario']
 
         cargo = Cargos(
             nome_cargo=nome_cargo,
+            salario=salario,
         )        
         cargo.save()
         return redirect('dashboard')
@@ -146,8 +148,10 @@ def editar_cargo(request, id):
     cargo = Cargos.objects.get(id=id)
     if request.method == 'POST':
         nome_cargo = request.POST.get('nome_cargo')
+        salario= request.POST.get('salario')
 
-        cargo.nome_cargo = nome_cargo        
+        cargo.nome_cargo = nome_cargo
+        salario=salario        
         cargo.save()
         return redirect('dashboard')
 
@@ -260,9 +264,11 @@ def inserir_beneficio(request):
 def inserir_encargo(request):
     if request.method == 'POST':
         colaborador_id = request.POST['funcionario']
+        cargo_id = request.POST['cargos']
         colaborador = Colaboradores.objects.get(id=colaborador_id)
+        cargo = Cargos.objects.get(id=cargo_id)
         setor = request.POST['setor']
-        cargo = request.POST['cargo']
+        # cargo = request.POST['cargo']
 
         # Verificar se já existe um encargo para o mesmo colaborador, setor e cargo
         if Employee.objects.filter(colaborador=colaborador, setor=setor, cargo=cargo).exists():
@@ -270,7 +276,7 @@ def inserir_encargo(request):
             return render(request, 'encargo_duplicado.html')
 
         # Cálculo do salário nominal
-        salario_nominal = float(colaborador.salario)
+        salario_nominal = float(cargo.salario)
         
         # Definir valores padrão para periculosidade e rateio
         periculosidade = 0
@@ -385,7 +391,7 @@ def export_csv(request):
 
     employees = Employee.objects.all()  # Use apropriate queryset here
     for employee in employees:
-        writer.writerow([employee.colaborador.nome, employee.colaborador.salario, employee.setor, employee.cargo, employee.periculosidade, employee.fgts, employee.um_terco_ferias, employee.fgts_ferias, employee.decimo_terceiro, employee.fgts_decimo_terceiro, employee.multa_rescisoria, employee.rateio, employee.custo_mes])
+        writer.writerow([employee.colaborador.nome, employee.cargo.salario, employee.setor, employee.cargo.nome_cargo, employee.periculosidade, employee.fgts, employee.um_terco_ferias, employee.fgts_ferias, employee.decimo_terceiro, employee.fgts_decimo_terceiro, employee.multa_rescisoria, employee.rateio, employee.custo_mes])
 
     return response
 
@@ -410,9 +416,9 @@ def export_pdf(request):
     for employee in employees:
         data.append([
             employee.colaborador.nome,
-            f"R$ {employee.colaborador.salario:.2f}",
+            f"R$ {employee.cargo.salario:.2f}",
             employee.setor,
-            employee.cargo,
+            employee.cargo.nome_cargo,
             f"R$ {employee.periculosidade:.2f}",
             f"R$ {employee.fgts:.2f}",
             f"R$ {employee.um_terco_ferias:.2f}",

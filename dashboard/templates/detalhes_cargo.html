@@ -28,6 +28,10 @@
                             <label for="nome_cargo" class="form-label"><b>Nome Cargo</b></label>
                             <input type="text" class="form-control" id="nome_cargo" name="nome_cargo" value="{{ cargo.nome_cargo }}" required>
                         </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="salario" class="form-label"><b>Salário</b></label>
+                          <input type="number" class="form-control" name="salario" step="0.01" required>
+                        </div>
                     </div>
                     <div class="d-flex flex-row justify-content-center div-button">
                         <button type="button" class="btn btn-success" id="alterar-btnca">Alterar Cargo</button>

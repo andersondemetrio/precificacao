@@ -43,9 +43,9 @@
                                 {% for employee in employees %}
                                 <tr>
                                     <td>{{ employee.colaborador.nome }}</td>
-                                    <td class="font-weight-bold">R$ {{ employee.colaborador.salario|floatformat:2 }}</td>
+                                    <td class="font-weight-bold">R$ {{ employee.cargo.salario|floatformat:2 }}</td>
                                     <td>{{ employee.setor }}</td>
-                                    <td>{{ employee.cargo }}</td>
+                                    <td>{{ employee.cargo.nome_cargo }}</td>
                                     <td class="text-success">R$ {{ employee.periculosidade|floatformat:2 }}</td>
                                     <td class="text-info">R$ {{ employee.fgts|floatformat:2 }}</td>
                                     <td class="text-primary">R$ {{ employee.um_terco_ferias|floatformat:2 }}</td>
