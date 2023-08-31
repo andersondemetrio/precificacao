@@ -28,6 +28,21 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
+    // Requisição Fetch para endereços
+    fetch(empresaUrl)
+        .then(response => response.json())
+        .then(data => {
+            const selectElements = document.querySelectorAll('select[name="empresa"]');
+            selectElements.forEach(selectElement => {
+                data.empresa.forEach(empresa => {
+                    const option = document.createElement('option');
+                    option.value = empresa.id;
+                    option.textContent = empresa.empresa;
+                    selectElement.appendChild(option);
+                });
+            });
+        });
+
 
     // script para adicionar mais campos de despesas fixas
 
@@ -92,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // Verifica se o modal deve ser mantido aberto e se há mensagens de erro
- document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     if (keepModalOpen && messagesExist) {
         // Exibe o modal
         $('#modalSenha').modal('show');
@@ -100,17 +115,17 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // Função para buscar e preencher os campos do endereço a partir do CEP
-$(document).ready(function() {
+$(document).ready(function () {
     // Capturando o evento de clique no botão de buscar CEP
-    $("#btnBuscarCEP").click(function() {
+    $("#btnBuscarCEP").click(function () {
         // Capturando o valor do campo de entrada do CEP
         var cep = $("#cepInput").val();
-        
+
         // Construindo a URL da API ViaCEP com o CEP inserido
         var url = "https://viacep.com.br/ws/" + cep + "/json/";
-        
+
         // Fazendo a requisição AJAX para a API ViaCEP
-        $.get(url, function(data) {
+        $.get(url, function (data) {
             // Preenchendo os campos do formulário com os dados retornados pela API
             $("#logradouro").val(data.logradouro);
             $("#endereco").val(data.endereco);
@@ -136,8 +151,8 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 });
- 
- function calcularDiasUteis(ano, mes) {
+
+function calcularDiasUteis(ano, mes) {
     const inicioMes = new Date(ano, mes - 1, 1);
     const fimMes = new Date(ano, mes, 0);
     let diasUteis = 0;
@@ -194,7 +209,7 @@ openModalButtonEmpresa.addEventListener("click", () => {
 for (const closeButtonsEmp of closeButtonsEmpresa) {
     closeButtonsEmp.addEventListener("click", () => {
         modalEmpresa.style.display = "none";
-  });
+    });
 }
 
 // Função para abrir modal personalizado Colaboradores
@@ -209,7 +224,7 @@ openModalButtonColaboradores.addEventListener("click", () => {
 for (const closeButtonsCol of closeButtonsColaboradores) {
     closeButtonsCol.addEventListener("click", () => {
         modalColaboradores.style.display = "none";
-  });
+    });
 }
 
 // Função para abrir modal personalizado Empresa
@@ -224,7 +239,7 @@ openModalButtonEndereco.addEventListener("click", () => {
 for (const closeButtonsEnd of closeButtonsEndereco) {
     closeButtonsEnd.addEventListener("click", () => {
         modalEndereco.style.display = "none";
-  });
+    });
 }
 
 // Função para abrir modal personalizado Cargo
@@ -237,22 +252,22 @@ openModalButtonCargo.addEventListener("click", () => {
 });
 
 for (const closeButtonCa of closeButtonsCargo) {
-  closeButtonCa.addEventListener("click", () => {
-    modalCargo.style.display = "none";
-  });
+    closeButtonCa.addEventListener("click", () => {
+        modalCargo.style.display = "none";
+    });
 }
 
 fetch(colaboradoresUrl)
-        .then(response => response.json())
-        .then(data => {
-            const colaboradoresSelect = document.querySelector('select[name="funcionario"]');
-            data.colaboradores.forEach(colaborador => {
-                const option = document.createElement('option');
-                option.value = colaborador.id;
-                option.textContent = colaborador.nome;
-                colaboradoresSelect.appendChild(option);
-            });
+    .then(response => response.json())
+    .then(data => {
+        const colaboradoresSelect = document.querySelector('select[name="funcionario"]');
+        data.colaboradores.forEach(colaborador => {
+            const option = document.createElement('option');
+            option.value = colaborador.id;
+            option.textContent = colaborador.nome;
+            colaboradoresSelect.appendChild(option);
         });
+    });
 
 // Função para calcular horas produtivas do funcionario
 

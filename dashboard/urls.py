@@ -4,8 +4,14 @@ urlpatterns = [
     path('', dashboard_view, name='dashboard'),
     path('inserir_gasto_fixo/', inserir_gasto_fixo, name='inserir_gasto_fixo'),
     path('inserir_mao_de_obra/', inserir_mao_de_obra, name='inserir_mao_de_obra'),
-    path('inserir_empresa/', inserir_empresa, name='inserir_empresa'),
     path('alterar_senha/', alterar_senha, name='alterar_senha'),
+    
+    path('inserir_empresa/', inserir_empresa, name='inserir_empresa'),
+    path('listar_empresa/', empresa_view, name='empresa_view'),
+    path('editar_empresa/<int:id>/', editar_empresa, name='editar_empresa'),
+    path('buscar_empresa/', buscar_empresa, name='buscar_empresa'),
+    path('detalhes_empresa/<int:id>/', detalhes_empresa, name='detalhes_empresa'),
+    path('deletar_empresa/<int:empresa_id>/', deletar_empresa, name='deletar_empresa'),
     
     path('inserir_endereco/', inserir_endereco, name='inserir_endereco'),
     path('listar_enderecos/', endereco_view, name='endereco_view'),

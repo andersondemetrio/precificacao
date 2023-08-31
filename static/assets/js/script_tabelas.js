@@ -27,13 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchFormCargo = document.getElementById("searchFormCargo");
     const modal = document.getElementById("myModal");
 
-    // modal.addEventListener("click", function (event) {
-    //     if (event.target === modal) {
-    //         event.preventDefault();
-    //         event.stopPropagation();
-    //     }
-    // });
-
     searchFormCargo.addEventListener("submit", function (event) {
         event.preventDefault();
 
@@ -70,6 +63,30 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 const searchResultsTableEndereco = document.getElementById("searchResultsTableEndereco");
                 searchResultsTableEndereco.innerHTML = data; // Atualiza a tabela de resultados
+            })
+            .catch(error => {
+                console.error('Erro na busca:', error);
+            });
+    });
+});
+
+// Busca dinâmica de dados nas tabelas Empresa
+document.addEventListener("DOMContentLoaded", function () {
+    const searchFormEmpresa = document.getElementById("searchFormEmpresa");
+    const modal = document.getElementById("myModal");
+
+    searchFormEmpresa.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(searchFormEmpresa);
+
+        fetch(searchFormEmpresa.action + '?' + new URLSearchParams(formData), {
+            method: 'GET'
+        })
+            .then(response => response.text())
+            .then(data => {
+                const searchResultsTableEmpresa = document.getElementById("searchResultsTableEmpresa");
+                searchResultsTableEmpresa.innerHTML = data; // Atualiza a tabela de resultados
             })
             .catch(error => {
                 console.error('Erro na busca:', error);

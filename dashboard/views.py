@@ -294,19 +294,76 @@ def inserir_empresa(request):
             ativa=ativa,
             endereco_id=endereco_id
         )
-        
+                
         empresa.save()
         # request.session['empresa_cadastrada'] = True
         return redirect('dashboard')
 
     return render(request, 'dashboard1.html', context={})
 
+def empresa_view(request):
+    empresa = Empresa.objects.all()
+    empresa_list = [
+        {
+            'id': empresa.id,
+            'empresa': f"{empresa.cnpj}, {empresa.numero_empresa}, {empresa.nome_empresa}, {empresa.nome_fantasia}, {empresa. email}, {empresa.telefone}, {empresa.endereco} "
+        }
+        for empresa in empresa
+    ]
+    return JsonResponse({'empresa': empresa_list})
 
-def inserir_beneficio(request):
-    return render(request, 'dashboard1.html', context={})
+def detalhes_empresa(request, id):
+    empresa = Empresa.objects.get(id=id)
+    return render(request, 'detalhes_empresa.html', {'empresa':empresa})
+
+def buscar_empresa(request): 
+    q = request.GET.get('search')   
+    empresa = Empresa.objects.filter(nome_empresa__icontains=q).order_by('id')
+    return render(request, 'pesquisa_empresa.html', {'empresa': empresa})
+
+def editar_empresa(request, id):
+    empresa = Empresa.objects.get(id=id)
+    if request.method == 'POST':
+        # cnpj = request.POST['cnpj']
+        numero_empresa = request.POST['numero_empresa']
+        nome_empresa = request.POST['nome_empresa']
+        nome_fantasia = request.POST['nome_fantasia']
+        email = request.POST['email']
+        telefone = request.POST['telefone']
+        ativa = request.POST.get('ativa') == 'on'  # Verifica se a checkbox foi marcada
+        endereco_id = request.POST['endereco']
+
+        # empresa.cnpj = cnpj
+        empresa.numero_empresa = numero_empresa
+        empresa.nome_empresa = nome_empresa
+        empresa.nome_fantasia = nome_fantasia
+        empresa.email = email
+        empresa.telefone = telefone
+        empresa.ativa = ativa
+        empresa.endereco_id = endereco_id                  
+        empresa.save()
+
+        return redirect('dashboard')
+
+    return render(request, 'dashboard1.html', {'empresa': empresa})
+
+def deletar_empresa(request, empresa_id):
+    if request.method == 'POST':
+        try:
+            empresa = Empresa.objects.get(pk=empresa_id)
+            empresa.delete()
+            return redirect('dashboard')
+        except Empresa.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
+    else:
+        try:
+            empresa = Empresa.objects.get(pk=empresa_id)
+            return render(request, 'confirm_delete.html')
+        except empresa.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
 
 
-# função para inserir o encargo trabalhista para o funcionário
+# Função para inserir o encargo trabalhista para o funcionário
 
 def inserir_encargo(request):
     if request.method == 'POST':
@@ -369,7 +426,8 @@ def inserir_encargo(request):
     return render(request, 'dashboard1.html')
 
 
-
+def inserir_beneficio(request):
+    return render(request, 'dashboard1.html', context={})
 
 def inserir_data(request):
     return render(request, 'dashboard1.html', context={})    
