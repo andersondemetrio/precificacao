@@ -1,0 +1,83 @@
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Pesquisa Empresa</title>
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/edicao.css' %}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script>
+      const cargosUrl = "{% url 'cargos_vieww' %}";
+      const enderecoUrl = "{% url 'endereco_view' %}";
+      const empresaUrl = "{% url 'empresa_view' %}";
+    </script>
+    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="{% static 'assets/js/script_index.js' %}"></script>
+    <script defer src="{% static 'assets/js/script_edicao.js' %}"></script>
+</head>
+    <body class="fundo">
+        <div class="container pl-0 pr-0">
+          <div class="row justify-content-center pl-0 pr-0 no-gutters">
+            <div class="div-column">
+              <div class="d-flex flex-column justify-content-between align-items-center">
+                <div class="d-flex flex-column align-items-center div-right-int">
+                <div class="div-logo"></div>
+                <form method="post" action="{% url 'editar_empresa' empresa.id %}" id="editar-form-empresa">
+                    {% csrf_token %}
+                    <div class="empresa-container">  
+                        <div class="mb-3 d-flex flex-row">
+                            <label for="cnpj" class="form-label"><b>CNPJ</b></label>
+                            <input type="text" class="form-control" id="cnpj" name="cnpj" value="{{ empresa.cnpj }}" required disabled>
+                        </div>          
+                        <div class="mb-3 d-flex flex-row">
+                            <label for="numero_empresa" class="form-label"><b>Número</b></label>
+                            <input type="text" class="form-control" id="numero_empresa" name="numero_empresa" value="{{ empresa.numero_empresa }}" required>
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="nome_empresa" class="form-label"><b>Nome</b></label>
+                          <input type="text" class="form-control" id="nome_empresa" name="nome_empresa" value="{{ empresa.nome_empresa }}" required>
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="nome_fantasia" class="form-label"><b>Fantasia</b></label>
+                          <input type="text" class="form-control" id="nome_fantasia" name="nome_fantasia" value="{{ empresa.nome_fantasia }}" required>
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="email" class="form-label"><b>E-mail</b></label>
+                          <input type="text" class="form-control" id="email" name="email" value="{{ empresa.email }}" required>
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="telefone" class="form-label"><b>Telefone</b></label>
+                          <input type="text" class="form-control" id="telefone" name="telefone" value="{{ empresa.telefone }}" required>
+                        </div>
+                        <div class="mb-3 form-check form-switch">
+                          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="ativa">
+                          <label class="form-check-label" for="flexSwitchCheckDefault">Ativa</label>
+                      </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="endereco" class="form-label"><b>Endereço</b>T</label>
+                          <select class="form-select" name="endereco" required>
+                              <option value="" selected disabled>Selecione um endereço</option>
+                              {% for endereco in enderecos %}
+                                  <option value="{{ endereco.id }}">{{ endereco.endereco }}</option>
+                              {% endfor %}
+                          </select>
+                      </div>
+
+                    </div>
+                    <div class="d-flex flex-row justify-content-center div-button">
+                        <button type="button" class="btn btn-success" id="alterar-btnem">Alterar Empresa</button>
+                        <button type="button" class="btn btn-danger"><a href="/dashboard/">Cancelar</a></button>
+                    </div>
+                </form>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </body>
+</html>

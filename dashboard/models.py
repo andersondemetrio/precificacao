@@ -8,7 +8,6 @@ from django.db.models import Q
 class Endereco(models.Model):
     cep = models.CharField(max_length=9)
     logradouro = models.CharField(max_length=30)
-   # endereco = models.CharField(max_length=40)
     numero = models.CharField(max_length=30)
     complemento = models.CharField(max_length=30)
     bairro = models.CharField(max_length=30)
@@ -23,6 +22,9 @@ class Usuarios(models.Model):
 class Cargos(models.Model):
     nome_cargo = models.CharField(max_length=100)
     salario = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    def __str__(self):
+        return self.nome
 
 class HorasProdutivas(models.Model):
     data = models.DateField()
