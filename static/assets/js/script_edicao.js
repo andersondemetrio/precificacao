@@ -11,3 +11,10 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('editar-form-colaborador').submit();
     });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    //Confirma edição de endereço
+    document.getElementById('alterar-btnen').addEventListener('click', function () {
+        document.getElementById('editar-form-endereco').submit();
+    });
+});

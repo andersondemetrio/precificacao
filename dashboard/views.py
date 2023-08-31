@@ -14,7 +14,6 @@ from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.conf import settings
 import random
-# from .forms import EmployeeForm
 from .models import GastosFixos,Colaboradores,Cargos, Endereco, Empresa,CalendarioMensal,Employee
 import csv
 
@@ -44,16 +43,29 @@ def dashboard_view(request):
         return render(request, 'dashboard1.html')
     else:
         return render(request, 'account/login.html', context)
-
-def inserir_gasto_fixo(request):
+    
+# @login_required
+def alterar_senha(request):
     if request.method == 'POST':
-        descricao = request.POST['descricao']
-        valor = request.POST['valor']
-        GastosFixos.objects.create(descricao=descricao, valor=valor)
-        return redirect('dashboard')
-    return render(request, 'dashboard1.html', context={})
+        nova_senha = request.POST.get('novaSenha')
+        repetir_senha = request.POST.get('repetirSenha')
 
-# Funções do CRUD de Mão de Obra
+        if nova_senha == repetir_senha:
+            user = request.user
+            user.set_password(nova_senha)
+            user.save()
+            
+            # Atualiza a sessão de autenticação para evitar logout automático
+            # update_session_auth_hash(request, user)
+
+            messages.success(request, 'Senha alterada com sucesso.')
+            return redirect('login')
+        else:
+            messages.error(request, 'As senhas não coincidem.')
+    return render(request, 'dashboard1.html', {'keep_modal_open': True})
+
+
+# Funções do CRUD de Colaboradores
 
 def inserir_mao_de_obra(request):
     if request.method == 'POST':
@@ -123,6 +135,7 @@ def deletar_colaborador(request, colaborador_id):
         except colaborador.DoesNotExist:
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
 
+
 # Funções do CRUD de cargos
 
 def inserir_cargo(request):
@@ -182,7 +195,22 @@ def deletar_cargo(request, cargo_id):
         except cargo.DoesNotExist:
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
 
+
 # Funções do CRUD de endereços
+
+def inserir_endereco(request):
+    if request.method == 'POST':
+        cep = request.POST['cep']
+        logradouro = request.POST['logradouro']
+        numero = request.POST['numero']
+        complemento = request.POST['complemento']
+        bairro = request.POST['bairro']
+        cidade = request.POST['cidade']
+        estado = request.POST['estado']
+        Endereco.objects.create(cep=cep, logradouro=logradouro, numero=numero, complemento=complemento, bairro=bairro, cidade=cidade, 
+                                estado=estado)
+        return redirect('dashboard')
+    return render(request, 'dashboard1.html', context={})
 
 def endereco_view(request):
     enderecos = Endereco.objects.all()
@@ -194,6 +222,56 @@ def endereco_view(request):
         for endereco in enderecos
     ]
     return JsonResponse({'enderecos': enderecos_list})
+
+def detalhes_endereco(request, id):
+    endereco = Endereco.objects.get(id=id)
+    return render(request, 'detalhes_endereco.html', {'endereco':endereco})
+
+def buscar_endereco(request): 
+    q = request.GET.get('search')   
+    endereco = Endereco.objects.filter(logradouro__icontains=q).order_by('id')
+    return render(request, 'pesquisa_endereco.html', {'endereco': endereco})
+
+def editar_endereco(request, id):
+    endereco = Endereco.objects.get(id=id)
+    if request.method == 'POST':
+        # cep = request.POST['cep']
+        logradouro = request.POST['logradouro']
+        numero = request.POST['numero']
+        complemento = request.POST['complemento']
+        bairro = request.POST['bairro']
+        cidade = request.POST['cidade']
+        estado = request.POST['estado']
+
+        # endereco.cep = cep
+        endereco.logradouro = logradouro
+        endereco.numero = numero
+        endereco.complemento = complemento
+        endereco.bairro = bairro
+        endereco.cidade = cidade
+        endereco.estado = estado      
+        endereco.save()
+        return redirect('dashboard')
+
+    return render(request, 'dashboard1.html', {'endereco': endereco})
+
+def deletar_endereco(request, endereco_id):
+    if request.method == 'POST':
+        try:
+            endereco = Endereco.objects.get(pk=endereco_id)
+            endereco.delete()
+            return redirect('dashboard')
+        except Endereco.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
+    else:
+        try:
+            endereco = Endereco.objects.get(pk=endereco_id)
+            return render(request, 'confirm_delete.html')
+        except endereco.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
+
+
+# Funções do CRUD de Empresa
 
 def inserir_empresa(request):
     if request.method == 'POST':
@@ -223,41 +301,10 @@ def inserir_empresa(request):
 
     return render(request, 'dashboard1.html', context={})
 
-def inserir_endereco(request):
-    if request.method == 'POST':
-        logradouro = request.POST['logradouro']
-        numero = request.POST['numero']
-        complemento = request.POST['complemento']
-        bairro = request.POST['bairro']
-        cidade = request.POST['cidade']
-        estado = request.POST['estado']
-        Endereco.objects.create(logradouro=logradouro, numero=numero, complemento=complemento, bairro=bairro, cidade=cidade, 
-                                estado=estado)
-        return redirect('dashboard')
-    return render(request, 'dashboard1.html', context={})
-
-# @login_required
-def alterar_senha(request):
-    if request.method == 'POST':
-        nova_senha = request.POST.get('novaSenha')
-        repetir_senha = request.POST.get('repetirSenha')
-
-        if nova_senha == repetir_senha:
-            user = request.user
-            user.set_password(nova_senha)
-            user.save()
-            
-            # Atualiza a sessão de autenticação para evitar logout automático
-            # update_session_auth_hash(request, user)
-
-            messages.success(request, 'Senha alterada com sucesso.')
-            return redirect('login')
-        else:
-            messages.error(request, 'As senhas não coincidem.')
-    return render(request, 'dashboard1.html', {'keep_modal_open': True})
 
 def inserir_beneficio(request):
     return render(request, 'dashboard1.html', context={})
+
 
 # função para inserir o encargo trabalhista para o funcionário
 
@@ -454,3 +501,11 @@ def export_pdf(request):
 def list_employee(request):
     employees = Colaboradores.objects.all()
     return render(request, 'list_employee.html', {'employees': employees})
+
+def inserir_gasto_fixo(request):
+    if request.method == 'POST':
+        descricao = request.POST['descricao']
+        valor = request.POST['valor']
+        GastosFixos.objects.create(descricao=descricao, valor=valor)
+        return redirect('dashboard')
+    return render(request, 'dashboard1.html', context={})

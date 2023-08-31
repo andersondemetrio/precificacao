@@ -52,3 +52,27 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 });
+
+// Busca dinâmica de dados nas tabelas Endereços
+document.addEventListener("DOMContentLoaded", function () {
+    const searchFormEndereco = document.getElementById("searchFormEndereco");
+    const modal = document.getElementById("myModal");
+
+    searchFormEndereco.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(searchFormEndereco);
+
+        fetch(searchFormEndereco.action + '?' + new URLSearchParams(formData), {
+            method: 'GET'
+        })
+            .then(response => response.text())
+            .then(data => {
+                const searchResultsTableEndereco = document.getElementById("searchResultsTableEndereco");
+                searchResultsTableEndereco.innerHTML = data; // Atualiza a tabela de resultados
+            })
+            .catch(error => {
+                console.error('Erro na busca:', error);
+            });
+    });
+});

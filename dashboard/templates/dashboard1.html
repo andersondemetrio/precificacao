@@ -64,9 +64,9 @@
                             </svg>Cadastros</a>
                         <div id="cadastrosCollapse" class="collapse">
                             <ul class="ul-item">
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonEndereco">Endereço</a></li> 
                                 <li class="li-pad"><a class="nav-sub" id="openModalButtonEmpresa">Empresa</a></li>
                                 <li class="li-pad"><a class="nav-sub" id="openModalButtonColaboradores">Colaborador</a></li>
-                                <li class="li-pad"><a class="nav-sub" id="openModalButtonEndereco">Endereço</a></li> 
                                 <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalSenha">Alterar Senha</a></li>
                             </ul>
                         </div>
@@ -138,6 +138,7 @@
         </div>
     </div>
 
+    
     <!--Início Modal Personalizado / CADASTRO EMPRESA -->
     <div id="myModalEmpresa" class="modal">
         <div class="modal-personalizado">
@@ -358,7 +359,7 @@
             <span class="close">&times;</span>
           </div>
           <div class="modal-body">
-            <form id="searchFormEndereco" method="get" action="">
+            <form id="searchFormEndereco" method="get" action="{% url 'buscar_endereco' %}">
                 <div class="">
                     <div class="input-group div-modal-person">
                         <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Endereço">
@@ -367,7 +368,7 @@
                     </div>
                 </div>
             </form>
-            <table id="searchResultsTableEmpresa">
+            <table id="searchResultsTableEndereco">
                 <tbody>
 
                 </tbody>

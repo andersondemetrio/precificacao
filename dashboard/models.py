@@ -8,7 +8,6 @@ from django.db.models import Q
 class Endereco(models.Model):
     cep = models.CharField(max_length=9)
     logradouro = models.CharField(max_length=30)
-   # endereco = models.CharField(max_length=40)
     numero = models.CharField(max_length=30)
     complemento = models.CharField(max_length=30)
     bairro = models.CharField(max_length=30)
