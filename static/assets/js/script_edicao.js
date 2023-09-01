@@ -20,8 +20,15 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    //Confirma edição de endereço
+    //Confirma edição de empresa
     document.getElementById('alterar-btnem').addEventListener('click', function () {
         document.getElementById('editar-form-empresa').submit();
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    //Confirma edição de calendário
+    document.getElementById('alterar-btncal').addEventListener('click', function () {
+        document.getElementById('editar-form-calendario').submit();
     });
 });

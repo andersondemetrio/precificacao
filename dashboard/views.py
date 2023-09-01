@@ -363,6 +363,93 @@ def deletar_empresa(request, empresa_id):
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
 
 
+# Funções do CRUD de Calendario
+
+def inserir_calendario(request):
+    if request.method == "POST":
+        mes = int(request.POST.get("mes"))
+        ano = int(request.POST.get("ano"))
+        jornada_diaria = float(request.POST.get("jornada_diaria"))
+        funcionario_id = int(request.POST.get("funcionario"))
+        horas_produtivas = float(request.POST.get("horas_produtivas"))
+        dias_uteis = int(request.POST.get("dias_uteis"))  # Pegar o valor dos dias úteis
+
+        funcionario = Colaboradores.objects.get(pk=funcionario_id)
+
+        calendario = CalendarioMensal(
+            mes=mes,
+            ano=ano,
+            jornada_diaria=jornada_diaria,
+            funcionario=funcionario,
+            horas_produtivas=horas_produtivas,
+            dias_uteis=dias_uteis  # Definir o valor dos dias úteis
+        )
+        calendario.save()
+
+        return redirect("dashboard")  # Redirecionar para uma página de sucesso
+
+    return render(request, "dashboard1.html")
+
+def calendario_view(request):
+    calendarios = CalendarioMensal.objects.all()
+    calendario_list = [
+        {
+            'id': calendario.id,
+            'calendario': f"{calendario.mes}, {calendario.ano}, {calendario.funcionario}, {calendario.dias_uteis}, {calendario. jornada_diaria}, {calendario.horas_produtivas} "
+        }
+        for calendario in calendarios
+    ]
+    return JsonResponse({'calendario': calendario_list})
+
+def detalhes_calendario(request, id):
+    calendario = CalendarioMensal.objects.get(id=id)
+    return render(request, 'detalhes_calendario.html', {'calendario':calendario})
+
+def buscar_calendario(request): 
+    q = request.GET.get('search')   
+    calendario = CalendarioMensal.objects.filter(ano__icontains=q).order_by('id')
+    return render(request, 'pesquisa_calendario.html', {'calendario': calendario})
+
+def editar_calendario(request, id):
+    calendario = CalendarioMensal.objects.get(id=id)
+    if request.method == "POST":
+        mes = int(request.POST['mes'])
+        ano = int(request.POST.get("ano"))
+        jornada_diaria = float(request.POST.get("jornada_diaria"))
+        funcionario_id = int(request.POST.get("funcionario"))
+        horas_produtivas = float(request.POST.get("horas_produtivas"))
+        dias_uteis = int(request.POST.get("dias_uteis"))  # Pegar o valor dos dias úteis
+
+        funcionario = Colaboradores.objects.get(pk=funcionario_id)
+
+        calendario.mes = mes
+        calendario.ano = ano
+        calendario.jornada_diaria = jornada_diaria
+        calendario.funcionario = funcionario
+        calendario.horas_produtivas = horas_produtivas
+        calendario.dias_uteis = dias_uteis         
+        calendario.save()
+
+        return redirect("dashboard")  # Redirecionar para uma página de sucesso
+
+    return render(request, 'dashboard1.html', {'calendario': calendario})
+
+def deletar_calendario(request, calendario_id):
+    if request.method == 'POST':
+        try:
+            calendario = CalendarioMensal.objects.get(pk=calendario_id)
+            calendario.delete()
+            return redirect('dashboard')
+        except CalendarioMensal.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
+    else:
+        try:
+            calendario = CalendarioMensal.objects.get(pk=calendario_id)
+            return render(request, 'confirm_delete.html')
+        except CalendarioMensal.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
+        
+
 # Função para inserir o encargo trabalhista para o funcionário
 
 def inserir_encargo(request):
@@ -439,33 +526,6 @@ def inserir_horas(request):
     return render(request, 'dashboard1.html', context={})       
 
 
-
-# Função para validar a inserção dos dias uties e horas produtiva do mes 
-
-def inserir_calendario(request):
-    if request.method == "POST":
-        mes = int(request.POST.get("mes"))
-        ano = int(request.POST.get("ano"))
-        jornada_diaria = float(request.POST.get("jornada_diaria"))
-        funcionario_id = int(request.POST.get("funcionario"))
-        horas_produtivas = float(request.POST.get("horas_produtivas"))
-        dias_uteis = int(request.POST.get("dias_uteis"))  # Pegar o valor dos dias úteis
-
-        funcionario = Colaboradores.objects.get(pk=funcionario_id)
-
-        calendario = CalendarioMensal(
-            mes=mes,
-            ano=ano,
-            jornada_diaria=jornada_diaria,
-            funcionario=funcionario,
-            horas_produtivas=horas_produtivas,
-            dias_uteis=dias_uteis  # Definir o valor dos dias úteis
-        )
-        calendario.save()
-
-        return redirect("dashboard")  # Redirecionar para uma página de sucesso
-
-    return render(request, "dashboard1.html")
 
 # funçaõ para listar os colaboradores no select do calendario
 def colaboradores_view(request):

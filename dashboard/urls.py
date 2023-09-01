@@ -2,8 +2,6 @@ from django.urls import path
 from dashboard.views import *
 urlpatterns = [
     path('', dashboard_view, name='dashboard'),
-    path('inserir_gasto_fixo/', inserir_gasto_fixo, name='inserir_gasto_fixo'),
-    path('inserir_mao_de_obra/', inserir_mao_de_obra, name='inserir_mao_de_obra'),
     path('alterar_senha/', alterar_senha, name='alterar_senha'),
     
     path('inserir_empresa/', inserir_empresa, name='inserir_empresa'),
@@ -27,18 +25,26 @@ urlpatterns = [
     path('detalhes_cargo/<int:id>/', detalhes_cargo, name='detalhes_cargo'),
     path('deletar_cargo/<int:cargo_id>/', deletar_cargo, name='deletar_cargo'),
     
+    path('inserir_mao_de_obra/', inserir_mao_de_obra, name='inserir_mao_de_obra'),
     path('colaboradores_view/',colaboradores_view,name='colaboradores_view'),
     path('editar_colaborador/<int:id>/', editar_colaborador, name='editar_colaborador'),
     path('buscar_colaborador/', buscar_colaborador, name='buscar_colaborador'),
     path('detalhes_colaborador/<int:id>/', detalhes_colaborador, name='detalhes_colaborador'),
     path('deletar_colaborador/<int:colaborador_id>/', deletar_colaborador, name='deletar_colaborador'),
     
+    path('inserir_calendario/',inserir_calendario,name='inserir_calendario'),
+    path('editar_calendario/<int:id>/', editar_calendario, name='editar_calendario'),
+    path('calendario_view/', calendario_view, name='calendario_view'),
+    path('buscar_calendario/', buscar_calendario, name='buscar_calendario'),
+    path('detalhes_calendario/<int:id>/', detalhes_calendario, name='detalhes_calendario'),
+    path('deletar_calendario/<int:calendario_id>/', deletar_calendario, name='deletar_calendario'),    
+    
     path('inserir_beneficio/', inserir_beneficio, name='inserir_beneficio'),
     path('inserir_encargo/', inserir_encargo, name='inserir_encargo'),
+    path('inserir_gasto_fixo/', inserir_gasto_fixo, name='inserir_gasto_fixo'),
     path('inserir_data/', inserir_data, name='inserir_data'),
     path('inserir_jornada/', inserir_jornada, name='inserir_jornada'),
-    path('inserir_horas/', inserir_horas, name='inserir_horas'),
-    path('inserir_calendario/',inserir_calendario,name='inserir_calendario'),
+    path('inserir_horas/', inserir_horas, name='inserir_horas'),      
     path('lista_salarios_view/', lista_salarios_view, name='lista_salarios_view'),
     path('export_csv/',export_csv, name='export_csv'),
     path('export_pdf/', export_pdf, name='export_pdf'),

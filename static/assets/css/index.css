@@ -109,6 +109,7 @@
 .li-pad:hover {
   background-color: #DC2768;
   color: white;
+  cursor: pointer;
 }
 
 /* Estilização modal personalizado */
