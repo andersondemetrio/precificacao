@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Recarrega a página ao clicar no botão de voltar
+    document.getElementById("botaoHome").addEventListener("click", function(event) {
+        event.preventDefault(); // Impede o comportamento padrão do link
+        location.reload(); // Recarrega a página
+      });
 
     // Requisição Fetch para cargos
     fetch(cargosUrl)
@@ -38,6 +43,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     const option = document.createElement('option');
                     option.value = empresa.id;
                     option.textContent = empresa.empresa;
+                    selectElement.appendChild(option);
+                });
+            });
+        });
+
+    // Requisição Fetch para Calendário
+    fetch(calendarioUrl)
+        .then(response => response.json())
+        .then(data => {
+            const selectElements = document.querySelectorAll('select[name="calendario"]');
+            selectElements.forEach(selectElement => {
+                data.calendario.forEach(calendario => {
+                    const option = document.createElement('option');
+                    option.value = calendario.id;
+                    option.textContent = calendario.calendario;
                     selectElement.appendChild(option);
                 });
             });
@@ -109,24 +129,20 @@ document.addEventListener('DOMContentLoaded', function () {
 // Verifica se o modal deve ser mantido aberto e se há mensagens de erro
 document.addEventListener("DOMContentLoaded", function () {
     if (keepModalOpen && messagesExist) {
-        // Exibe o modal
+
         $('#modalSenha').modal('show');
     }
 });
 
 // Função para buscar e preencher os campos do endereço a partir do CEP
 $(document).ready(function () {
-    // Capturando o evento de clique no botão de buscar CEP
     $("#btnBuscarCEP").click(function () {
-        // Capturando o valor do campo de entrada do CEP
         var cep = $("#cepInput").val();
 
-        // Construindo a URL da API ViaCEP com o CEP inserido
         var url = "https://viacep.com.br/ws/" + cep + "/json/";
 
         // Fazendo a requisição AJAX para a API ViaCEP
         $.get(url, function (data) {
-            // Preenchendo os campos do formulário com os dados retornados pela API
             $("#logradouro").val(data.logradouro);
             $("#endereco").val(data.endereco);
             $("#bairro").val(data.bairro);
@@ -227,7 +243,7 @@ for (const closeButtonsCol of closeButtonsColaboradores) {
     });
 }
 
-// Função para abrir modal personalizado Empresa
+// Função para abrir modal personalizado Endereço
 const openModalButtonEndereco = document.getElementById("openModalButtonEndereco");
 const modalEndereco = document.getElementById("myModalEndereco");
 const closeButtonsEndereco = document.getElementsByClassName("close");
@@ -257,6 +273,21 @@ for (const closeButtonCa of closeButtonsCargo) {
     });
 }
 
+// Função para abrir modal personalizado Calendário
+const openModalButtonCalendario = document.getElementById("openModalButtonCalendario");
+const modalCalendario = document.getElementById("myModalCalendario");
+const closeButtonsCalendario = document.getElementsByClassName("close");
+
+openModalButtonCalendario.addEventListener("click", () => {
+    modalCalendario.style.display = "block";
+});
+
+for (const closeButtonCal of closeButtonsCalendario) {
+    closeButtonCal.addEventListener("click", () => {
+        modalCalendario.style.display = "none";
+    });
+}
+
 fetch(colaboradoresUrl)
     .then(response => response.json())
     .then(data => {
@@ -269,7 +300,6 @@ fetch(colaboradoresUrl)
         });
     });
 
-// Função para calcular horas produtivas do funcionario
 
 // Cadastro OK Mão de obra, mesma função no .html trocar 
 document.addEventListener('DOMContentLoaded', function () {

@@ -52,7 +52,7 @@
                 <hr class="mt-0">
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li class="nav-item">
-                        <a class="a-titulo" href="#" aria-current="page">
+                        <a class="a-titulo" href="#" aria-current="page" id="botaoHome">
                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-house-door me-2">
                                 <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146ZM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5Z"></path>
                             </svg>Home </a></li>
@@ -91,7 +91,7 @@
                             <i class="fa fa-calendar"></i>Horas Produtivas</a>
                         <div id="horasProdutivasCollapse" class="collapse">
                             <ul class="ul-item">
-                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalCalendario">Calendário mensal</a></li>
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonCalendario">Calendário mensal</a></li>
                                 <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalHorasProdutivas">Jornada de trabalho diária</a></li>
                             </ul>
                         </div>
@@ -240,41 +240,7 @@
     </div> 
     <!--Fim modal / CADASTRO EMPRESA -->
 
-
-    <!-- Modal para inserir gastos fixos -->
-    <div class="modal fade" id="modalDespesasFixas" tabindex="-1" aria-labelledby="modalDespesasFixasLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalDespesasFixasLabel">Cadastrar Despesa Fixa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" action="{% url 'inserir_gasto_fixo' %}">
-                        {% csrf_token %}
-                        <div class="despesa-container">
-                            <div class="mb-3">
-                                <label for="descricao" class="form-label">Descrição</label>
-                                <input type="text" class="form-control" name="descricao" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="valor" class="form-label">Valor</label>
-                                <input type="number" class="form-control" name="valor" step="0.01" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Cadastrar</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary" id="maisDespesasFixas">Acionar Mais Despesas</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Fim do modal para inserir gastos fixos, colocar  isso para o arquivo js depois -->
-
-
+    
     <!--Início modal Personalizado/ MÃO DE OBRA -->
     <div id="myModalColaboradores" class="modal">
         <div class="modal-personalizado">
@@ -564,6 +530,7 @@
     </div>
     <!--Fim modal Perfil Benefício -->
 
+
     <!-- Começo Modal Perfil Encargo -->
     <div class="modal fade" id="modalPerfilEncargo" tabindex="-1" aria-labelledby="modalPerfilEncargoLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -608,7 +575,72 @@
             </div>
         </div>
     </div>
+    <!--Fim modal Perfil Encargo -->
 
+
+    <!-- Modal para inserir gastos fixos -->
+    <div class="modal fade" id="modalDespesasFixas" tabindex="-1" aria-labelledby="modalDespesasFixasLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDespesasFixasLabel">Cadastrar Despesa Fixa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_gasto_fixo' %}">
+                        {% csrf_token %}
+                        <div class="despesa-container">
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label">Descrição</label>
+                                <input type="text" class="form-control" name="descricao" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="valor" class="form-label">Valor</label>
+                                <input type="number" class="form-control" name="valor" step="0.01" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="maisDespesasFixas">Acionar Mais Despesas</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fim do modal para inserir gastos fixos -->
+
+
+    <!--Início Modal Personalizado / CALENDÁRIO -->
+    <div id="myModalCalendario" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Calendário</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormCalendario" method="get" action="{% url 'buscar_calendario' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Dias/Horas">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCalendario">Cadastrar Dias/Horas</button>
+                    </div>
+                </div>
+            </form>
+            <table id="searchResultsTableCalendario">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim Modal Personalizado / CALENDÁRIO -->
+    <!-- Começo modal / CALENDÁRIO -->
     <div class="modal fade" id="modalCalendario" tabindex="-1" aria-labelledby="modalCalendarioLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -651,10 +683,10 @@
             </div>
         </div>
     </div>
-
-	<!--Fim modal Calendário->
+	<!--Fim modal / CALENDÁRIO -->
    
-	<!-- Começo Modal Jornada -->
+
+	<!--Começo Modal Jornada -->
 	<div class="modal fade" id="modalHorasProdutivas" tabindex="-1" aria-labelledby="modalHorasProdutivasLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -680,11 +712,10 @@
 			</div>
 		</div>
 	</div>
-<!-- Fim modal Jornada -->
+    <!-- Fim modal Jornada -->
 
-    <!--Fim modal Jornada->
 
-    <! Começo Modal Hora Fixa -->
+    <!-- Começo Modal Hora Fixa -->
     <div class="modal fade" id="modalHoraFixa" tabindex="-1" aria-labelledby="modalHoraFixasLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -710,7 +741,8 @@
             </div>
         </div>
     </div>
-    <!--Fim modal Jornada-->
+    <!--Fim modal Hora Fixa-->
+
 
     <!-- Começo Modal Relatórios -->
     <div class="modal fade" id="modalEngargoslista" tabindex="-1" aria-labelledby="modalEngargoslistaLabel" aria-hidden="true">
@@ -735,8 +767,7 @@
                 </div>
             </div>
         </div>
-    </div>
-       
+    </div>       
     <!-- Fim Modal Relatórios-->
 </body>
 </html>

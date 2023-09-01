@@ -93,3 +93,27 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 });
+
+// Busca dinâmica de dados nas tabelas Calendário
+document.addEventListener("DOMContentLoaded", function () {
+    const searchFormCalendario = document.getElementById("searchFormCalendario");
+    const modal = document.getElementById("myModal");
+
+    searchFormCalendario.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(searchFormCalendario);
+
+        fetch(searchFormCalendario.action + '?' + new URLSearchParams(formData), {
+            method: 'GET'
+        })
+            .then(response => response.text())
+            .then(data => {
+                const searchResultsTableCalendario = document.getElementById("searchResultsTableCalendario");
+                searchResultsTableCalendario.innerHTML = data; // Atualiza a tabela de resultados
+            })
+            .catch(error => {
+                console.error('Erro na busca:', error);
+            });
+    });
+});
