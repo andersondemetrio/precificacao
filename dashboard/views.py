@@ -24,6 +24,8 @@ import io
 from reportlab.lib.pagesizes import landscape, A3
 from django.utils.encoding import smart_str
 import codecs
+from django.db.models import Sum, Count
+from django.db import transaction
 
 
 @login_required
@@ -479,7 +481,7 @@ def inserir_encargo(request):
             rateio = 0
         else:
             periculosidade = salario_nominal * 0.3
-            rateio = (salario_nominal + periculosidade) * 0.2  # Exemplo de cálculo para o rateio
+            rateio = 0 
 
         # Cálculos dos outros campos...
         fgts = (salario_nominal + periculosidade) * 0.08
@@ -488,9 +490,10 @@ def inserir_encargo(request):
         decimo_terceiro = (salario_nominal + periculosidade) / 12
         fgts_decimo_terceiro = decimo_terceiro * 0.08
         multa_rescisoria = (fgts + fgts_ferias + fgts_decimo_terceiro) * 0.4
-        custo_mes = (salario_nominal + periculosidade + fgts + terco_ferias +
+        custo_salario = (salario_nominal + periculosidade + fgts + terco_ferias +
                      fgts_ferias + decimo_terceiro + fgts_decimo_terceiro +
-                     multa_rescisoria + rateio)
+                     multa_rescisoria)
+        custo_mes = (custo_salario + rateio)
 
         # Criação do registro na tabela Employee e redirecionamento após a inserção
         employee = Employee.objects.create(
@@ -504,6 +507,7 @@ def inserir_encargo(request):
             decimo_terceiro=decimo_terceiro,
             fgts_decimo_terceiro=fgts_decimo_terceiro,
             multa_rescisoria=multa_rescisoria,
+            custo_salario=custo_salario,
             rateio=rateio,
             custo_mes=custo_mes,
         )
@@ -552,11 +556,14 @@ def export_csv(request):
 
     response.write(codecs.BOM_UTF8)
     writer = csv.writer(response, delimiter=';')
-    writer.writerow(['Colaborador', 'Salário', 'Setor', 'Cargo', 'Periculosidade', 'FGTS', '1/3 Férias', 'FGTS Férias', '13º Salário', 'FGTS 13º', 'Multa Rescisória', 'Rateio', 'Custo Mês'])
+    writer.writerow(['Colaborador', 'Salário', 'Setor', 'Cargo', 'Periculosidade', 'FGTS', '1/3 Férias', 'FGTS Férias', 
+                     '13º Salário', 'FGTS 13º', 'Multa Rescisória', 'Custo Salário', 'Rateio', 'Custo Mês'])
 
     employees = Employee.objects.all()  # Use apropriate queryset here
     for employee in employees:
-        writer.writerow([employee.colaborador.nome, employee.cargo.salario, employee.setor, employee.cargo.nome_cargo, employee.periculosidade, employee.fgts, employee.um_terco_ferias, employee.fgts_ferias, employee.decimo_terceiro, employee.fgts_decimo_terceiro, employee.multa_rescisoria, employee.rateio, employee.custo_mes])
+        writer.writerow([employee.colaborador.nome, employee.cargo.salario, employee.setor, employee.cargo.nome_cargo, employee.periculosidade, 
+                         employee.fgts, employee.um_terco_ferias, employee.fgts_ferias, employee.decimo_terceiro, employee.fgts_decimo_terceiro, 
+                         employee.multa_rescisoria, employee.custo_salario, employee.rateio, employee.custo_mes])
 
     return response
 
@@ -575,7 +582,7 @@ def export_pdf(request):
     data.append([
         'Colaborador', 'Salário', 'Setor', 'Cargo', 'Periculosidade', 'FGTS',
         '1/3 Férias', 'FGTS Férias', '13º Salário', 'FGTS 13º',
-        'Multa Rescisória', 'Rateio', 'Custo Mês'
+        'Multa Rescisória', 'Custo Salário', 'Rateio', 'Custo Mês'
     ])
 
     for employee in employees:
@@ -591,6 +598,7 @@ def export_pdf(request):
             f"R$ {employee.decimo_terceiro:.2f}",
             f"R$ {employee.fgts_decimo_terceiro:.2f}",
             f"R$ {employee.multa_rescisoria:.2f}",
+            f"R$ {employee.custo_salario:.2f}",
             f"R$ {employee.rateio:.2f}",
             f"R$ {employee.custo_mes:.2f}"
         ])
@@ -619,6 +627,36 @@ def export_pdf(request):
 def list_employee(request):
     employees = Colaboradores.objects.all()
     return render(request, 'list_employee.html', {'employees': employees})
+
+def atualizar_dados_banco(request):
+    prestadores_count = Employee.objects.filter(setor='Prestador de Serviço').count()
+    custo_prestadores = Employee.objects.filter(setor='Prestador de Serviço').aggregate(Sum('custo_salario'))['custo_salario__sum']
+    custo_gestores = Employee.objects.filter(setor='Gestores').aggregate(Sum('custo_salario'))['custo_salario__sum']
+    
+    print(f'Prestadores Count: {prestadores_count}')
+    print(f'Custo Prestadores: {custo_prestadores}')
+    print(f'Custo Gestores: {custo_gestores}')
+    
+    if custo_prestadores > 0 and custo_gestores is not None:
+        # Calcular a porcentagem de cada prestador
+        with transaction.atomic():
+            employees = Employee.objects.all()
+            for employee in employees:
+                porcentagem = (employee.custo_salario * 100) / custo_prestadores
+
+                # Calcular o rateio com base na porcentagem e no custo dos gestores
+                if employee.setor == "Gestores":
+                    rateio = 0
+                else:
+                    rateio = (porcentagem * custo_gestores) / 100
+
+                # Atualizar o valor da coluna rateio do prestador
+                employee.rateio = rateio
+                employee.custo_mes = employee.custo_salario + rateio
+                employee.save()
+
+    # Você pode retornar uma resposta HTTP vazia ou redirecionar para outra página, se desejar
+    return render(request, 'dashboard1.html', context={})
 
 def inserir_gasto_fixo(request):
     if request.method == 'POST':

@@ -332,4 +332,28 @@ document.addEventListener('DOMContentLoaded', function () {
             submitBtn.disabled = false;
         }
     });
+
+    //Recupera valores do Banco de Dados para Usar no Rateio
+    $(document).ready(function() {
+        $(".nav-sub").on("click", function(e) {
+            e.preventDefault();
+    
+            // Recupera a URL da view a partir do atributo de dados
+            var url = $(this).data("url");
+            
+            // Realiza uma requisição AJAX para a URL da view que executa a função
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function(response) {
+                    console.log("Dados atualizados com sucesso!");
+                },
+                error: function(error) {
+                    console.error("Erro ao atualizar dados:", error);
+                }
+            });
+        });
+    });
+
+
 });

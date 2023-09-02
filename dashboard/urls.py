@@ -46,6 +46,7 @@ urlpatterns = [
     path('inserir_jornada/', inserir_jornada, name='inserir_jornada'),
     path('inserir_horas/', inserir_horas, name='inserir_horas'),      
     path('lista_salarios_view/', lista_salarios_view, name='lista_salarios_view'),
+    path('atualizar_dados_banco/', atualizar_dados_banco, name='atualizar_dados_banco'),
     path('export_csv/',export_csv, name='export_csv'),
     path('export_pdf/', export_pdf, name='export_pdf'),
 ]
