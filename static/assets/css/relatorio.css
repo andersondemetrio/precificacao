@@ -118,3 +118,9 @@
   .table_tam2 {
     width: 80px;
   }
+
+  .table-container {
+    width: 95%;
+    max-height: 400px; /* Defina a altura máxima desejada */
+    overflow-y: auto;
+}
