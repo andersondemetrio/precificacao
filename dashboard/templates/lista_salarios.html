@@ -35,6 +35,7 @@
                                     <th class="table_tam2">13º Salário</th>
                                     <th class="table_tam2">FGTS 13º</th>
                                     <th class="table_tam">Multa Rescisória</th>
+                                    <th class="table_tam">Custo Salário</th>
                                     <th class="table_tam">Rateio</th>
                                     <th class="table_tam">Custo Mês</th>
                                 </tr>
@@ -53,6 +54,7 @@
                                     <td class="text-success">R$ {{ employee.decimo_terceiro|floatformat:2 }}</td>
                                     <td class="text-info">R$ {{ employee.fgts_decimo_terceiro|floatformat:2 }}</td>
                                     <td class="text-danger">R$ {{ employee.multa_rescisoria|floatformat:2 }}</td>
+                                    <td class="text-monospace">R$ {{ employee.custo_salario|floatformat:2 }}</td>
                                     <td>R$ {{ employee.rateio|floatformat:2 }}</td>
                                     <td class="text-monospace">R$ {{ employee.custo_mes|floatformat:2 }}</td>
                                 </tr>

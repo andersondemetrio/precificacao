@@ -98,6 +98,7 @@ class Employee(models.Model):
     fgts_decimo_terceiro = models.DecimalField(max_digits=10, decimal_places=2)
     multa_rescisoria = models.DecimalField(max_digits=10, decimal_places=2)
     rateio = models.DecimalField(max_digits=10, decimal_places=2)
+    custo_salario = models.DecimalField(max_digits=10, decimal_places=2)    
     custo_mes = models.DecimalField(max_digits=10, decimal_places=2)    
     colaborador = models.ForeignKey(Colaboradores, on_delete=models.CASCADE)
     cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE)
