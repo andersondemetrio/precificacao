@@ -411,34 +411,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Validação do CPF
 
-$(document).ready(function() {
-    // Referência ao elemento #cpfInput
-    var cpfInput = $('#cpfInput');
+// $(document).ready(function() {
+//     // Referência ao elemento #cpfInput
+//     var cpfInput = $('#cpfInput');
 
-    // Evento para limitar o campo a no máximo 11 caracteres
-    cpfInput.on('input', function() {
-        var cpf = cpfInput.val();
-        cpf = cpf.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos
-        if (cpf.length > 11) {
-            cpf = cpf.substring(0, 11); // Limita a 11 caracteres
-        }
-        cpfInput.val(cpf);
-    });
+//     // Evento para limitar o campo a no máximo 11 caracteres
+//     cpfInput.on('input', function() {
+//         var cpf = cpfInput.val();
+//         cpf = cpf.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos
+//         if (cpf.length > 11) {
+//             cpf = cpf.substring(0, 11); // Limita a 11 caracteres
+//         }
+//         cpfInput.val(cpf);
+//     });
 
-    // Evento para validar o CPF quando o campo perder o foco
-    cpfInput.blur(function() {
-        var cpf = cpfInput.val();
-        if (cpf.length !== 11) {
-            alert('CPF inválido! Por favor, digite um CPF com 11 números.');
-            cpfInput.val(''); // Limpar o campo
-        } else {
-            // Se o CPF tiver o formato correto, faça a verificação no banco de dados
-            $.get('/dashboard/verificar_cpf/', { cpf: cpf }, function(data) {
-                if (data.cpf_existe) {
-                    alert('CPF já existe no banco de dados. Por favor, insira um CPF diferente.');
-                    cpfInput.val(''); // Limpar o campo
-                }
-            });
-        }
-    });
-});
+//     // Evento para validar o CPF quando o campo perder o foco
+//     cpfInput.blur(function() {
+//         var cpf = cpfInput.val();
+//         if (cpf.length !== 11) {
+//             alert('CPF inválido! Por favor, digite um CPF com 11 números.');
+//             cpfInput.val(''); // Limpar o campo
+//         } else {
+//             // Se o CPF tiver o formato correto, faça a verificação no banco de dados
+//             $.get('/dashboard/verificar_cpf/', { cpf: cpf }, function(data) {
+//                 if (data.cpf_existe) {
+//                     alert('CPF já existe no banco de dados. Por favor, insira um CPF diferente.');
+//                     cpfInput.val(''); // Limpar o campo
+//                 }
+//             });
+//         }
+//     });
+// });
