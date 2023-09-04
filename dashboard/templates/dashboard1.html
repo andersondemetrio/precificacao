@@ -16,12 +16,14 @@
         const enderecoUrl = "{% url 'endereco_view' %}";
 		const colaboradoresUrl = "{% url 'colaboradores_view' %}";
         const lista_salariosUrl = "{% url 'lista_salarios_view' %}";
+        const verificarCpfUrl = "{% url 'verificar_cpf' %}";
 
         var keepModalOpen = {% if keep_modal_open %}true{% else %}false{% endif %};
         var messagesExist = {% if messages %}true{% else %}false{% endif %};
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script defer src="{% static 'assets/js/script_index.js' %}"></script>
     <script defer src="{% static 'assets/js/script_gamb.js' %}"></script>
     <script defer src="{% static 'assets/js/script_tabelas.js' %}"></script>
@@ -291,8 +293,10 @@
                             </div>
                             <div class="mb-3">
                                 <label for="cpf" class="form-label">CPF</label>
-                                <input type="text" class="form-control" id="cpfInput" name="cpf" required>
+                                <input type="text" class="form-control" id="cpfInput" name="cpf" required
+                                       placeholder="00000000000">
                             </div>
+                            
                                 <div class="mb-3 d-flex flex-column">
                                 <label for="cargo" class="form-label">Cargo</label>
                                 <select class="form-select" name="cargo" required>
