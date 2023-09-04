@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Busca dinâmica de dados nas tabelas Empresa
+// Busca dinâmica de dados nas Tabelas Empresa
 document.addEventListener("DOMContentLoaded", function () {
     const searchFormEmpresa = document.getElementById("searchFormEmpresa");
     const modal = document.getElementById("myModal");
