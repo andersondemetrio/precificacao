@@ -101,28 +101,28 @@
                             <i class="fa fa-dollar"></i>Despesas Fixas</a>
                         <div id="despesasFixasCollapse" class="collapse">
                             <ul class="ul-item">
-                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalDespesasFixas">Cadastrar</a></li>
-                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalHoraFixa">Valor Hora Fixa</a></li>
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonCondominio">Condomínio</a></li>
                             </ul>
                         </div>
                     </li>
                     <li class="nav-item">
                         <a class="a-titulo" href="#precificacaoCollapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="precificacaoCollapse">
                             <i class="fa fa-clipboard"></i>Orçamento</a>
-                        <div id="precificacaoCollapse" class="collapse">
-                            <ul class="ul-item">
-                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalPrecificacao">Cadastrar Orçamento</a></li>
-                                <li class="li-pad"><a class="nav-sub" href="#" data-url="{% url 'atualizar_dados_banco' %}">Memórias de Cálculos</a></li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="a-titulo" href="#relatorioCollapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="relatorioCollapse">
-                            <i class="fa fa-print"></i>Relatórios</a>
-                        <div id="relatorioCollapse" class="collapse">
-                            <ul class="ul-item">
-                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalRelatorios">DRE</a></li>
-                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalEngargoslista">Encargos</a></li>
+                            <div id="precificacaoCollapse" class="collapse">
+                                <ul class="ul-item">
+                                    <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalPrecificacao">Cadastrar Orçamento</a></li>
+                                    <li class="li-pad"><a class="nav-sub" href="#" data-url="{% url 'atualizar_dados_banco' %}">Memórias de Cálculos</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="a-titulo" href="#relatorioCollapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="relatorioCollapse">
+                                <i class="fa fa-print"></i>Relatórios</a>
+                                <div id="relatorioCollapse" class="collapse">
+                                    <ul class="ul-item">
+                                        <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalRelatorios">DRE</a></li>
+                                        <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalEngargoslista">Encargos</a></li>
+                                        <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalHoraslista">Valor Hora Fixa</a></li>
                             </ul>
                         </div>
                     </li>
@@ -400,7 +400,7 @@
     <!--Fim modal / ENDEREÇO -->
 
 
-    <!-- Começo Modal Alterar Senha -->
+    <!-- Começo Modal / ALTERAR SENHA -->
     <div class="modal fade" id="modalSenha" tabindex="-1" aria-labelledby="modalSenhaLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -437,7 +437,7 @@
             </div>
         </div>
     </div>
-    <!--Fim modal Alterar Senha -->
+    <!--Fim modal / ALTERAR SENHA -->
 
 
     <!--Início modal Personalizado/ CARGOS E SALÁRIOS -->
@@ -578,18 +578,53 @@
     <!--Fim modal Perfil Encargo -->
 
 
-    <!-- Modal para inserir gastos fixos -->
-    <div class="modal fade" id="modalDespesasFixas" tabindex="-1" aria-labelledby="modalDespesasFixasLabel" aria-hidden="true">
+    <!--Início Modal Personalizado / GASTOS FIXOS -->
+    <div id="myModalCondominio" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Condomínio</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormCondominio" method="get" action="{% url 'buscar_gasto_fixo' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Despesas">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" style="margin-left: 2px;" data-bs-toggle="modal" data-bs-target="#modalDespesasTotalMes">Cadastrar Total</button>
+                        <button type="button" class="btn btn-success" style="margin-left: 2px;" data-bs-toggle="modal" data-bs-target="#modalDespesasListaMes">Cadastrar Invididual</button>
+                    </div>
+                </div>
+            </form>
+            <table class="tab-emp" id="searchResultsTableCondominio">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim Modal Personalizado / GASTOS FIXOS (TOTAL) -->
+    <!-- Modal para / GASTOS FIXOS -->
+    <div class="modal fade" id="modalDespesasTotalMes" tabindex="-1" aria-labelledby="modalDespesasTotalMesLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalDespesasFixasLabel">Cadastrar Despesa Fixa</h5>
+                    <h5 class="modal-title" id="modalDespesasTotalMesLabel">Despesa Total Mensal</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{% url 'inserir_gasto_fixo' %}">
+                    <form method="post" action="{% url 'inserir_gasto_fixo' %}" id="formDespesasTotal">
                         {% csrf_token %}
-                        <div class="despesa-container">
+                        <div class="despesaMes-container">
+                            <div class="mb-3">
+                                <label for="escolha" class="form-label">Despesa</label>
+                                <select class="form-select" id="totalMesInput" name="escolha" required>
+                                    <option value="totalMes">Total Mês</option>
+                                </select>
+                            </div>
                             <div class="mb-3">
                                 <label for="descricao" class="form-label">Descrição</label>
                                 <input type="text" class="form-control" name="descricao" required>
@@ -598,18 +633,73 @@
                                 <label for="valor" class="form-label">Valor</label>
                                 <input type="number" class="form-control" name="valor" step="0.01" required>
                             </div>
+                            <div class="mb-3">
+                                <label for="mes" class="form-label">Mês</label>
+                                <input type="text" class="form-control" name="mes" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="ano" class="form-label">Ano</label>
+                                <input type="text" class="form-control" name="ano" required>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtnTotal">Cadastrar</button>
+                        <p id="successMessageTotal" class="text-success" style="display: none;">Mão de obra cadastrada com sucesso!</p>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary" id="maisDespesasFixas">Acionar Mais Despesas</button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Fim do modal para inserir gastos fixos -->
+    <!-- Fim do modal para / GASTOS FIXOS (TOTAL)  -->
+     <!-- Modal para / GASTOS FIXOS (LISTA) -->
+    <div class="modal fade" id="modalDespesasListaMes" tabindex="-1" aria-labelledby="modalDespesasListaMesLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDespesasListaMesLabel">Cadastrar Despesa Fixa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_gasto_fixo' %}" id="formDespesasLista">
+                        {% csrf_token %}
+                        <div class="despesa-container">
+                            <div class="mb-3">
+                                <label for="escolha" class="form-label">Despesa</label>
+                                <select class="form-select" id="totalMesInput" name="escolha" required>
+                                    <option value="listaMes">Lista Mês</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label">Descrição</label>
+                                <input type="text" class="form-control" name="descricao" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="valor" class="form-label">Valor</label>
+                                <input type="number" class="form-control" name="valor" step="0.01" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mes" class="form-label">Mês</label>
+                                <input type="text" class="form-control" name="mes" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="ano" class="form-label">Ano</label>
+                                <input type="text" class="form-control" name="ano" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="submitBtnLista">Cadastrar</button>
+                        <p id="successMessageLista" class="text-success" style="display: none;">Mão de obra cadastrada com sucesso!</p>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fim do modal para / GASTOS FIXOS (LISTA)  -->
+
 
 
     <!--Início Modal Personalizado / CALENDÁRIO -->
@@ -715,36 +805,7 @@
     <!-- Fim modal Jornada -->
 
 
-    <!-- Começo Modal Hora Fixa -->
-    <div class="modal fade" id="modalHoraFixa" tabindex="-1" aria-labelledby="modalHoraFixasLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalHoraFixaLabel">Cadastrar Horas Produtivas</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" action="{% url 'inserir_jornada' %}">
-                        {% csrf_token %}
-                        <div class="jornada-container">
-                            {% comment %} <div class="mb-3">
-                                <label for="calendario" class="form-label">Data Cadastro</label>
-                                <input type="text" class="form-control" id="calendarioInput" name="calendario" required>
-                            </div>                        {% endcomment %}
-                        </div>
-                        <button type="submit" class="btn btn-primary">Salvar</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--Fim modal Hora Fixa-->
-
-
-    <!-- Começo Modal Relatórios -->
+    <!-- Começo Modal / RELATÓRIO ENCARGO -->
     <div class="modal fade" id="modalEngargoslista" tabindex="-1" aria-labelledby="modalEngargoslistaLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -768,6 +829,33 @@
             </div>
         </div>
     </div>       
-    <!-- Fim Modal Relatórios-->
+    <!-- Fim Modal / RELATÓRIO ENCARGO -->
+
+
+    <!-- Começo Modal / RELATÓRIO HORA CONDOMÍNIO -->
+    <div class="modal fade" id="modalHoraslista" tabindex="-1" aria-labelledby="modalHoraslistaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalHoraslistaLabel">Retatório Hora Condomínio</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div>
+                    <p class="p-rel-encargos">
+                        Emissão da estrutura de valor hora Condomínio.
+                    </p>
+                </div>
+                <div class="modal-footer d-flex flex-row justify-content-between align-items-center">
+                    <a href="{% url 'lista_horas_condiminio_view' %}" class="btn btn-primary">
+                        <i class="fa fa-print"></i> Gerar Relatório
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar para o Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>       
+    <!-- Fim Modal / RELATÓRIO HORA CONDOMÍNIO -->
 </body>
 </html>

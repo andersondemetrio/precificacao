@@ -11,6 +11,10 @@
   overflow-y: hidden;
 }
 
+.placeholder {
+  color: rgb(93, 93, 93);
+}
+
 .container {
   background: #ffffff;
   height: 80vh;
@@ -98,10 +102,10 @@
   font-size: 19px;
 }
 
-.placeholder.focus-ring.focus-ring-light {
-  background: #f9f9f9;
+.focus-ring.focus-ring-light {
+  background: #F9F9F9;
   margin-left: 10px;
-  color: rgb(152,152,152);
+  color: rgb(50, 50, 50);
   width: 220px;
   height: 36px;
   padding-bottom: 10px;

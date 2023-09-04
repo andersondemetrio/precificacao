@@ -1,0 +1,60 @@
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Pesquisa Cargos</title>
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/edicao.css' %}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="{% static 'assets/js/script_edicao.js' %}"></script>
+</head>
+    <body class="fundo">
+        <div class="container pl-0 pr-0">
+          <div class="row justify-content-center pl-0 pr-0 no-gutters">
+            <div class="div-column">
+              <div class="d-flex flex-column justify-content-between align-items-center">
+                <div class="d-flex flex-column align-items-center div-right-int">
+                <div class="div-logo"></div>
+                <form method="post" action="{% url 'editar_gasto_fixo' gastosfixos.id %}" id="editar-form-gasto-fixo">
+                    {% csrf_token %}
+                    <div class="cargo-container">            
+                      <div class="mb-3">
+                        <label for="escolha" class="form-label">Despesa</label>
+                        <select class="form-select" id="totalMesInput" name="escolha" required>
+                            <option value="totalMes">Total Mês</option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label for="descricao" class="form-label">Descrição</label>
+                        <input type="text" class="form-control" name="descricao" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="valor" class="form-label">Valor</label>
+                        <input type="number" class="form-control" name="valor" step="0.01" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="mes" class="form-label">Mês</label>
+                        <input type="text" class="form-control" name="mes" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="ano" class="form-label">Ano</label>
+                        <input type="text" class="form-control" name="ano" required>
+                      </div>
+                    <div class="d-flex flex-row justify-content-center div-button">
+                        <button type="button" class="btn btn-success" id="alterar-btnca">Alterar Cargo</button>
+                        <button type="button" class="btn btn-danger"><a href="/dashboard/">Cancelar</a></button>
+                    </div>
+                </form>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </body>
+</html>

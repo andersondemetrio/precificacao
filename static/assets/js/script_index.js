@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Recarrega a página ao clicar no botão de voltar
+    // Recarrega a página ao clicar no botão Home
     document.getElementById("botaoHome").addEventListener("click", function(event) {
         event.preventDefault(); // Impede o comportamento padrão do link
         location.reload(); // Recarrega a página
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-    // Requisição Fetch para endereços
+    // Requisição Fetch para empresa
     fetch(empresaUrl)
         .then(response => response.json())
         .then(data => {
@@ -63,17 +63,19 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-
-    // script para adicionar mais campos de despesas fixas
-
-    document.getElementById('maisDespesasFixas').addEventListener('click', function () {
-        const despesaContainer = document.querySelector('.despesa-container');
-        const clone = despesaContainer.cloneNode(true);
-        const descricaoInput = clone.querySelector('input[name="descricao"]');
-        const valorInput = clone.querySelector('input[name="valor"]');
-        descricaoInput.value = '';
-        valorInput.value = '';
-        despesaContainer.parentNode.insertBefore(clone, despesaContainer.nextSibling);
+    // Requisição Fetch para GastoFixo
+    fetch(gastosFixosUrl)
+    .then(response => response.json())
+    .then(data => {
+        const selectElements = document.querySelectorAll('select[name="gastosFixos"]');
+        selectElements.forEach(selectElement => {
+            data.gastosFixos.forEach(gastosFixos => {
+                const option = document.createElement('option');
+                option.value = gastosFixos.id;
+                option.textContent = gastosFixos.gastosFixos;
+                selectElement.appendChild(option);
+            });
+        });
     });
 
     // scritp para adicionar mais campos de mão de obra
@@ -152,7 +154,7 @@ $(document).ready(function () {
     });
 });
 
-console.log(colaboradoresUrl)
+//Função para buscar a lista de Funcionários na modal do Calendário
 document.addEventListener('DOMContentLoaded', function () {
     const funcionarioSelect = document.getElementById('funcionario');
 
@@ -168,6 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
+//Função para calcular dias úteis na modal do Calendário
 function calcularDiasUteis(ano, mes) {
     const inicioMes = new Date(ano, mes - 1, 1);
     const fimMes = new Date(ano, mes, 0);
@@ -288,6 +291,22 @@ for (const closeButtonCal of closeButtonsCalendario) {
     });
 }
 
+// Função para abrir modal personalizado Condominio
+const openModalButtonCondominio = document.getElementById("openModalButtonCondominio");
+const modalCondominio = document.getElementById("myModalCondominio");
+const closeButtonsCondominio = document.getElementsByClassName("close");
+
+openModalButtonCondominio.addEventListener("click", () => {
+    modalCondominio.style.display = "block";
+});
+
+for (const closeButtonCon of closeButtonsCondominio) {
+    closeButtonCon.addEventListener("click", () => {
+        modalCondominio.style.display = "none";
+    });
+}
+
+// Requisição Fetch para Colaboradores
 fetch(colaboradoresUrl)
     .then(response => response.json())
     .then(data => {
@@ -301,7 +320,7 @@ fetch(colaboradoresUrl)
     });
 
 
-// Cadastro OK Mão de obra, mesma função no .html trocar 
+// Cadastro OK Mão de obra (msg em tela e não fecha modal) 
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('maoDeObraForm');
     const successMessage = document.getElementById('successMessage');
@@ -333,7 +352,42 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    //Recupera valores do Banco de Dados para Usar no Rateio
+    // Cadastro Condominio Lista (msg em tela e não fecha modal)
+    $(document).ready(function() {
+        $("#formDespesasLista").submit(function(event) {
+            event.preventDefault();
+            // Fazer uma requisição AJAX para enviar os dados do formulário
+            $.ajax({
+                type: "POST",
+                url: "inserir_gasto_fixo/",
+                data: $(this).serialize(),
+                success: function(response) {
+                    $("#formDespesasLista input[type=text], #formDespesasLista input[type=number]").val("");
+                    $("#successMessageLista").show();
+                }
+            });
+        });
+    });
+
+    // Cadastro Condominio Total (msg em tela e não fecha modal)
+    $(document).ready(function() {
+        $("#formDespesasTotal").submit(function(event) {
+            event.preventDefault();
+            // Fazer uma requisição AJAX para enviar os dados do formulário
+            $.ajax({
+                type: "POST",
+                url: "inserir_gasto_fixo/",
+                data: $(this).serialize(),
+                success: function(response) {
+                    $("#formDespesasTotal input[type=text], #formDespesasTotal input[type=number]").val("");
+                    $("#successMessageTotal").show();
+                }
+            });
+        });
+    });
+});
+
+    //Recupera valores do Banco de Dados para Usar no Rateio da Estrutura do RH
     $(document).ready(function() {
         $(".nav-sub").on("click", function(e) {
             e.preventDefault();
@@ -354,6 +408,3 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
-
-
-});

@@ -117,3 +117,28 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 });
+
+// Busca dinâmica de dados nas tabelas Gasto Fixo Condomínio
+document.addEventListener("DOMContentLoaded", function () {
+    const searchFormCondominio = document.getElementById("searchFormCondominio");
+    const modal = document.getElementById("myModal");
+
+    searchFormCondominio.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(searchFormCondominio);
+
+        fetch(searchFormCondominio.action + '?' + new URLSearchParams(formData), {
+            method: 'GET'
+        })
+            .then(response => response.text())
+            .then(data => {
+                const searchResultsTableCondominio = document.getElementById("searchResultsTableCondominio");
+                searchResultsTableCondominio.innerHTML = data; // Atualiza a tabela de resultados
+            })
+            .catch(error => {
+                console.error('Erro na busca:', error);
+            });
+    });
+});
+
