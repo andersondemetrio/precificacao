@@ -408,3 +408,48 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
+
+// Valida CPF
+
+$(document).ready(function() {
+    // Função para validar o CPF
+    function validaCPF(cpf) {
+        cpf = cpf.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos
+        if (cpf.length !== 11 || /^\d{11}$/.test(cpf) === false) {
+            return false; // CPF deve ter 11 dígitos numéricos
+        }
+
+        // Verificação dos dígitos verificadores
+        var digito1 = 0;
+        var digito2 = 0;
+        for (var i = 0; i < 9; i++) {
+            digito1 += parseInt(cpf.charAt(i)) * (10 - i);
+            digito2 += parseInt(cpf.charAt(i)) * (11 - i);
+        }
+
+        digito1 = (digito1 * 10) % 11;
+        digito2 = (digito2 * 10) % 11;
+
+        if (digito1 === 10) {
+            digito1 = 0;
+        }
+        if (digito2 === 10) {
+            digito2 = 0;
+        }
+
+        if (digito1 !== parseInt(cpf.charAt(9)) || digito2 !== parseInt(cpf.charAt(10))) {
+            return false; // CPF inválido
+        }
+
+        return true; // CPF válido
+    }
+
+    // Evento para validar o CPF quando o campo perder o foco
+    $('#cpfInput').blur(function() {
+        var cpf = $(this).val();
+        if (!validaCPF(cpf)) {
+            alert('CPF inválido! Por favor, digite um CPF válido.');
+            $(this).val(''); // Limpar o campo
+        }
+    });
+});
