@@ -452,6 +452,85 @@ def deletar_calendario(request, calendario_id):
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
         
 
+# Funções do CRUD de Despesas Condominio
+
+def inserir_gasto_fixo(request):
+    if request.method == 'POST':
+        descricao = request.POST['descricao']
+        valor = request.POST['valor']
+        mes = request.POST['mes']
+        ano = request.POST['ano']
+        escolha = request.POST['escolha']
+
+        if escolha  == 'totalMes':
+            tipo = 'Total Mês'
+        else:
+            tipo = 'Lista Mês'
+            
+        gasto_fixo = GastosFixos(descricao=descricao, valor=valor, mes=mes, ano=ano, tipo=tipo)
+        gasto_fixo.save()
+
+        
+        return redirect('dashboard')
+    return render(request, 'dashboard1.html', context={})
+
+def gasto_fixo_view(request):
+    gastosfixos = GastosFixos.objects.all()
+    gasto_list = [
+        {
+            'id': gasto.id,
+            'gasto': f"{gasto.descricao}, {gasto.valor}, {gasto.mes}, {gasto.ano} "
+        }
+        for gasto in gastosfixos
+    ]
+    return JsonResponse({'gasto': gasto_list})
+
+def detalhes_gasto_fixo(request, id):
+    gastosfixos = GastosFixos.objects.get(id=id)
+    return render(request, 'detalhes_gasto_fixo.html', {'gastosfixos':gastosfixos})
+
+def buscar_gasto_fixo(request): 
+    q = request.GET.get('search')   
+    gastosfixos = GastosFixos.objects.filter(descricao__icontains=q).order_by('ano', 'mes')
+    return render(request, 'pesquisa_gasto_fixo.html', {'gastosfixos': gastosfixos})
+
+def editar_gasto_fixo(request, id):
+    gastosfixos = GastosFixos.objects.get(id=id)
+    if request.method == "POST":
+        descricao = request.POST['descricao']
+        valor = request.POST['valor']
+        mes = request.POST['mes']
+        ano = request.POST['ano']
+        escolha = request.POST['escolha']
+
+
+        gastosfixos.mes = mes
+        gastosfixos.ano = ano
+        gastosfixos.descricao = descricao
+        gastosfixos.valor = valor
+        gastosfixos.tipo = escolha   
+        gastosfixos.save()
+
+        return redirect("dashboard")  # Redirecionar para uma página de sucesso
+
+    return render(request, 'dashboard1.html', {'gastosfixos': gastosfixos})
+
+def deletar_gasto_fixo(request, gasto_fixo_id):
+    if request.method == 'POST':
+        try:
+            gastosfixos = GastosFixos.objects.get(pk=gasto_fixo_id)
+            gastosfixos.delete()
+            return redirect('dashboard')
+        except GastosFixos.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
+    else:
+        try:
+            gastosfixos = GastosFixos.objects.get(pk=gasto_fixo_id)
+            return render(request, 'confirm_delete.html')
+        except GastosFixos.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
+        
+
 # Função para inserir o encargo trabalhista para o funcionário
 
 def inserir_encargo(request):
@@ -530,7 +609,6 @@ def inserir_horas(request):
     return render(request, 'dashboard1.html', context={})       
 
 
-
 # funçaõ para listar os colaboradores no select do calendario
 def colaboradores_view(request):
     colaboradores = Colaboradores.objects.all()
@@ -540,7 +618,6 @@ def colaboradores_view(request):
 
 # Função para listar os encargos dos colaboradores
 def lista_salarios_view(request):
-    # Consulta para buscar os registros da tabela Employee juntamente com os dados dos colaboradores
     employees = Employee.objects.select_related('colaborador').all()
 
     context = {
@@ -548,6 +625,18 @@ def lista_salarios_view(request):
     }
 
     return render(request, 'lista_salarios.html', context)
+
+
+# Função para listar as horas condomínios
+def lista_horas_condiminio_view(request):
+    gastosFixos = GastosFixos.objects.select_related('colaborador').all()
+
+    context = {
+        'gastosFixos': gastosFixos
+    }
+
+    return render(request, 'lista_condominio.html', context)
+
 
 # Função para exportar os encargos para o CSV
 def export_csv(request):
@@ -566,6 +655,7 @@ def export_csv(request):
                          employee.multa_rescisoria, employee.custo_salario, employee.rateio, employee.custo_mes])
 
     return response
+
 
 # funcão para exportar os encargos para o PDF
 def export_pdf(request):
@@ -656,12 +746,4 @@ def atualizar_dados_banco(request):
                 employee.save()
 
     # Você pode retornar uma resposta HTTP vazia ou redirecionar para outra página, se desejar
-    return render(request, 'dashboard1.html', context={})
-
-def inserir_gasto_fixo(request):
-    if request.method == 'POST':
-        descricao = request.POST['descricao']
-        valor = request.POST['valor']
-        GastosFixos.objects.create(descricao=descricao, valor=valor)
-        return redirect('dashboard')
     return render(request, 'dashboard1.html', context={})

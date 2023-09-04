@@ -32,3 +32,10 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('editar-form-calendario').submit();
     });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    //Confirma edição de Gasto Fixo
+    document.getElementById('alterar-btncal').addEventListener('click', function () {
+        document.getElementById('editar-form-gasto-fixo').submit();
+    });
+});

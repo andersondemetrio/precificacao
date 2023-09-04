@@ -33,6 +33,9 @@ class HorasProdutivas(models.Model):
 class GastosFixos(models.Model):
     descricao = models.CharField(max_length=100)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
+    mes = models.PositiveIntegerField()
+    ano = models.PositiveIntegerField()
+    tipo = models.CharField(max_length=12)
 
 class Insumos(models.Model):
     descricao = models.CharField(max_length=100)

@@ -1,0 +1,67 @@
+{% load bootstrap4 %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Listar Salários</title>
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/relatorio.css' %}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="fundo">
+    <div class="container pl-0 pr-0">
+        <div class="row justify-content-center pl-0 pr-0 no-gutters">
+            <div class="div-column tamanho">
+                <div class="d-flex flex-column justify-content-between align-items-center">
+                    <div class="d-flex flex-column align-items-center div-right-int">
+                        <div class="div-logo"></div>
+                        <h2 class="mb-4">Valor Hora Condomínio</h2>
+                        <div class="table-container-horas"> 
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="table_tam3">Informações</th>
+                                    <th class="table_tam4">Valores</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="th-inicio">CONDOMÍNIO</th>
+                                    <td>aa</td>
+                                </tr>
+                                <tr>
+                                    <th class="th-inicio">HORAS PRODUTIVAS(Mês)</th>
+                                    <td>cc</td>
+                                </tr>
+                                <tr>
+                                    <th class="th-inicio">CUSTO HORA CONDOMÍNIO</th>
+                                    <td>cc</td>
+                                </tr>
+                                <tr>
+                                    <th class="th-inicio">CAPACIDADE PRODUTIVA(Prestadores)</th>
+                                    <td>cc</td>
+                                </tr>
+                                <tr>
+                                    <th class="th-inicio">HORA CONDOMÍNIO PERCÁPTA</th>
+                                    <td>cc</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                        <div class="d-flex justify-content-center mt-3 div-button">
+                            <a href="{% url 'dashboard' %}" class="btn btn-secondary mr-2">Voltar para o Dashboard</a>
+                            <a href="{% url 'export_csv' %}" class="btn btn-success mr-2">Baixar como CSV</a>
+                            <a href="{% url 'export_pdf' %}" class="btn btn-danger">Baixar como PDF</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
