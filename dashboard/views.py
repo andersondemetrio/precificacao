@@ -747,3 +747,12 @@ def atualizar_dados_banco(request):
 
     # Você pode retornar uma resposta HTTP vazia ou redirecionar para outra página, se desejar
     return render(request, 'dashboard1.html', context={})
+
+
+# Verifica se o CPF não existe
+def verificar_cpf(request):
+    cpf = request.GET.get('cpf')
+    if Colaboradores.objects.filter(cpf=cpf).exists():
+        return JsonResponse({'cpf_existe': True})
+    else:
+        return JsonResponse({'cpf_existe': False})

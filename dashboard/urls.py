@@ -24,6 +24,7 @@ urlpatterns = [
     path('buscar_cargo/', buscar_cargo, name='buscar_cargo'),
     path('detalhes_cargo/<int:id>/', detalhes_cargo, name='detalhes_cargo'),
     path('deletar_cargo/<int:cargo_id>/', deletar_cargo, name='deletar_cargo'),
+    path('verificar_cpf/', verificar_cpf, name='verificar_cpf'),
     
     path('inserir_mao_de_obra/', inserir_mao_de_obra, name='inserir_mao_de_obra'),
     path('colaboradores_view/',colaboradores_view,name='colaboradores_view'),
