@@ -33,7 +33,7 @@
     <script defer src="{% static 'assets/js/jquery.mask.js' %}"></script>
     <script defer src="{% static 'assets/js/jquery.mask.min.js' %}"></script>
     <script defer src="{% static 'assets/js/mascaras.js' %}"></script>
-
+    <script defer src="{% static 'assets/js/mascaras_cnpj.js' %}"></script>
     
     <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-all.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}">
@@ -188,8 +188,9 @@
                         <div class="empresa-container">
                             <div class="mb-3">
                                 <label for="cnpj" class="form-label">CNPJ</label>
-                                <input type="text" class="form-control" name="cnpj" required>
+                                <input type="text" class="form-control" id="cnpjfInput" name="cnpj" required>
                             </div>
+
                             <div class="mb-3">
                                 <label for="numero_empresa" class="form-label">Número da Empresa</label>
                                 <input type="number" class="form-control" name="numero_empresa" max="9999" required>

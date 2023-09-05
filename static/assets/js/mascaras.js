@@ -10,6 +10,7 @@ $(document).ready(function () {
         if (cpf.trim() !== '') {
             $.get('/dashboard/verificar_cpf/', { cpf: cpf }, function(data) {
                 if (data.cpf_existe) {
+                    console.log("Valor do CPF: "+cpf)
                     alert('CPF já existe no banco de dados. Por favor, insira um CPF diferente.');
                     $('#cpfInput').val(''); // Limpar o campo
                 }

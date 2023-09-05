@@ -81,7 +81,7 @@ def inserir_mao_de_obra(request):
         mao_de_obra = Colaboradores(
             matricula=matricula,
             nome=nome,
-            cpf=cpf,
+            cpf=cpf.replace('.', '').replace('-', ''),
             cargo=cargo,  # Associando o cargo à mão de obra
         )
         mao_de_obra.save()
@@ -756,3 +756,12 @@ def verificar_cpf(request):
         return JsonResponse({'cpf_existe': True})
     else:
         return JsonResponse({'cpf_existe': False})
+
+# Verifica se o CPF não existe
+def verificar_cnpj(request):
+    cnpj = request.GET.get('cnpj')
+    print(f"Valor {cnpj}")
+    if Empresa.objects.filter(cnpj=cnpj).exists():
+        return JsonResponse({'cnpj_existe': True})
+    else:
+        return JsonResponse({'cnpj_existe': False})
