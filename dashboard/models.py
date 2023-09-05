@@ -29,6 +29,12 @@ class Cargos(models.Model):
 class HorasProdutivas(models.Model):
     data = models.DateField()
     jornada_diaria = models.DecimalField(max_digits=5, decimal_places=2)
+    
+class Beneficios(models.Model):
+    descricao = models.CharField(max_length=100)
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    mes = models.PositiveIntegerField()
+    ano = models.PositiveIntegerField()
 
 class GastosFixos(models.Model):
     descricao = models.CharField(max_length=100)

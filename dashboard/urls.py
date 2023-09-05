@@ -48,8 +48,16 @@ urlpatterns = [
     path('detalhes_gasto_fixo/<int:id>/', detalhes_gasto_fixo, name='detalhes_gasto_fixo'),
     path('deletar_gasto_fixo/<int:gasto_fixo_id>/', deletar_gasto_fixo, name='deletar_gasto_fixo'),      
     
+    path('inserir_encargo/', inserir_encargo, name='inserir_encargo'),  
+    path('buscar_encargo/', buscar_encargo, name='buscar_encargo'),
+    path('encargo_view/', encargo_view, name='encargo_view'),
+    path('deletar_encargo/<int:deletar_encargo_id>/', deletar_encargo, name='deletar_encargo'),  
+    
     path('inserir_beneficio/', inserir_beneficio, name='inserir_beneficio'),
-    path('inserir_encargo/', inserir_encargo, name='inserir_encargo'),
+    path('buscar_beneficio/', buscar_beneficio, name='buscar_beneficio'),
+    path('beneficio_view/', beneficio_view, name='beneficio_view'),
+    path('deletar_beneficio/<int:deletar_beneficio_id>/', deletar_beneficio, name='deletar_beneficio'),  
+    
     path('inserir_data/', inserir_data, name='inserir_data'),
     path('inserir_jornada/', inserir_jornada, name='inserir_jornada'),
     path('inserir_horas/', inserir_horas, name='inserir_horas'),      

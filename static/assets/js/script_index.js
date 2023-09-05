@@ -65,18 +65,49 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Requisição Fetch para GastoFixo
     fetch(gastosFixosUrl)
-    .then(response => response.json())
-    .then(data => {
-        const selectElements = document.querySelectorAll('select[name="gastosFixos"]');
-        selectElements.forEach(selectElement => {
-            data.gastosFixos.forEach(gastosFixos => {
-                const option = document.createElement('option');
-                option.value = gastosFixos.id;
-                option.textContent = gastosFixos.gastosFixos;
-                selectElement.appendChild(option);
+        .then(response => response.json())
+        .then(data => {
+            const selectElements = document.querySelectorAll('select[name="gastosFixos"]');
+            selectElements.forEach(selectElement => {
+                data.gastosFixos.forEach(gastosFixos => {
+                    const option = document.createElement('option');
+                    option.value = gastosFixos.id;
+                    option.textContent = gastosFixos.gastosFixos;
+                    selectElement.appendChild(option);
+                });
             });
         });
-    });
+
+    // Requisição Fetch para Encargos
+    fetch(encargosUrl)
+        .then(response => response.json())
+        .then(data => {
+            const selectElements = document.querySelectorAll('select[name="encargo"]');
+            selectElements.forEach(selectElement => {
+                data.encargo.forEach(encargo => {
+                    const option = document.createElement('option');
+                    option.value = encargo.id;
+                    option.textContent = encargo.encargo;
+                    selectElement.appendChild(option);
+                });
+            });
+        });
+
+    // Requisição Fetch para Encargos
+    fetch(beneficiosUrl)
+        .then(response => response.json())
+        .then(data => {
+            const selectElements = document.querySelectorAll('select[name="beneficio"]');
+            selectElements.forEach(selectElement => {
+                data.beneficio.forEach(beneficio => {
+                    const option = document.createElement('option');
+                    option.value = beneficio.id;
+                    option.textContent = beneficio.beneficio;
+                    selectElement.appendChild(option);
+                });
+            });
+        });
+
 
     // scritp para adicionar mais campos de mão de obra
     document.getElementById('maisMaoDeObra').addEventListener('click', function () {
@@ -303,6 +334,36 @@ openModalButtonCondominio.addEventListener("click", () => {
 for (const closeButtonCon of closeButtonsCondominio) {
     closeButtonCon.addEventListener("click", () => {
         modalCondominio.style.display = "none";
+    });
+}
+
+// Função para abrir modal personalizado Encargos
+const openModalButtonEncargos = document.getElementById("openModalButtonEncargos");
+const modalEncargos = document.getElementById("myModalEncargos");
+const closeButtonsEncargos = document.getElementsByClassName("close");
+
+openModalButtonEncargos.addEventListener("click", () => {
+    modalEncargos.style.display = "block";
+});
+
+for (const closeButtonEnc of closeButtonsEncargos) {
+    closeButtonEnc.addEventListener("click", () => {
+        modalEncargos.style.display = "none";
+    });
+}
+
+// Função para abrir modal personalizado Beneficios
+const openModalButtonBeneficios = document.getElementById("openModalButtonBeneficios");
+const modalBeneficios = document.getElementById("myModalBeneficios");
+const closeButtonsBeneficios = document.getElementsByClassName("close");
+
+openModalButtonBeneficios.addEventListener("click", () => {
+    modalBeneficios.style.display = "block";
+});
+
+for (const closeButtonBen of closeButtonsBeneficios) {
+    closeButtonBen.addEventListener("click", () => {
+        modalBeneficios.style.display = "none";
     });
 }
 
