@@ -142,3 +142,51 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// Busca dinâmica de dados nas tabelas Gasto Fixo Condomínio
+document.addEventListener("DOMContentLoaded", function () {
+    const searchFormEncargos = document.getElementById("searchFormEncargos");
+    const modal = document.getElementById("myModal");
+
+    searchFormEncargos.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(searchFormEncargos);
+
+        fetch(searchFormEncargos.action + '?' + new URLSearchParams(formData), {
+            method: 'GET'
+        })
+            .then(response => response.text())
+            .then(data => {
+                const searchResultsTableEncargos = document.getElementById("searchResultsTableEncargos");
+                searchResultsTableEncargos.innerHTML = data; // Atualiza a tabela de resultados
+            })
+            .catch(error => {
+                console.error('Erro na busca:', error);
+            });
+    });
+});
+
+// Busca dinâmica de dados na tabela Benefícios
+document.addEventListener("DOMContentLoaded", function () {
+    const searchFormBeneficios = document.getElementById("searchFormBeneficios");
+    const modal = document.getElementById("myModal");
+
+    searchFormBeneficios.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(searchFormBeneficios);
+
+        fetch(searchFormBeneficios.action + '?' + new URLSearchParams(formData), {
+            method: 'GET'
+        })
+            .then(response => response.text())
+            .then(data => {
+                const searchResultsTableBeneficios = document.getElementById("searchResultsTableBeneficios");
+                searchResultsTableBeneficios.innerHTML = data; // Atualiza a tabela de resultados
+            })
+            .catch(error => {
+                console.error('Erro na busca:', error);
+            });
+    });
+});
+

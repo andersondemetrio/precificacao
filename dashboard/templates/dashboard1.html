@@ -87,8 +87,8 @@
                         <div id="maoDeObraCollapse" class="collapse">
                             <ul class="ul-item">
                                 <li class="li-pad"><a class="nav-sub" id="openModalButtonCargo">Cargo / Salário</a></li>
-                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalPerfilBeneficio">Benefícios</a></li>
-                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalPerfilEncargo">Encargos</a></li>
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonBeneficios">Benefícios</a></li>
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonEncargos">Encargos</a></li>
                             </ul>
                         </div>
 
@@ -118,7 +118,7 @@
                             <div id="precificacaoCollapse" class="collapse">
                                 <ul class="ul-item">
                                     <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalPrecificacao">Cadastrar Orçamento</a></li>
-                                    <li class="li-pad"><a class="nav-sub" href="#" data-url="{% url 'atualizar_dados_banco' %}">Memórias de Cálculos</a></li>
+                                    <li class="li-pad"><a class="nav-sub" href="#">Memórias de Cálculos</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -510,8 +510,36 @@
     <!--Fim Modal Cadastro / CARGOS E SALÁRIOS -->
 
 
-    <!-- Começo Modal Perfil Benefício -->
-    <div class="modal fade" id="modalPerfilBeneficio" tabindex="-1" aria-labelledby="modalPerfilBeneficioLabel" aria-hidden="true">
+    <!--Início modal Personalizado / BENEFICIOS -->
+    <div id="myModalBeneficios" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Benefícios</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormBeneficios" method="get" action="{% url 'buscar_cargo' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Beneficios">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalPerfilBeneficios">Cadastrar Benefício</button>
+                    </div>
+                </div>
+            </form>
+            <table id="searchResultsTableBeneficios">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim modal Personalizado / BENEFICIOS -->
+    <!-- Começo Modal / BENEFICIOS -->
+    <div class="modal fade" id="modalPerfilBeneficios" tabindex="-1" aria-labelledby="modalPerfilBeneficioLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -536,10 +564,38 @@
             </div>
         </div>
     </div>
-    <!--Fim modal Perfil Benefício -->
+    <!--Fim modal / BENEFICIOS -->
 
 
-    <!-- Começo Modal Perfil Encargo -->
+    <!--Início Modal Personalizado / ENCARGO -->
+    <div id="myModalEncargos" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Encargos</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormEncargos" method="get" action="{% url 'buscar_encargo' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Encargos">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalPerfilEncargo">Gerar Encargos</button>
+                    </div>
+                </div>
+            </form>
+            <table class="tab-emp" id="searchResultsTableEncargos">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim Modal Personalizado / ENCARGO -->
+    <!-- Começo Modal / ENCARGO -->
     <div class="modal fade" id="modalPerfilEncargo" tabindex="-1" aria-labelledby="modalPerfilEncargoLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -583,7 +639,7 @@
             </div>
         </div>
     </div>
-    <!--Fim modal Perfil Encargo -->
+    <!--Fim modal Perfil / ENCARGO -->
 
 
     <!--Início Modal Personalizado / GASTOS FIXOS -->

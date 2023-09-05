@@ -127,6 +127,7 @@ def deletar_colaborador(request, colaborador_id):
         try:
             colaborador = Colaboradores.objects.get(pk=colaborador_id)
             colaborador.delete()
+            atualizar_dados_banco(request)
             return redirect('dashboard')
         except Colaboradores.DoesNotExist:
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
@@ -187,6 +188,7 @@ def deletar_cargo(request, cargo_id):
         try:
             cargo = Cargos.objects.get(pk=cargo_id)
             cargo.delete()
+            atualizar_dados_banco(request)
             return redirect('dashboard')
         except Cargos.DoesNotExist:
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
@@ -531,7 +533,7 @@ def deletar_gasto_fixo(request, gasto_fixo_id):
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
         
 
-# Função para inserir o encargo trabalhista para o funcionário
+#Funções do CRUD de Encargo
 
 def inserir_encargo(request):
     if request.method == 'POST':
@@ -590,14 +592,82 @@ def inserir_encargo(request):
             rateio=rateio,
             custo_mes=custo_mes,
         )
+        atualizar_dados_banco(request)
         # Redirecionar para a página desejada após a inserção
         return redirect('dashboard')
     
     return render(request, 'dashboard1.html')
 
+def buscar_encargo(request): 
+    q = request.GET.get('search')   
+    encargo = Employee.objects.filter(setor__icontains=q).order_by('id')
+    return render(request, 'pesquisa_encargo.html', {'encargo': encargo})
+
+def encargo_view(request):
+    encargo = Employee.objects.all()
+    encargo_list = [
+        {
+            'id': encargo.id,
+            'gasto': f"{encargo.id}, {encargo.setor}"
+        }
+        for encargo in encargo
+    ]
+    return JsonResponse({'encargo': encargo_list})
+
+def deletar_encargo(request, encargo_id):
+    if request.method == 'POST':
+        try:
+            encargo = Employee.objects.get(pk=encargo_id)
+            encargo.delete()
+            atualizar_dados_banco(request)
+            return redirect('dashboard')
+        except Employee.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
+    else:
+        try:
+            encargo = Employee.objects.get(pk=encargo_id)
+            return render(request, 'confirm_delete.html')
+        except Employee.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
+
+
+#Funções do CRUD de Beneficios
 
 def inserir_beneficio(request):
     return render(request, 'dashboard1.html', context={})
+
+def buscar_beneficio(request): 
+    q = request.GET.get('search')   
+    beneficio = Beneficios.objects.filter(descricao__icontains=q).order_by('id')
+    return render(request, 'pesquisa_beneficio.html', {'beneficio': beneficio})
+
+def beneficio_view(request):
+    beneficio = Beneficios.objects.all()
+    beneficio_list = [
+        {
+            'id': beneficio.id,
+            'beneficio': f"{beneficio.id}"
+        }
+        for beneficio in beneficio
+    ]
+    return JsonResponse({'beneficio': beneficio_list})
+
+def deletar_beneficio(request, beneficio_id):
+    if request.method == 'POST':
+        try:
+            beneficio = Beneficios.objects.get(pk=beneficio_id)
+            beneficio.delete()
+            return redirect('dashboard')
+        except Beneficios.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
+    else:
+        try:
+            beneficio = Beneficios.objects.get(pk=beneficio_id)
+            return render(request, 'confirm_delete.html')
+        except Beneficios.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
+
+
 
 def inserir_data(request):
     return render(request, 'dashboard1.html', context={})    
