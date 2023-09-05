@@ -148,14 +148,16 @@ def inserir_cargo(request):
         nome_cargo = request.POST['nome_cargo']
         salario = request.POST['salario']
 
+
         cargo = Cargos(
             nome_cargo=nome_cargo,
             salario=salario,
-        )        
+        )   
+
         cargo.save()
         return redirect('dashboard')
 
-    return render(request, 'dashboard1.html', context={}) 
+    return render(request, 'dashboard1.html', context={})
 
 def detalhes_cargo(request, id):
     cargo = Cargos.objects.get(id=id)

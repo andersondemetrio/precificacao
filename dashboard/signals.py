@@ -2,7 +2,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import Cargos, Employee  # Importe Employee
 
-@receiver(post_save, sender=Cargos)
+
 def recalcula_encargos(sender, instance, **kwargs):
     # Acesse as informações relevantes do cargo
     salario_nominal = float(instance.salario)
