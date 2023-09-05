@@ -46,7 +46,7 @@ urlpatterns = [
     path('gasto_fixo_view/', gasto_fixo_view, name='gasto_fixo_view'),
     path('buscar_gasto_fixo/', buscar_gasto_fixo, name='buscar_gasto_fixo'),
     path('detalhes_gasto_fixo/<int:id>/', detalhes_gasto_fixo, name='detalhes_gasto_fixo'),
-    path('deletar_gasto_fixo/<int:gasto_fixo_id>/', deletar_gasto_fixo, name='deletar_gasto_fixo'),  
+    path('deletar_gasto_fixo/<int:gasto_fixo_id>/', deletar_gasto_fixo, name='deletar_gasto_fixo'),      
     
     path('inserir_encargo/', inserir_encargo, name='inserir_encargo'),  
     path('buscar_encargo/', buscar_encargo, name='buscar_encargo'),
@@ -64,7 +64,6 @@ urlpatterns = [
     path('lista_salarios_view/', lista_salarios_view, name='lista_salarios_view'),
     path('lista_horas_condiminio_view/', lista_horas_condiminio_view, name='lista_horas_condiminio_view'),
     path('atualizar_dados_banco/', atualizar_dados_banco, name='atualizar_dados_banco'),
-   # path('editar_encargo/<int:id>/', editar_encargo, name='editar_encargo'),
     path('export_csv/',export_csv, name='export_csv'),
     path('export_pdf/', export_pdf, name='export_pdf'),
 ]
