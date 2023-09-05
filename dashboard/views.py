@@ -26,7 +26,8 @@ from django.utils.encoding import smart_str
 import codecs
 from django.db.models import Sum, Count
 from django.db import transaction
-
+from django.dispatch import Signal
+from .signals import recalcula_encargos
 
 @login_required
 def dashboard_view(request):
@@ -160,18 +161,44 @@ def detalhes_cargo(request, id):
     cargo = Cargos.objects.get(id=id)
     return render(request, 'detalhes_cargo.html', {'cargo':cargo})
 
+# def editar_cargo(request, id):
+#     cargo = Cargos.objects.get(id=id)
+#     if request.method == 'POST':
+#         nome_cargo = request.POST.get('nome_cargo')
+#         salario= request.POST.get('salario')
+
+#         cargo.nome_cargo = nome_cargo
+#         cargo.salario = salario        
+#         cargo.save()
+#         return redirect('dashboard')
+
+#     return render(request, 'dashboard1.html', {'cargo': cargo})
 def editar_cargo(request, id):
     cargo = Cargos.objects.get(id=id)
     if request.method == 'POST':
         nome_cargo = request.POST.get('nome_cargo')
-        salario= request.POST.get('salario')
+        salario = request.POST.get('salario')
+        setor = request.POST.get('setor')  # Supondo que você tenha um campo 'setor' em seu formulário
+
+        # Antes de salvar as alterações, colete as informações relevantes do cargo
+        nome_anterior = cargo.nome_cargo
+        salario_anterior = cargo.salario
 
         cargo.nome_cargo = nome_cargo
-        cargo.salario = salario        
-        cargo.save()
+        cargo.salario = salario
+        cargo.setor = setor  # Atualize o setor do cargo
+
+        cargo.save()  # Salve as alterações no cargo
+
+        # Verifique se houve alterações no nome ou salário do cargo
+        if nome_anterior != nome_cargo or salario_anterior != salario:
+            # Chame o sinal manualmente para recalcular os encargos
+            recalcula_encargos(sender=Cargos, instance=cargo)
+
         return redirect('dashboard')
 
     return render(request, 'dashboard1.html', {'cargo': cargo})
+
 
 def cargos_vieww(request):
     cargos = Cargos.objects.all()
@@ -255,6 +282,7 @@ def editar_endereco(request, id):
         endereco.cidade = cidade
         endereco.estado = estado      
         endereco.save()
+        
         return redirect('dashboard')
 
     return render(request, 'dashboard1.html', {'endereco': endereco})
