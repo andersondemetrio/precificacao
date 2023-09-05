@@ -39,7 +39,7 @@ logger.addHandler(console_handler)
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        username = request.POST['username'].replace('.', '').replace('-', '')
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
