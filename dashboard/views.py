@@ -735,13 +735,8 @@ def lista_salarios_view(request):
 
 # Função para listar as horas condomínios
 def lista_horas_condiminio_view(request):
-    gastosFixos = GastosFixos.objects.select_related('colaborador').all()
-
-    context = {
-        'gastosFixos': gastosFixos
-    }
-
-    return render(request, 'lista_condominio.html', context)
+    auxiliar_calculo = AuxiliarCalculo.objects.first() 
+    return render(request, 'lista_condominio.html', {'auxiliar_calculo': auxiliar_calculo})
 
 
 # Função para exportar os encargos para o CSV
@@ -888,6 +883,11 @@ def calcular_gastos_ultimos_12_meses(request):
     }
 
     return JsonResponse(response_data)
+
+
+def sua_view(request):
+    auxiliar_calculo = AuxiliarCalculo.objects.first() 
+    return render(request, 'lista_condominio.html', {'auxiliar_calculo': auxiliar_calculo})
 
 # Verifica se o CPF não existe
 def verificar_cpf(request):
