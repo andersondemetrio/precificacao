@@ -504,6 +504,7 @@ def inserir_gasto_fixo(request):
             
         gasto_fixo = GastosFixos(descricao=descricao, valor=valor, mes=mes, ano=ano, tipo=tipo)
         gasto_fixo.save()
+        calcular_gastos_ultimos_12_meses(request)
 
         
         return redirect('dashboard')
@@ -545,6 +546,7 @@ def editar_gasto_fixo(request, id):
         gastosfixos.valor = valor
         gastosfixos.tipo = escolha   
         gastosfixos.save()
+        calcular_gastos_ultimos_12_meses(request)
 
         return redirect("dashboard")  # Redirecionar para uma página de sucesso
 
@@ -555,6 +557,7 @@ def deletar_gasto_fixo(request, gasto_fixo_id):
         try:
             gastosfixos = GastosFixos.objects.get(pk=gasto_fixo_id)
             gastosfixos.delete()
+            calcular_gastos_ultimos_12_meses(request)
             return redirect('dashboard')
         except GastosFixos.DoesNotExist:
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
@@ -822,6 +825,7 @@ def list_employee(request):
     return render(request, 'list_employee.html', {'employees': employees})
 
 
+# Função para calcular gastos com condominio
 def calcular_gastos_ultimos_12_meses(request):
     data_atual = datetime.now()
     
@@ -830,6 +834,13 @@ def calcular_gastos_ultimos_12_meses(request):
     quantidadeMeses = 0
     
     data_inicio = data_atual - timedelta(days=365)
+    
+    auxiliar_calculo, created = AuxiliarCalculo.objects.get_or_create(pk=1)
+    if created:
+        auxiliar_calculo.total_meses_condominio = 0
+        auxiliar_calculo.total_gastos_condominio = 0
+        auxiliar_calculo.save()
+
 
     # Loop para obter os 12 últimos meses e calcular os gastos totais
     for i in range(12):
@@ -860,6 +871,11 @@ def calcular_gastos_ultimos_12_meses(request):
         
         if gastos_mensais and gastos_mensais != 0:
             quantidadeMeses += 1
+            
+            
+        auxiliar_calculo.total_meses_condominio = quantidadeMeses
+        auxiliar_calculo.total_gastos_condominio = total_gastos_12_meses
+        auxiliar_calculo.save()
         
     # Imprima os resultados no console
     for resultado in resultados:
