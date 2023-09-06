@@ -66,6 +66,7 @@ urlpatterns = [
     path('lista_horas_condiminio_view/', lista_horas_condiminio_view, name='lista_horas_condiminio_view'),
     path('atualizar_dados_banco/', atualizar_dados_banco, name='atualizar_dados_banco'),
     path('calcular_gastos_ultimos_12_meses/', calcular_gastos_ultimos_12_meses, name='calcular_gastos_ultimos_12_meses'),
+    path('calcular_media_horas_produtivas/', calcular_media_horas_produtivas, name='calcular_media_horas_produtivas'),
     path('export_csv/',export_csv, name='export_csv'),
     path('export_pdf/', export_pdf, name='export_pdf'),
 ]

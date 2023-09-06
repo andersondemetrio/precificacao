@@ -29,6 +29,7 @@ from django.db import transaction
 from datetime import datetime, timedelta
 from django.dispatch import Signal
 from .signals import *
+from decimal import Decimal 
 
 from .signals import recalcula_encargos
 
@@ -732,13 +733,6 @@ def lista_salarios_view(request):
 
     return render(request, 'lista_salarios.html', context)
 
-
-# Função para listar as horas condomínios
-def lista_horas_condiminio_view(request):
-    auxiliar_calculo = AuxiliarCalculo.objects.first() 
-    return render(request, 'lista_condominio.html', {'auxiliar_calculo': auxiliar_calculo})
-
-
 # Função para exportar os encargos para o CSV
 def export_csv(request):
     response = HttpResponse(content_type='text/csv')
@@ -884,10 +878,78 @@ def calcular_gastos_ultimos_12_meses(request):
 
     return JsonResponse(response_data)
 
-
-def sua_view(request):
+# Função para listar as horas condomínios
+def lista_horas_condiminio_view(request):
     auxiliar_calculo = AuxiliarCalculo.objects.first() 
     return render(request, 'lista_condominio.html', {'auxiliar_calculo': auxiliar_calculo})
+
+from datetime import datetime, timedelta
+from django.db.models import Sum
+from django.http import JsonResponse
+from .models import CalendarioMensal
+
+def calcular_media_horas_produtivas(request): 
+    data_atual = datetime.now()
+    
+    resultados = []
+    total_horas_produtivas = 0
+    quantidade_meses = 0
+    quantidade_registros = 0
+    
+    data_inicio = data_atual - timedelta(days=365)
+    
+    auxiliar_calculo, created = AuxiliarCalculo.objects.get_or_create(pk=1)
+    if created:
+        auxiliar_calculo.total_meses_calendario = 0
+        auxiliar_calculo.total_meses_horasprodutivas = 0
+        auxiliar_calculo.save()
+
+    # Loop para obter os 12 últimos meses e calcular as horas produtivas médias
+    for i in range(12):
+        # Calcule o mês e o ano para o mês atual
+        mes = (data_inicio.month + i) % 12
+        ano = data_inicio.year + ((data_inicio.month + i) // 12)  # Ajuste do ano
+        
+        # Certifique-se de que o mês está dentro do intervalo correto (1 a 12)
+        if mes <= 0:
+            mes += 12
+            ano -= 1
+            
+        # Calcule o primeiro dia e o último dia do mês
+        primeiro_dia = datetime(ano, mes, 1)
+        ultimo_dia = primeiro_dia + timedelta(days=31)
+        
+        # Consulte o banco de dados para obter e somar os valores
+        horas_produtivas = CalendarioMensal.objects.filter(mes=mes, ano=ano).aggregate(Sum('horas_produtivas'))['horas_produtivas__sum']
+        
+        # Adicione os resultados à lista
+        resultados.append({
+            'mes': mes,
+            'ano': ano,
+            'horas_produtivas': horas_produtivas or 0  
+        })
+        
+        total_horas_produtivas += horas_produtivas or 0
+        
+        if horas_produtivas and horas_produtivas != 0:
+            quantidade_meses += 1        
+        
+    auxiliar_calculo.total_meses_calendario = quantidade_meses
+    auxiliar_calculo.total_meses_horasprodutivas = total_horas_produtivas
+    auxiliar_calculo.save()
+        
+    # Imprima os resultados no console
+    for resultado in resultados:
+        print(f'Mês: {resultado["mes"]} / Ano: {resultado["ano"]} / Média de Horas Produtivas: ')
+    print(f'Média Total de Horas Produtivas: {total_horas_produtivas}')
+    print(f'Quantidade de Meses com Horas Produtivas: {quantidade_meses}')
+    
+    response_data = {
+        'media_horas_produtivas': total_horas_produtivas / quantidade_meses if quantidade_meses > 0 else 0
+    }
+
+    return JsonResponse(response_data)
+
 
 # Verifica se o CPF não existe
 def verificar_cpf(request):
