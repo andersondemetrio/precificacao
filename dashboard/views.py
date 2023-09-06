@@ -27,6 +27,8 @@ import codecs
 from django.db.models import Sum, Count
 from django.db import transaction
 from datetime import datetime, timedelta
+from django.dispatch import Signal
+from .signals import *
 
 
 @login_required
@@ -128,7 +130,7 @@ def deletar_colaborador(request, colaborador_id):
         try:
             colaborador = Colaboradores.objects.get(pk=colaborador_id)
             colaborador.delete()
-            atualizar_dados_banco(request)
+            atualizar_dados_banco()
             return redirect('dashboard')
         except Colaboradores.DoesNotExist:
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
@@ -148,31 +150,59 @@ def inserir_cargo(request):
         nome_cargo = request.POST['nome_cargo']
         salario = request.POST['salario']
 
+
         cargo = Cargos(
             nome_cargo=nome_cargo,
             salario=salario,
-        )        
+        )   
+
         cargo.save()
         return redirect('dashboard')
 
-    return render(request, 'dashboard1.html', context={}) 
+    return render(request, 'dashboard1.html', context={})
 
 def detalhes_cargo(request, id):
     cargo = Cargos.objects.get(id=id)
     return render(request, 'detalhes_cargo.html', {'cargo':cargo})
 
+# def editar_cargo(request, id):
+#     cargo = Cargos.objects.get(id=id)
+#     if request.method == 'POST':
+#         nome_cargo = request.POST.get('nome_cargo')
+#         salario= request.POST.get('salario')
+
+#         cargo.nome_cargo = nome_cargo
+#         cargo.salario = salario        
+#         cargo.save()
+#         return redirect('dashboard')
+
+#     return render(request, 'dashboard1.html', {'cargo': cargo})
 def editar_cargo(request, id):
     cargo = Cargos.objects.get(id=id)
     if request.method == 'POST':
         nome_cargo = request.POST.get('nome_cargo')
-        salario= request.POST.get('salario')
+        salario = request.POST.get('salario')
+        setor = request.POST.get('setor')  # Supondo que você tenha um campo 'setor' em seu formulário
+
+        # Antes de salvar as alterações, colete as informações relevantes do cargo
+        nome_anterior = cargo.nome_cargo
+        salario_anterior = cargo.salario
 
         cargo.nome_cargo = nome_cargo
-        cargo.salario = salario        
-        cargo.save()
+        cargo.salario = salario
+        cargo.setor = setor  # Atualize o setor do cargo
+
+        cargo.save()  # Salve as alterações no cargo
+
+        # Verifique se houve alterações no nome ou salário do cargo
+        if nome_anterior != nome_cargo or salario_anterior != salario:
+            # Chame o sinal manualmente para recalcular os encargos
+            recalcula_encargos(sender=Cargos, instance=cargo)
+
         return redirect('dashboard')
 
     return render(request, 'dashboard1.html', {'cargo': cargo})
+
 
 def cargos_vieww(request):
     cargos = Cargos.objects.all()
@@ -189,7 +219,7 @@ def deletar_cargo(request, cargo_id):
         try:
             cargo = Cargos.objects.get(pk=cargo_id)
             cargo.delete()
-            atualizar_dados_banco(request)
+            atualizar_dados_banco()
             return redirect('dashboard')
         except Cargos.DoesNotExist:
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
@@ -256,6 +286,7 @@ def editar_endereco(request, id):
         endereco.cidade = cidade
         endereco.estado = estado      
         endereco.save()
+        
         return redirect('dashboard')
 
     return render(request, 'dashboard1.html', {'endereco': endereco})
@@ -412,7 +443,7 @@ def detalhes_calendario(request, id):
 
 def buscar_calendario(request): 
     q = request.GET.get('search')   
-    calendario = CalendarioMensal.objects.filter(ano__icontains=q).order_by('id')
+    calendario = CalendarioMensal.objects.filter(ano__icontains=q).order_by('funcionario__nome', 'ano', 'mes')
     return render(request, 'pesquisa_calendario.html', {'calendario': calendario})
 
 def editar_calendario(request, id):
@@ -593,7 +624,7 @@ def inserir_encargo(request):
             rateio=rateio,
             custo_mes=custo_mes,
         )
-        atualizar_dados_banco(request)
+        atualizar_dados_banco()
         # Redirecionar para a página desejada após a inserção
         return redirect('dashboard')
     
@@ -620,7 +651,7 @@ def deletar_encargo(request, encargo_id):
         try:
             encargo = Employee.objects.get(pk=encargo_id)
             encargo.delete()
-            atualizar_dados_banco(request)
+            atualizar_dados_banco()
             return redirect('dashboard')
         except Employee.DoesNotExist:
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
@@ -789,49 +820,21 @@ def list_employee(request):
     employees = Colaboradores.objects.all()
     return render(request, 'list_employee.html', {'employees': employees})
 
-def atualizar_dados_banco(request):
-    prestadores_count = Employee.objects.filter(setor='Prestador de Serviço').count()
-    custo_prestadores = Employee.objects.filter(setor='Prestador de Serviço').aggregate(Sum('custo_salario'))['custo_salario__sum']
-    custo_gestores = Employee.objects.filter(setor='Gestores').aggregate(Sum('custo_salario'))['custo_salario__sum']
-    
-    print(f'Prestadores Count: {prestadores_count}')
-    print(f'Custo Prestadores: {custo_prestadores}')
-    print(f'Custo Gestores: {custo_gestores}')
-    
-    if custo_prestadores > 0 and custo_gestores is not None:
-        # Calcular a porcentagem de cada prestador
-        with transaction.atomic():
-            employees = Employee.objects.all()
-            for employee in employees:
-                porcentagem = (employee.custo_salario * 100) / custo_prestadores
-
-                # Calcular o rateio com base na porcentagem e no custo dos gestores
-                if employee.setor == "Gestores":
-                    rateio = 0
-                else:
-                    rateio = (porcentagem * custo_gestores) / 100
-
-                # Atualizar o valor da coluna rateio do prestador
-                employee.rateio = rateio
-                employee.custo_mes = employee.custo_salario + rateio
-                employee.save()
-
-    # Você pode retornar uma resposta HTTP vazia ou redirecionar para outra página, se desejar
-    return render(request, 'dashboard1.html', context={})
 
 def calcular_gastos_ultimos_12_meses(request):
-    # Obtenha a data atual
     data_atual = datetime.now()
     
-    # Inicialize uma lista para armazenar os resultados
     resultados = []
     total_gastos_12_meses = 0
+    quantidadeMeses = 0
+    
+    data_inicio = data_atual - timedelta(days=365)
 
     # Loop para obter os 12 últimos meses e calcular os gastos totais
     for i in range(12):
         # Calcule o mês e o ano para o mês atual
-        mes = (data_atual.month - i) % 12
-        ano = data_atual.year
+        mes = (data_inicio.month + i) % 12
+        ano = data_inicio.year + ((data_inicio.month + i) // 12)  # Ajuste do ano
         
         # Certifique-se de que o mês está dentro do intervalo correto (1 a 12)
         if mes <= 0:
@@ -854,15 +857,20 @@ def calcular_gastos_ultimos_12_meses(request):
         
         total_gastos_12_meses += gastos_mensais or 0
         
+        if gastos_mensais and gastos_mensais != 0:
+            quantidadeMeses += 1
+        
     # Imprima os resultados no console
     for resultado in resultados:
         print(f'Mês: {resultado["mes"]} / Ano: {resultado["ano"]} / Total de Gastos: {resultado["total_gastos"]}')
-    # Imprima a soma total de gastos no console
     print(f'Soma Total de Gastos: {total_gastos_12_meses}')
+    print(f'Quantidade de Meses com Gastos: {quantidadeMeses}')
+    
+    response_data = {
+        'total_gastos_12_meses': total_gastos_12_meses
+    }
 
-
-    # Renderize a página com os resultados
-    return render(request, 'dashboard1.html', {'resultados': resultados})
+    return JsonResponse(response_data)
 
 # Verifica se o CPF não existe
 def verificar_cpf(request):

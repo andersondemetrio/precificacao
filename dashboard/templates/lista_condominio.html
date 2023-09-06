@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/relatorio.css' %}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="{% static 'assets/js/script_calcHoras.js' %}"></script>
 </head>
 <body class="fundo">
     <div class="container pl-0 pr-0">
@@ -22,6 +23,9 @@
                         <div class="div-logo"></div>
                         <h2 class="mb-4">Valor Hora Condomínio</h2>
                         <div class="table-container-horas"> 
+                            <a href="#" id="calcularGastosBtn" class="btn btn-primary" data-url="{% url 'calcular_gastos_ultimos_12_meses' %}">
+                                Calcular Gastos
+                            </a>
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -32,7 +36,7 @@
                             <tbody>
                                 <tr>
                                     <th class="th-inicio">CONDOMÍNIO</th>
-                                    <td>aa</td>
+                                    <td><span id="total_gastos_12_meses"></span></td>
                                 </tr>
                                 <tr>
                                     <th class="th-inicio">HORAS PRODUTIVAS(Mês)</th>
