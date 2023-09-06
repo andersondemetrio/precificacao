@@ -30,6 +30,7 @@ from datetime import datetime, timedelta
 from django.dispatch import Signal
 from .signals import *
 
+from .signals import recalcula_encargos
 
 @login_required
 def dashboard_view(request):
@@ -888,3 +889,15 @@ def verificar_cnpj(request):
         return JsonResponse({'cnpj_existe': True})
     else:
         return JsonResponse({'cnpj_existe': False})
+
+def verificar_email(request):
+    email = request.GET.get('email')
+    print(email)
+    if Empresa.objects.filter(email=email).exists():
+        print(email)
+        return JsonResponse({'email_existe': True})
+        
+    
+    else: 
+        print(email)
+        return JsonResponse({'email_existe': False})
