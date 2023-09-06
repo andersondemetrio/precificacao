@@ -26,6 +26,7 @@ from django.utils.encoding import smart_str
 import codecs
 from django.db.models import Sum, Count
 from django.db import transaction
+from datetime import datetime, timedelta
 from django.dispatch import Signal
 from .signals import recalcula_encargos
 
@@ -638,7 +639,7 @@ def encargo_view(request):
     encargo_list = [
         {
             'id': encargo.id,
-            'gasto': f"{encargo.id}, {encargo.setor}"
+            'encargo': f"{encargo.id}, {encargo.setor}"
         }
         for encargo in encargo
     ]
@@ -848,6 +849,50 @@ def atualizar_dados_banco(request):
     # Você pode retornar uma resposta HTTP vazia ou redirecionar para outra página, se desejar
     return render(request, 'dashboard1.html', context={})
 
+def calcular_gastos_ultimos_12_meses(request):
+    # Obtenha a data atual
+    data_atual = datetime.now()
+    
+    # Inicialize uma lista para armazenar os resultados
+    resultados = []
+    total_gastos_12_meses = 0
+
+    # Loop para obter os 12 últimos meses e calcular os gastos totais
+    for i in range(12):
+        # Calcule o mês e o ano para o mês atual
+        mes = (data_atual.month - i) % 12
+        ano = data_atual.year
+        
+        # Certifique-se de que o mês está dentro do intervalo correto (1 a 12)
+        if mes <= 0:
+            mes += 12
+            ano -= 1
+        
+        # Calcule o primeiro dia e o último dia do mês
+        primeiro_dia = datetime(ano, mes, 1)
+        ultimo_dia = primeiro_dia + timedelta(days=31)
+        
+        # Consulte o banco de dados para obter os gastos fixos do mês atual e some os valores
+        gastos_mensais = GastosFixos.objects.filter(mes=mes, ano=ano).aggregate(Sum('valor'))['valor__sum']
+        
+        # Adicione os resultados à lista
+        resultados.append({
+            'mes': mes,
+            'ano': ano,
+            'total_gastos': gastos_mensais or 0  # Se não houver gastos, defina como zero
+        })
+        
+        total_gastos_12_meses += gastos_mensais or 0
+        
+    # Imprima os resultados no console
+    for resultado in resultados:
+        print(f'Mês: {resultado["mes"]} / Ano: {resultado["ano"]} / Total de Gastos: {resultado["total_gastos"]}')
+    # Imprima a soma total de gastos no console
+    print(f'Soma Total de Gastos: {total_gastos_12_meses}')
+
+
+    # Renderize a página com os resultados
+    return render(request, 'dashboard1.html', {'resultados': resultados})
 
 # Verifica se o CPF não existe
 def verificar_cpf(request):

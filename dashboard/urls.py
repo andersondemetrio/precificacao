@@ -52,7 +52,7 @@ urlpatterns = [
     path('inserir_encargo/', inserir_encargo, name='inserir_encargo'),  
     path('buscar_encargo/', buscar_encargo, name='buscar_encargo'),
     path('encargo_view/', encargo_view, name='encargo_view'),
-    path('deletar_encargo/<int:deletar_encargo_id>/', deletar_encargo, name='deletar_encargo'),  
+    path('deletar_encargo/<int:encargo_id>/', deletar_encargo, name='deletar_encargo'),  
     
     path('inserir_beneficio/', inserir_beneficio, name='inserir_beneficio'),
     path('buscar_beneficio/', buscar_beneficio, name='buscar_beneficio'),
@@ -65,6 +65,7 @@ urlpatterns = [
     path('lista_salarios_view/', lista_salarios_view, name='lista_salarios_view'),
     path('lista_horas_condiminio_view/', lista_horas_condiminio_view, name='lista_horas_condiminio_view'),
     path('atualizar_dados_banco/', atualizar_dados_banco, name='atualizar_dados_banco'),
+    path('calcular_gastos_ultimos_12_meses/', calcular_gastos_ultimos_12_meses, name='calcular_gastos_ultimos_12_meses'),
     path('export_csv/',export_csv, name='export_csv'),
     path('export_pdf/', export_pdf, name='export_pdf'),
 ]
