@@ -1,6 +1,9 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import Cargos, Employee  # Importe Employee
+from django.db.models import Sum, Count
+from django.db import transaction
+from datetime import datetime, timedelta
 
 
 def recalcula_encargos(sender, instance, **kwargs):
@@ -37,3 +40,39 @@ def recalcula_encargos(sender, instance, **kwargs):
         employee.custo_mes = (employee.custo_salario + rateio)
 
         employee.save()
+        atualizar_dados_banco()
+        
+def atualizar_dados_banco():
+    prestadores_count = Employee.objects.filter(setor='Prestador de Serviço').count()
+    custo_prestadores = Employee.objects.filter(setor='Prestador de Serviço').aggregate(Sum('custo_salario'))['custo_salario__sum']
+    custo_gestores = Employee.objects.filter(setor='Gestores').aggregate(Sum('custo_salario'))['custo_salario__sum']
+      
+    if custo_prestadores > 0 and custo_gestores is not None:
+        # Calcular a porcentagem de cada prestador
+        with transaction.atomic():
+            employees = Employee.objects.all()
+            for employee in employees:
+                porcentagem = (employee.custo_salario * 100) / custo_prestadores
+
+                # Calcular o rateio com base na porcentagem e no custo dos gestores
+                if employee.setor == "Gestores":
+                    rateio = 0
+                else:
+                    rateio = (porcentagem * custo_gestores) / 100
+
+                # Atualizar o valor da coluna rateio do prestador
+                employee.rateio = rateio
+                employee.custo_mes = employee.custo_salario + rateio
+                employee.save()
+                
+    print(f'Prestadores Count: {prestadores_count}')
+    print(f'Custo Prestadores: {custo_prestadores}')
+    print(f'Custo Gestores: {custo_gestores}')
+
+    # Você pode retornar os valores calculados ou fazer o que for necessário com eles
+    # Por exemplo, retornar um dicionário de valores ou registrá-los em um arquivo de log
+    return {
+        'prestadores_count': prestadores_count,
+        'custo_prestadores': custo_prestadores,
+        'custo_gestores': custo_gestores,
+    }
