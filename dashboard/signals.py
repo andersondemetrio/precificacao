@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import Cargos, Employee  # Importe Employee
+from .models import Cargos, Employee, AuxiliarCalculo
 from django.db.models import Sum, Count
 from django.db import transaction
 from datetime import datetime, timedelta
@@ -46,6 +46,13 @@ def atualizar_dados_banco():
     prestadores_count = Employee.objects.filter(setor='Prestador de Serviço').count()
     custo_prestadores = Employee.objects.filter(setor='Prestador de Serviço').aggregate(Sum('custo_salario'))['custo_salario__sum']
     custo_gestores = Employee.objects.filter(setor='Gestores').aggregate(Sum('custo_salario'))['custo_salario__sum']
+    
+    auxiliar_calculo, created = AuxiliarCalculo.objects.get_or_create(pk=1)
+    if created:
+        auxiliar_calculo.total_salarios_gestores = 0
+        auxiliar_calculo.total_salarios_prestadores = 0
+        auxiliar_calculo.total_prestadores = 0
+        auxiliar_calculo.save()
       
     if custo_prestadores > 0 and custo_gestores is not None:
         # Calcular a porcentagem de cada prestador
@@ -59,6 +66,12 @@ def atualizar_dados_banco():
                     rateio = 0
                 else:
                     rateio = (porcentagem * custo_gestores) / 100
+                    
+                auxiliar_calculo.total_salarios_gestores = custo_gestores
+                auxiliar_calculo.total_salarios_prestadores = custo_prestadores
+                auxiliar_calculo.total_prestadores = prestadores_count
+
+                auxiliar_calculo.save()
 
                 # Atualizar o valor da coluna rateio do prestador
                 employee.rateio = rateio
