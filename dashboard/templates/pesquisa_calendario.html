@@ -37,7 +37,7 @@
             <td>{{ calendario.horas_produtivas }}</td> 
             <td>
                 {% comment %} <a href="{% url 'detalhes_calendario' calendario.id %}"> {% endcomment %}
-                    <i class="bi bi-pencil-fill"></i>
+                    {% comment %} <i class="bi bi-pencil-fill"></i> {% endcomment %}
                 {% comment %} </a> {% endcomment %}
                 <a href="{% url 'deletar_calendario' calendario.id %}">
                     <i class="bi bi-trash-fill delete-icon"></i>
