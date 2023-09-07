@@ -48,7 +48,9 @@ urlpatterns = [
     path('buscar_gasto_fixo/', buscar_gasto_fixo, name='buscar_gasto_fixo'),
     path('detalhes_gasto_fixo/<int:id>/', detalhes_gasto_fixo, name='detalhes_gasto_fixo'),
     path('deletar_gasto_fixo/<int:gasto_fixo_id>/', deletar_gasto_fixo, name='deletar_gasto_fixo'),      
-    
+    path('lista_horas_condiminio_view/', lista_horas_condiminio_view, name='lista_horas_condiminio_view'),
+    path('calcular_gastos_ultimos_12_meses/', calcular_gastos_ultimos_12_meses, name='calcular_gastos_ultimos_12_meses'),
+     
     path('inserir_encargo/', inserir_encargo, name='inserir_encargo'),  
     path('buscar_encargo/', buscar_encargo, name='buscar_encargo'),
     path('encargo_view/', encargo_view, name='encargo_view'),
@@ -63,9 +65,7 @@ urlpatterns = [
     path('inserir_jornada/', inserir_jornada, name='inserir_jornada'),
     path('inserir_horas/', inserir_horas, name='inserir_horas'),      
     path('lista_salarios_view/', lista_salarios_view, name='lista_salarios_view'),
-    path('lista_horas_condiminio_view/', lista_horas_condiminio_view, name='lista_horas_condiminio_view'),
     path('atualizar_dados_banco/', atualizar_dados_banco, name='atualizar_dados_banco'),
-    path('calcular_gastos_ultimos_12_meses/', calcular_gastos_ultimos_12_meses, name='calcular_gastos_ultimos_12_meses'),
     path('calcular_media_horas_produtivas/', calcular_media_horas_produtivas, name='calcular_media_horas_produtivas'),
     path('export_csv/',export_csv, name='export_csv'),
     path('export_pdf/', export_pdf, name='export_pdf'),

@@ -146,3 +146,8 @@ th {
 .th-inicio {
   text-align: start;
 }
+
+.td-horas {
+  font-size: 14px;
+  text-align: center;
+}
