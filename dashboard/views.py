@@ -29,7 +29,8 @@ from django.db import transaction
 from datetime import datetime, timedelta
 from django.dispatch import Signal
 from .signals import *
-from decimal import Decimal 
+from decimal import Decimal
+from collections import defaultdict
 
 from .signals import recalcula_encargos
 
@@ -423,6 +424,7 @@ def inserir_calendario(request):
             dias_uteis=dias_uteis  # Definir o valor dos dias úteis
         )
         calendario.save()
+        calcular_media_horas_produtivas(request)
 
         return redirect("dashboard")  # Redirecionar para uma página de sucesso
 
@@ -467,6 +469,7 @@ def editar_calendario(request, id):
         calendario.horas_produtivas = horas_produtivas
         calendario.dias_uteis = dias_uteis         
         calendario.save()
+        calcular_media_horas_produtivas(request)
 
         return redirect("dashboard")  # Redirecionar para uma página de sucesso
 
@@ -477,6 +480,7 @@ def deletar_calendario(request, calendario_id):
         try:
             calendario = CalendarioMensal.objects.get(pk=calendario_id)
             calendario.delete()
+            calcular_media_horas_produtivas(request)
             return redirect('dashboard')
         except CalendarioMensal.DoesNotExist:
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
@@ -904,6 +908,9 @@ def calcular_media_horas_produtivas(request):
         auxiliar_calculo.total_meses_horasprodutivas = 0
         auxiliar_calculo.save()
 
+    # Dicionário para armazenar as horas produtivas de cada mês
+    horas_por_mes = defaultdict(list)
+    
     # Loop para obter os 12 últimos meses e calcular as horas produtivas médias
     for i in range(12):
         # Calcule o mês e o ano para o mês atual
@@ -919,37 +926,46 @@ def calcular_media_horas_produtivas(request):
         primeiro_dia = datetime(ano, mes, 1)
         ultimo_dia = primeiro_dia + timedelta(days=31)
         
-        # Consulte o banco de dados para obter e somar os valores
-        horas_produtivas = CalendarioMensal.objects.filter(mes=mes, ano=ano).aggregate(Sum('horas_produtivas'))['horas_produtivas__sum']
+        # Consulte o banco de dados para obter os registros do mês atual
+        registros_do_mes = CalendarioMensal.objects.filter(mes=mes, ano=ano)
         
-        # Adicione os resultados à lista
+        for registro in registros_do_mes:
+            horas_produtivas = registro.horas_produtivas
+            horas_por_mes[(ano, mes)].append(horas_produtivas)
+            quantidade_registros += 1
+        
+        # Calcule a média de horas produtivas para cada mês
+    for (ano, mes), horas_lista in horas_por_mes.items():
+        total_horas_mes = sum(horas_lista)
+        quantidade_meses += 1
+
+        media_mes = total_horas_mes / len(horas_lista) if len(horas_lista) > 0 else 0
+        
         resultados.append({
             'mes': mes,
             'ano': ano,
-            'horas_produtivas': horas_produtivas or 0  
+            'media_horas_produtivas': media_mes
         })
         
-        total_horas_produtivas += horas_produtivas or 0
-        
-        if horas_produtivas and horas_produtivas != 0:
-            quantidade_meses += 1        
-        
+    # Calcule a média anual das médias mensais
+    media_anual = sum([resultado['media_horas_produtivas'] for resultado in resultados]) / quantidade_meses if quantidade_meses > 0 else 0
+
     auxiliar_calculo.total_meses_calendario = quantidade_meses
-    auxiliar_calculo.total_meses_horasprodutivas = total_horas_produtivas
+    auxiliar_calculo.total_meses_horasprodutivas = media_anual
     auxiliar_calculo.save()
         
     # Imprima os resultados no console
     for resultado in resultados:
-        print(f'Mês: {resultado["mes"]} / Ano: {resultado["ano"]} / Média de Horas Produtivas: ')
-    print(f'Média Total de Horas Produtivas: {total_horas_produtivas}')
-    print(f'Quantidade de Meses com Horas Produtivas: {quantidade_meses}')
+        print(f'Mês: {resultado["mes"]} / Ano: {resultado["ano"]} / Média de Horas Mês: {resultado["media_horas_produtivas"]}')
+    print(f'Quantidade Total de Registros: {quantidade_registros}')
+    print(f'Quantidade Meses com Registros: {quantidade_meses}')
+    print(f'Média Anual de Horas Produtivas: {media_anual}')
     
     response_data = {
-        'media_horas_produtivas': total_horas_produtivas / quantidade_meses if quantidade_meses > 0 else 0
+        'resultados': resultados
     }
 
     return JsonResponse(response_data)
-
 
 # Verifica se o CPF não existe
 def verificar_cpf(request):
