@@ -41,11 +41,22 @@ from collections import defaultdict
 from django.core.mail import EmailMessage
 from .signals import recalcula_encargos
 
+from django.core.mail import EmailMessage
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.template.loader import render_to_string
+from io import BytesIO
+
+
 import tempfile
 from reportlab.lib.pagesizes import landscape, A3
 from reportlab.pdfgen import canvas
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
+
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 @login_required
 def dashboard_view(request):
@@ -1267,34 +1278,79 @@ def export_csv_condominio(request):
 
     return response
 
+# V1 Funcionando, porém não envia arquivo .html
+# def enviar_email_personalizado(request, auxiliar_calculo_id):
+#     auxiliar_calculo = AuxiliarCalculo.objects.get(pk=auxiliar_calculo_id)
+
+#     if request.method == 'POST':
+#         destinatario_email = request.POST['destinatario_email']
+
+#         # Construa o conteúdo do email personalizado
+#         subject = 'Assunto do Email'
+#         message = f'Olá, aqui estão os valores do modelo AuxiliarCalculo:\n\n' \
+#                   f'Total Salários Gestores: {auxiliar_calculo.total_salarios_gestores}\n' \
+#                   f'Total Salários Prestadores: {auxiliar_calculo.total_salarios_prestadores}\n' \
+#                   f'Total Prestadores: {auxiliar_calculo.total_prestadores}\n' \
+#                   f'Total Meses Condomínio: {auxiliar_calculo.total_meses_condominio}\n' \
+#                   f'Total Gastos Condomínio: {auxiliar_calculo.total_gastos_condominio}\n' \
+#                   f'Total Meses Calendário: {auxiliar_calculo.total_meses_calendario}\n' \
+#                   f'Total Meses Horas Produtivas: {auxiliar_calculo.total_meses_horasprodutivas}\n' \
+#                   f'Hora Condominio : R${auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_horasprodutivas:.2f}\n'
+
+#         # Anexar o arquivo PDF ao e-mail
+#         pdf_file = export_pdf_condominio_temporary()
+#         pdf_file.seek(0)
+#         email = EmailMessage(subject, message, to=[destinatario_email])
+#         email.attach('auxiliar_calculo.pdf', pdf_file.read(), 'application/pdf')
+#         email.send()
+
+#         # Feche e exclua o arquivo temporário
+#         pdf_file.close()
+
+#         return HttpResponse('Email enviado com sucesso!')
+
+#     return render(request, 'dashaboard1.html', {'auxiliar_calculo': auxiliar_calculo})
+
+
+
 def enviar_email_personalizado(request, auxiliar_calculo_id):
     auxiliar_calculo = AuxiliarCalculo.objects.get(pk=auxiliar_calculo_id)
 
     if request.method == 'POST':
         destinatario_email = request.POST['destinatario_email']
 
-        # Construa o conteúdo do email personalizado
-        subject = 'Assunto do Email'
-        message = f'Olá, aqui estão os valores do modelo AuxiliarCalculo:\n\n' \
-                  f'Total Salários Gestores: {auxiliar_calculo.total_salarios_gestores}\n' \
-                  f'Total Salários Prestadores: {auxiliar_calculo.total_salarios_prestadores}\n' \
-                  f'Total Prestadores: {auxiliar_calculo.total_prestadores}\n' \
-                  f'Total Meses Condomínio: {auxiliar_calculo.total_meses_condominio}\n' \
-                  f'Total Gastos Condomínio: {auxiliar_calculo.total_gastos_condominio}\n' \
-                  f'Total Meses Calendário: {auxiliar_calculo.total_meses_calendario}\n' \
-                  f'Total Meses Horas Produtivas: {auxiliar_calculo.total_meses_horasprodutivas}\n' \
-                  f'Hora Condominio :R${auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_horasprodutivas:.2f}\n'
+        # Calcular a hora do condomínio
+        if auxiliar_calculo.total_meses_horasprodutivas != 0:
+            hora_condominio = auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_horasprodutivas
+        else:
+            hora_condominio = 'Divisão por zero'
 
-        # Anexar o arquivo PDF ao e-mail
+        # Renderize o novo template personalizado em uma string
+        context = {
+            'auxiliar_calculo': auxiliar_calculo,
+            'hora_condominio': hora_condominio,
+        }
+        email_body = render_to_string('template_email.html', context)
+
+        # Anexe o arquivo PDF ao e-mail
         pdf_file = export_pdf_condominio_temporary()
         pdf_file.seek(0)
-        email = EmailMessage(subject, message, to=[destinatario_email])
+
+        # Crie um objeto EmailMessage
+        email = EmailMessage('Assunto do Email', email_body, to=[destinatario_email])
+
+        # Anexe o PDF
         email.attach('auxiliar_calculo.pdf', pdf_file.read(), 'application/pdf')
+
+        # Adicione o conteúdo HTML personalizado como parte do e-mail
+        email.content_subtype = 'html'
+
+        # Envie o e-mail
         email.send()
 
         # Feche e exclua o arquivo temporário
         pdf_file.close()
 
-        return HttpResponse('Email enviado com sucesso!')
+        return render(request, 'email_condominio.html')
 
-    return render(request, 'seu_template.html', {'auxiliar_calculo': auxiliar_calculo})
+    return render(request, 'dashboard1.html', {'auxiliar_calculo': auxiliar_calculo})
