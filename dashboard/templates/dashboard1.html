@@ -49,7 +49,7 @@
     <header>
         <div class="d-flex flex-row justify-content-end align-items-center header">
             <p class="p-header">Bem vindo, </p>
-            <p class="userName">{{ user.username }}.</p>
+            <p class="userName">{{ nome_usuario }}.</p>
             <i class="far fa-user"></i>
         </div>
     </header>
@@ -100,7 +100,6 @@
                         <div id="horasProdutivasCollapse" class="collapse">
                             <ul class="ul-item">
                                 <li class="li-pad"><a class="nav-sub" id="openModalButtonCalendario">Calendário mensal</a></li>
-                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalHorasProdutivas">Jornada de trabalho diária</a></li>
                             </ul>
                         </div>
                     </li>
@@ -119,7 +118,7 @@
                             <div id="precificacaoCollapse" class="collapse">
                                 <ul class="ul-item">
                                     <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalPrecificacao">Cadastrar Orçamento</a></li>
-                                    <li class="li-pad"><a class="nav-sub" href="#">Memórias de Cálculos</a></li>
+                                    <li class="li-pad"><a class="nav-sub" href="#" data-url="{% url 'calcular_soma_beneficio_funcionario' %}">Memórias de Cálculos</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -315,7 +314,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary" id="maisMaoDeObra">Acionar Mais Mão de Obra</button>
+                    {% comment %} <button type="button" class="btn btn-primary" id="maisMaoDeObra">Acionar Mais Mão de Obra</button> {% endcomment %}
                 </div>
             </div>
         </div>
@@ -516,7 +515,7 @@
             <span class="close">&times;</span>
           </div>
           <div class="modal-body">
-            <form id="searchFormBeneficios" method="get" action="{% url 'buscar_cargo' %}">
+            <form id="searchFormBeneficios" method="get" action="{% url 'buscar_beneficio' %}">
                 <div class="">
                     <div class="input-group div-modal-person">
                         <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Beneficios">
@@ -545,13 +544,21 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{% url 'inserir_beneficio' %}">
+                    <form method="post" action="{% url 'inserir_beneficio' %}" id="formBeneficios">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="funcionario" class="form-label">Funcionário</label>
                             <select class="form-select funcionarioInputS" id="funcionarioInput" name="funcionario" required>
                                 <!-- Popule as opções usando o JavaScript -->
                             </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descricao" class="form-label">Descricão</label>
+                            <input type="text" class="form-control" id="descricao" name="descricao" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="valor" class="form-label">Valor</label>
+                            <input type="text" class="form-control" id="valor" name="valor" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Cadastrar Benefício</button>
                     </form>
@@ -614,7 +621,7 @@
                             </div>
                             <div class="mb-3 d-flex flex-column">
                                 <label for="cargos" class="form-label">Cargo</label>
-                                <select class="form-select inputCargoS" name="cargo" required>
+                                <select class="form-select inputCargoS" name="cargos" required>
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -814,14 +821,14 @@
                             </div>
                             <div class="mb-3">
                                 <label for="funcionario" class="form-label">Funcionário</label>
-                                <select class="form-select funcionarioInputS" id="funcionario" name="funcionario" required>
+                                <select class="form-select funcionarioInputC" id="funcionario" name="funcionario" required>
                                     <option value="" disabled selected>Selecione um funcionário</option>
-                                    <!-- Dados dos colaboradores serão preenchidos dinamicamente aqui -->
                                 </select>
                             </div>
                         </div>
                         <input type="hidden" id="horas_produtivas" name="horas_produtivas">
                         <input type="hidden" id="dias_uteis" name="dias_uteis">
+                        <p id="successMessageTotal" class="text-success" style="display: none;">Despesa cadastrada com sucesso!</p>
                         <button type="submit" class="btn btn-primary" id="submitBtn">Salvar</button>
                     </form>
                 </div>
@@ -832,35 +839,6 @@
         </div>
     </div>
 	<!--Fim modal / CALENDÁRIO -->
-   
-
-	<!--Começo Modal Jornada -->
-	<div class="modal fade" id="modalHorasProdutivas" tabindex="-1" aria-labelledby="modalHorasProdutivasLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="modalHorasProdutivasLabel">Cadastrar Jornada de Trabalho</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<form method="post" action="{% url 'inserir_jornada' %}">
-						{% csrf_token %}
-						<div class="jornada-container">
-							<div class="mb-3">
-								<label for="jornada_diaria" class="form-label">Jornada Diária (horas)</label>
-								<input type="number" class="form-control" id="jornada_diaria" name="jornada_diaria" step="0.01" required>
-							</div>
-						</div>
-						<button type="submit" class="btn btn-primary">Salvar</button>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-    <!-- Fim modal Jornada -->
 
 
     <!-- Começo Modal / RELATÓRIO ENCARGO -->

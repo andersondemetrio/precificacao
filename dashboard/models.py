@@ -1,6 +1,4 @@
 from django.db import models
-
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -28,13 +26,7 @@ class Cargos(models.Model):
 
 class HorasProdutivas(models.Model):
     data = models.DateField()
-    jornada_diaria = models.DecimalField(max_digits=5, decimal_places=2)
-    
-class Beneficios(models.Model):
-    descricao = models.CharField(max_length=100)
-    valor = models.DecimalField(max_digits=10, decimal_places=2)
-    mes = models.PositiveIntegerField()
-    ano = models.PositiveIntegerField()
+    jornada_diaria = models.DecimalField(max_digits=5, decimal_places=2) 
 
 class GastosFixos(models.Model):
     descricao = models.CharField(max_length=100)
@@ -71,11 +63,13 @@ class Colaboradores(models.Model):
     matricula = models.CharField(max_length=12)
     cpf = models.CharField(max_length=14)
     cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE)
-    # salario = models.DecimalField(max_digits=10, decimal_places=2)
-    # beneficios = models.DecimalField(max_digits=10, decimal_places=2)
-    # encargos = models.DecimalField(max_digits=10, decimal_places=2)
-    #endereco = models.ForeignKey(Endereco, on_delete=models.CASCADE)
+    setor = models.CharField(max_length=50, null=True)
     usuario = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    
+class Beneficios(models.Model):
+    descricao = models.CharField(max_length=100)
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    funcionario = models.ForeignKey(Colaboradores, on_delete=models.CASCADE)
 
 class GastosVariaveis(models.Model):
     colaborador = models.ForeignKey(Colaboradores, on_delete=models.CASCADE)
@@ -108,6 +102,7 @@ class Employee(models.Model):
     )
 
     setor = models.CharField(max_length=50, choices=SETOR_CHOICES)
+    beneficios = models.DecimalField(max_digits=10, decimal_places=2)
     periculosidade = models.DecimalField(max_digits=10, decimal_places=2)
     fgts = models.DecimalField(max_digits=10, decimal_places=2)
     um_terco_ferias = models.DecimalField(max_digits=10, decimal_places=2)

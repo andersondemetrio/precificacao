@@ -53,8 +53,9 @@ def atualizar_dados_banco():
         auxiliar_calculo.total_salarios_prestadores = 0
         auxiliar_calculo.total_prestadores = 0
         auxiliar_calculo.save()
+  
       
-    if custo_prestadores > 0 and custo_gestores is not None:
+    if custo_prestadores is not None and custo_prestadores >= 0 and custo_gestores is not None:
         # Calcular a porcentagem de cada prestador
         with transaction.atomic():
             employees = Employee.objects.all()

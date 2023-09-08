@@ -10,11 +10,12 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from django.http import HttpResponse
 from django.core.paginator import Paginator
+from django.urls import reverse
 
 from django.core.mail import send_mail
 from django.conf import settings
 import random
-from .models import GastosFixos,Colaboradores,Cargos, Endereco, Empresa,CalendarioMensal,Employee
+from .models import GastosFixos, Colaboradores, Cargos, Endereco, Empresa, CalendarioMensal, Employee, Beneficios
 import csv
 
 from reportlab.lib import colors
@@ -47,7 +48,15 @@ def dashboard_view(request):
         'success': success,
     }
     if request.user.is_authenticated:
-        return render(request, 'dashboard1.html')
+        try:
+            colaborador = Colaboradores.objects.get(usuario=request.user)
+            nome = colaborador.nome
+        except Colaboradores.DoesNotExist:
+        # Se não houver um nome na tabela "Colaboradores", pegue o username da tabela "auth_user"
+            nome = request.user.username
+            
+        context = {'nome_usuario': nome}
+        return render(request, 'dashboard1.html', context)
     else:
         return render(request, 'account/login.html', context)
     
@@ -100,7 +109,7 @@ def buscar_colaborador(request):
 
 def colaboradores_vieww(request):
     colaboradores = Colaboradores.objects.all()
-    colaboradores_list = [{'id': colaboradores.id, 'nome': colaboradores.nome, 'matricula': colaboradores.matricula, 'cargo': colaboradores.cargo} for colaborador in colaboradores]
+    colaboradores_list = [{'id': colaboradores.id, 'nome': colaboradores.nome, 'matricula': colaboradores.matricula, 'cargo': colaboradores.cargo, 'setor': colaboradores.setor} for colaborador in colaboradores]
     return JsonResponse({'colaboradores': colaboradores_list})
 
 def detalhes_colaborador(request, id):
@@ -595,6 +604,7 @@ def inserir_encargo(request):
         # Definir valores padrão para periculosidade e rateio
         periculosidade = 0
         rateio = 0
+        beneficios = 0
 
         # Verificar se o setor é "Gestores" e ajustar a periculosidade e rateio
         if setor == "Gestores":
@@ -629,9 +639,14 @@ def inserir_encargo(request):
             fgts_decimo_terceiro=fgts_decimo_terceiro,
             multa_rescisoria=multa_rescisoria,
             custo_salario=custo_salario,
+            beneficios=beneficios,
             rateio=rateio,
             custo_mes=custo_mes,
         )
+        
+        colaborador.setor = setor
+        colaborador.save() 
+        
         atualizar_dados_banco()
         # Redirecionar para a página desejada após a inserção
         return redirect('dashboard')
@@ -674,11 +689,26 @@ def deletar_encargo(request, encargo_id):
 #Funções do CRUD de Beneficios
 
 def inserir_beneficio(request):
-    return render(request, 'dashboard1.html', context={})
+    if request.method == 'POST':
+        descricao = request.POST['descricao']
+        valor = request.POST['valor']
+        colaborador_id = request.POST['funcionario']
+        colaborador = Colaboradores.objects.get(id=colaborador_id)
+        
+        beneficio = Beneficios(
+            descricao=descricao,
+            valor=valor,
+            funcionario=colaborador,
+        )
+        beneficio.save()
+        calcular_soma_beneficio_funcionario(request)
+        
+        return redirect('dashboard')
+    return render(request, 'dashboard1.html')
 
 def buscar_beneficio(request): 
     q = request.GET.get('search')   
-    beneficio = Beneficios.objects.filter(descricao__icontains=q).order_by('id')
+    beneficio = Beneficios.objects.filter(descricao__icontains=q).order_by('funcionario_id')
     return render(request, 'pesquisa_beneficio.html', {'beneficio': beneficio})
 
 def beneficio_view(request):
@@ -686,7 +716,7 @@ def beneficio_view(request):
     beneficio_list = [
         {
             'id': beneficio.id,
-            'beneficio': f"{beneficio.id}"
+            'beneficio': f"{beneficio.id}, {beneficio.descricao}, {beneficio.valor}"
         }
         for beneficio in beneficio
     ]
@@ -697,6 +727,7 @@ def deletar_beneficio(request, beneficio_id):
         try:
             beneficio = Beneficios.objects.get(pk=beneficio_id)
             beneficio.delete()
+            calcular_soma_beneficio_funcionario(request)
             return redirect('dashboard')
         except Beneficios.DoesNotExist:
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
@@ -719,7 +750,7 @@ def inserir_horas(request):
     return render(request, 'dashboard1.html', context={})       
 
 
-# funçaõ para listar os colaboradores no select do calendario
+# funçaõ para listar os colaboradores 
 def colaboradores_view(request):
     colaboradores = Colaboradores.objects.all()
     colaboradores_list = [{'id': colaborador.id, 'nome': colaborador.nome} for colaborador in colaboradores]
@@ -974,11 +1005,38 @@ def calcular_media_horas_produtivas(request):
 
     return JsonResponse(response_data)
 
-# # Divisão para achar hora custo condominio
-# def hora_custo_condominio(request):
-#     auxiliar_calculo = AuxiliarCalculo.objects.get(pk=1)  # Supondo que você está obtendo os valores do banco de dados
-#     custo_hora_condominio = auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_horasprodutivas
-#     return render(request, 'lista_condominio.html', {'auxiliar_calculo': auxiliar_calculo, 'custo_hora_condominio': custo_hora_condominio})
+
+def calcular_soma_beneficio_funcionario(request):
+    funcionarios = Colaboradores.objects.all()
+    
+    resultados = []
+
+    for funcionario in funcionarios:
+        soma_beneficios = Beneficios.objects.filter(funcionario=funcionario).aggregate(Sum('valor'))['valor__sum'] or 0
+
+        # Cria um dicionário com as informações do funcionário e a soma dos benefícios
+        resultado = {
+            'funcionario': funcionario,
+            'soma_beneficios': soma_beneficios
+        }
+
+        # Adiciona o resultado à lista
+        resultados.append(resultado)
+        
+        print(f"Soma dos benefícios para o funcionário {funcionario.nome}: R$ {soma_beneficios}")
+        
+        # Atualiza os valores na tabela Employee para o funcionário atual
+        Employee.objects.filter(colaborador=funcionario).update(beneficios=soma_beneficios)
+
+    return render(request, 'dashboard1.html', {'resultados': resultados})
+
+
+# funçaõ para listar os colaboradores por setor
+def colaboradores_view_filter(request):
+    colaboradores = Colaboradores.objects.filter(setor="Prestador de Serviço")
+    colaboradores_datas = [{"id": colaborador.id, "nome": colaborador.nome} for colaborador in colaboradores]
+    return JsonResponse({"colaboradores": colaboradores_datas})
+
 
 # Verifica se o CPF não existe
 def verificar_cpf(request):
