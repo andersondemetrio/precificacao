@@ -1083,7 +1083,7 @@ def export_pdf_condominio(request):
     data.append([
         'Total Salários Gestores', 'Total Salários Prestadores', 'Total Prestadores',
         'Total Meses Condomínio', 'Total Gastos Condomínio', 'Total Meses Calendário',
-        'Total Meses Horas Produtivas'
+        'Total Meses Horas Produtivas','Custo Hora Condominio'
     ])
 
     for auxiliar in auxiliares:
@@ -1094,7 +1094,8 @@ def export_pdf_condominio(request):
             auxiliar.total_meses_condominio,
             f"R$ {auxiliar.total_gastos_condominio:.2f}",
             auxiliar.total_meses_calendario,
-            f"R$ {auxiliar.total_meses_horasprodutivas:.2f}"
+            f"R$ {auxiliar.total_meses_horasprodutivas:.2f}",
+             f"R${auxiliar.total_gastos_condominio / auxiliar.total_meses_horasprodutivas:.2f}"
         ])
 
     table = Table(data)
@@ -1131,7 +1132,7 @@ def export_csv_condominio(request):
     writer.writerow([
         'Total Salários Gestores', 'Total Salários Prestadores', 'Total Prestadores',
         'Total Meses Condomínio', 'Total Gastos Condomínio', 'Total Meses Calendário',
-        'Total Meses Horas Produtivas'
+        'Total Meses Horas Produtivas','Custo Hora Condominio'
     ])
 
     # Obtenha todos os objetos AuxiliarCalculo
@@ -1139,6 +1140,8 @@ def export_csv_condominio(request):
 
     # Adicione os dados ao CSV
     for auxiliar in auxiliares:
+        gastos_por_hora = auxiliar.total_gastos_condominio / auxiliar.total_meses_horasprodutivas
+        gastos_por_hora_formatado = "{:.2f}".format(gastos_por_hora)
         writer.writerow([
             auxiliar.total_salarios_gestores,
             auxiliar.total_salarios_prestadores,
@@ -1147,6 +1150,7 @@ def export_csv_condominio(request):
             auxiliar.total_gastos_condominio,
             auxiliar.total_meses_calendario,
             auxiliar.total_meses_horasprodutivas,
+            gastos_por_hora_formatado
         ])
 
     return response
@@ -1167,6 +1171,7 @@ def enviar_email_personalizado(request, auxiliar_calculo_id):
                   f'Total Gastos Condomínio: {auxiliar_calculo.total_gastos_condominio}\n' \
                   f'Total Meses Calendário: {auxiliar_calculo.total_meses_calendario}\n' \
                   f'Total Meses Horas Produtivas: {auxiliar_calculo.total_meses_horasprodutivas}\n' \
+                  f'Hora Condominio :R${auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_horasprodutivas:.2f}\n' \
                     
                   # Adicione os outros campos aqui
 
