@@ -30,6 +30,7 @@ urlpatterns = [
     
     path('inserir_mao_de_obra/', inserir_mao_de_obra, name='inserir_mao_de_obra'),
     path('colaboradores_view/',colaboradores_view,name='colaboradores_view'),
+    path('colaboradores_view_filter/',colaboradores_view_filter,name='colaboradores_view_filter'),
     path('editar_colaborador/<int:id>/', editar_colaborador, name='editar_colaborador'),
     path('buscar_colaborador/', buscar_colaborador, name='buscar_colaborador'),
     path('detalhes_colaborador/<int:id>/', detalhes_colaborador, name='detalhes_colaborador'),
@@ -59,7 +60,7 @@ urlpatterns = [
     path('inserir_beneficio/', inserir_beneficio, name='inserir_beneficio'),
     path('buscar_beneficio/', buscar_beneficio, name='buscar_beneficio'),
     path('beneficio_view/', beneficio_view, name='beneficio_view'),
-    path('deletar_beneficio/<int:deletar_beneficio_id>/', deletar_beneficio, name='deletar_beneficio'),  
+    path('deletar_beneficio/<int:beneficio_id>/', deletar_beneficio, name='deletar_beneficio'),  
     
     path('inserir_data/', inserir_data, name='inserir_data'),
     path('inserir_jornada/', inserir_jornada, name='inserir_jornada'),
@@ -67,6 +68,7 @@ urlpatterns = [
     path('lista_salarios_view/', lista_salarios_view, name='lista_salarios_view'),
     path('atualizar_dados_banco/', atualizar_dados_banco, name='atualizar_dados_banco'),
     path('calcular_media_horas_produtivas/', calcular_media_horas_produtivas, name='calcular_media_horas_produtivas'),
+    path('calcular_soma_beneficio_funcionario/', calcular_soma_beneficio_funcionario, name='calcular_soma_beneficio_funcionario'),
     path('export_csv/',export_csv, name='export_csv'),
     path('export_pdf/', export_pdf, name='export_pdf'),
 ]

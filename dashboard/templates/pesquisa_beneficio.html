@@ -18,13 +18,17 @@
         <tr>
             <th>Id</th>
             <th>Colaborador</th>
-            <th>Setor</th>
+            <th>Descrição</th>
+            <th>Valor</th>
             <th></th>
         </tr>
     </thead>    
     {% for beneficio in beneficio %}
         <tr>
             <td>{{ beneficio.id }}</td>
+            <td>{{ beneficio.funcionario.nome }}</td>
+            <td>{{ beneficio.descricao }}</td>
+            <td>{{ beneficio.valor }}</td>
             <td>
                 <a href="{% url 'deletar_beneficio' beneficio.id %}">
                     <i class="bi bi-trash-fill delete-icon"></i>
