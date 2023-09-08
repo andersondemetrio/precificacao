@@ -3,20 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("botaoHome").addEventListener("click", function(event) {
         event.preventDefault(); // Impede o comportamento padrão do link
         location.reload(); // Recarrega a página
-      });
-
-    // Requisição Fetch para cargos
-    fetch(cargosUrl)
-        .then(response => response.json())
-        .then(data => {
-            const selectElement = document.querySelector('select[name="cargo"]');
-            data.cargos.forEach(cargo => {
-                const option = document.createElement('option');
-                option.value = cargo.id;
-                option.textContent = cargo.nome_cargo;
-                selectElement.appendChild(option);
-            });
-        });
+      });  
 
     // Requisição Fetch para endereços
     fetch(enderecoUrl)
@@ -63,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-    // Requisição Fetch para GastoFixo
+    // Requisição Fetch para GastoFixo/Condominio
     fetch(gastosFixosUrl)
         .then(response => response.json())
         .then(data => {
@@ -93,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-    // Requisição Fetch para Encargos
+    // Requisição Fetch para Beneficios
     fetch(beneficiosUrl)
         .then(response => response.json())
         .then(data => {
@@ -185,21 +172,50 @@ $(document).ready(function () {
     });
 });
 
-//Função para buscar a lista de Funcionários na modal do Calendário
-document.addEventListener('DOMContentLoaded', function () {
-    const funcionarioSelect = document.getElementById('funcionario');
+//Função para buscar a lista de Funcionários
+function popularSelectFuncionarioPorClasse(classeSelect) {
+    const selects = document.querySelectorAll('.' + classeSelect);
 
-    fetch(colaboradoresUrl)
-        .then(response => response.json())
-        .then(data => {
-            data.colaboradores.forEach(colaborador => {
-                const option = document.createElement('option');
-                option.value = colaborador.id;
-                option.textContent = colaborador.nome;
-                funcionarioSelect.appendChild(option);
+    selects.forEach(funcionarioSelect => {
+        fetch(colaboradoresUrl)
+            .then(response => response.json())
+            .then(data => {
+                data.colaboradores.forEach(colaborador => {
+                    const option = document.createElement('option');
+                    option.value = colaborador.id;
+                    option.textContent = colaborador.nome;
+                    funcionarioSelect.appendChild(option);
+                });
             });
-        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    popularSelectFuncionarioPorClasse('funcionarioInputS');
 });
+
+//Função para buscar a lista de Cargos
+function popularSelectCargoPorClasse(classeSelect) {
+    const selects = document.querySelectorAll('.' + classeSelect);
+
+    selects.forEach(cargoSelect => {
+        fetch(cargosUrl)
+            .then(response => response.json())
+            .then(data => {    
+                data.cargos.forEach(cargo => {
+                    const option = document.createElement('option');
+                    option.value = cargo.id;
+                    option.textContent = cargo.nome_cargo;
+                    cargoSelect.appendChild(option);
+                    });
+                });
+            });
+    }
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        popularSelectCargoPorClasse('inputCargoS');
+    });
+
 
 //Função para calcular dias úteis na modal do Calendário
 function calcularDiasUteis(ano, mes) {
@@ -366,20 +382,6 @@ for (const closeButtonBen of closeButtonsBeneficios) {
         modalBeneficios.style.display = "none";
     });
 }
-
-// Requisição Fetch para Colaboradores
-fetch(colaboradoresUrl)
-    .then(response => response.json())
-    .then(data => {
-        const colaboradoresSelect = document.querySelector('select[name="funcionario"]');
-        data.colaboradores.forEach(colaborador => {
-            const option = document.createElement('option');
-            option.value = colaborador.id;
-            option.textContent = colaborador.nome;
-            colaboradoresSelect.appendChild(option);
-        });
-    });
-
 
 // Cadastro OK Mão de obra (msg em tela e não fecha modal) 
 document.addEventListener('DOMContentLoaded', function () {

@@ -31,7 +31,6 @@ from django.dispatch import Signal
 from .signals import *
 from decimal import Decimal
 from collections import defaultdict
-
 from .signals import recalcula_encargos
 
 @login_required
@@ -885,13 +884,21 @@ def calcular_gastos_ultimos_12_meses(request):
 # Função para listar as horas condomínios
 def lista_horas_condiminio_view(request):
     auxiliar_calculo = AuxiliarCalculo.objects.first() 
-    return render(request, 'lista_condominio.html', {'auxiliar_calculo': auxiliar_calculo})
+    
+    if auxiliar_calculo.total_meses_horasprodutivas != 0:
+        custo_hora_condominio = auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_horasprodutivas
+    else:
+        custo_hora_condominio = None
+        
+    if auxiliar_calculo.total_prestadores != 0:
+        custo_hora_percapta = custo_hora_condominio / auxiliar_calculo.total_prestadores
+    else:
+        custo_hora_percapta = None
+        
+    return render(request, 'lista_condominio.html', {'auxiliar_calculo': auxiliar_calculo, 'custo_hora_condominio': custo_hora_condominio, 'custo_hora_percapta': custo_hora_percapta})
 
-from datetime import datetime, timedelta
-from django.db.models import Sum
-from django.http import JsonResponse
-from .models import CalendarioMensal
 
+# Função para calcular a média de horas produtivas
 def calcular_media_horas_produtivas(request): 
     data_atual = datetime.now()
     
@@ -966,6 +973,12 @@ def calcular_media_horas_produtivas(request):
     }
 
     return JsonResponse(response_data)
+
+# # Divisão para achar hora custo condominio
+# def hora_custo_condominio(request):
+#     auxiliar_calculo = AuxiliarCalculo.objects.get(pk=1)  # Supondo que você está obtendo os valores do banco de dados
+#     custo_hora_condominio = auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_horasprodutivas
+#     return render(request, 'lista_condominio.html', {'auxiliar_calculo': auxiliar_calculo, 'custo_hora_condominio': custo_hora_condominio})
 
 # Verifica se o CPF não existe
 def verificar_cpf(request):

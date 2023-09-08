@@ -43,11 +43,7 @@
                         </div>
                         <div class="mb-3 d-flex flex-row">
                           <label for="cargo" class="form-label">Cargo</label>
-                          <select class="form-select" name="cargo" required>
-                              <option value="" selected disabled>Selecione um cargo</option>
-                              {% for cargo in cargos %}
-                                  <option value="{{ cargo.id }}">{{ cargo.nome_cargo }}</option>
-                              {% endfor %}
+                          <select class="form-select inputCargoS" name="cargo" required>
                           </select>
                         </div> 
                     </div>
