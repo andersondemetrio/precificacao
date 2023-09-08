@@ -69,4 +69,7 @@ urlpatterns = [
     path('calcular_media_horas_produtivas/', calcular_media_horas_produtivas, name='calcular_media_horas_produtivas'),
     path('export_csv/',export_csv, name='export_csv'),
     path('export_pdf/', export_pdf, name='export_pdf'),
+    path('export_pdf_condominio/', export_pdf_condominio, name='export_pdf_condominio'),
+    path('export_csv_condominio/', export_csv_condominio, name='export_csv_condominio'),
 ]
+

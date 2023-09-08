@@ -10,6 +10,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from django.http import HttpResponse
 from django.core.paginator import Paginator
+from django.utils import timezone
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -1008,3 +1009,85 @@ def verificar_email(request):
     else: 
         print(email)
         return JsonResponse({'email_existe': False})
+    
+def export_pdf_condominio(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="auxiliar_calculo.pdf"'
+
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(A3))
+
+    data = []
+    auxiliares = AuxiliarCalculo.objects.all()  # Use o queryset apropriado aqui
+
+    # Adicionar os nomes das colunas como a primeira linha dos dados
+    data.append([
+        'Total Salários Gestores', 'Total Salários Prestadores', 'Total Prestadores',
+        'Total Meses Condomínio', 'Total Gastos Condomínio', 'Total Meses Calendário',
+        'Total Meses Horas Produtivas'
+    ])
+
+    for auxiliar in auxiliares:
+        data.append([
+            f"R$ {auxiliar.total_salarios_gestores:.2f}",
+            f"R$ {auxiliar.total_salarios_prestadores:.2f}",
+            auxiliar.total_prestadores,
+            auxiliar.total_meses_condominio,
+            f"R$ {auxiliar.total_gastos_condominio:.2f}",
+            auxiliar.total_meses_calendario,
+            f"R$ {auxiliar.total_meses_horasprodutivas:.2f}"
+        ])
+
+    table = Table(data)
+    style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ])
+
+    table.setStyle(style)
+    elements = [table]
+
+    doc.build(elements)
+    response.write(buffer.getvalue())
+    buffer.close()
+
+    return response
+
+
+def export_csv_condominio(request):
+    response = HttpResponse(content_type='text/csv')
+    timestamp = timezone.now().strftime('%Y-%m-%d_%H-%M-%S')
+    filename = f"auxiliar_calculo_{timestamp}.csv"
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    # Crie o objeto CSV
+    writer = csv.writer(response, delimiter=';')
+    
+    # Crie o cabeçalho do CSV
+    writer.writerow([
+        'Total Salários Gestores', 'Total Salários Prestadores', 'Total Prestadores',
+        'Total Meses Condomínio', 'Total Gastos Condomínio', 'Total Meses Calendário',
+        'Total Meses Horas Produtivas'
+    ])
+
+    # Obtenha todos os objetos AuxiliarCalculo
+    auxiliares = AuxiliarCalculo.objects.all()
+
+    # Adicione os dados ao CSV
+    for auxiliar in auxiliares:
+        writer.writerow([
+            auxiliar.total_salarios_gestores,
+            auxiliar.total_salarios_prestadores,
+            auxiliar.total_prestadores,
+            auxiliar.total_meses_condominio,
+            auxiliar.total_gastos_condominio,
+            auxiliar.total_meses_calendario,
+            auxiliar.total_meses_horasprodutivas,
+        ])
+
+    return response
