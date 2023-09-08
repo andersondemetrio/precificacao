@@ -71,4 +71,7 @@ urlpatterns = [
     path('calcular_soma_beneficio_funcionario/', calcular_soma_beneficio_funcionario, name='calcular_soma_beneficio_funcionario'),
     path('export_csv/',export_csv, name='export_csv'),
     path('export_pdf/', export_pdf, name='export_pdf'),
+    path('export_pdf_condominio/', export_pdf_condominio, name='export_pdf_condominio'),
+    path('export_csv_condominio/', export_csv_condominio, name='export_csv_condominio'),
+    path('enviar_email_personalizado/<int:auxiliar_calculo_id>/', enviar_email_personalizado, name='enviar_email_personalizado'),
 ]
