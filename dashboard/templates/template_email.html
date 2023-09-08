@@ -1,0 +1,33 @@
+{% load bootstrap4 %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Email Rprice</title>
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/relatorio.css' %}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'assets/css/index.css' %}"> <!-- Adicione esta linha -->
+    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="{% static 'assets/js/format_valor.js' %}"></script>
+</head>
+<body>
+    <div class="div-logo">
+        <p>Olá, aqui estão os valores do modelo AuxiliarCalculo:</p>
+        <p>Total Salários Gestores: {{ auxiliar_calculo.total_salarios_gestores }}</p>
+        <p>Total Salários Prestadores: {{ auxiliar_calculo.total_salarios_prestadores }}</p>
+        <p>Total Prestadores: {{ auxiliar_calculo.total_prestadores }}</p>
+        <p>Total Meses Condomínio: {{ auxiliar_calculo.total_meses_condominio }}</p>
+        <p>Total Gastos Condomínio: {{ auxiliar_calculo.total_gastos_condominio }}</p>
+        <p>Total Meses Calendário: {{ auxiliar_calculo.total_meses_calendario }}</p>
+        <p>Total Meses Horas Produtivas: {{ auxiliar_calculo.total_meses_horasprodutivas }}</p>
+        <p>Hora Condominio: R{{ hora_condominio|floatformat:2 }}</p>
+        
+        <!-- Adicione outros elementos personalizados aqui -->
+    </div>
+</body>
+</html>
