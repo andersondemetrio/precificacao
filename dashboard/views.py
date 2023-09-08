@@ -112,7 +112,7 @@ def editar_colaborador(request, id):
     if request.method == 'POST':
         matricula = request.POST['matricula']
         nome = request.POST['nome']
-        cpf = request.POST['cpf']
+       # cpf = request.POST['cpf']
         cargo_id = request.POST['cargo']
         
         cargo = Cargos.objects.get(id=cargo_id)
@@ -120,7 +120,7 @@ def editar_colaborador(request, id):
         # Atualize os campos do colaborador existente
         colaborador.nome = nome
         colaborador.matricula = matricula
-        colaborador.cpf = cpf
+        #colaborador.cpf = cpf
         colaborador.cargo = cargo
         colaborador.save()
         return redirect('dashboard')
