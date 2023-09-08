@@ -13,6 +13,10 @@ from django.core.paginator import Paginator
 from django.urls import reverse
 from .forms import EmailForm
 from django.utils import timezone
+import tempfile
+from reportlab.pdfgen import canvas
+from django.core.mail import EmailMessage
+from django.http import HttpResponse
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -34,7 +38,14 @@ from django.dispatch import Signal
 from .signals import *
 from decimal import Decimal
 from collections import defaultdict
+from django.core.mail import EmailMessage
 from .signals import recalcula_encargos
+
+import tempfile
+from reportlab.lib.pagesizes import landscape, A3
+from reportlab.pdfgen import canvas
+from django.core.mail import EmailMessage
+from django.http import HttpResponse
 
 @login_required
 def dashboard_view(request):
@@ -1069,12 +1080,61 @@ def verificar_email(request):
         print(email)
         return JsonResponse({'email_existe': False})
 
-def export_pdf_condominio(request):
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="auxiliar_calculo.pdf"'
+# def export_pdf_condominio(request):
+#     response = HttpResponse(content_type='application/pdf')
+#     response['Content-Disposition'] = 'attachment; filename="auxiliar_calculo.pdf"'
 
-    buffer = io.BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=landscape(A3))
+#     buffer = io.BytesIO()
+#     doc = SimpleDocTemplate(buffer, pagesize=landscape(A3))
+
+#     data = []
+#     auxiliares = AuxiliarCalculo.objects.all()  # Use o queryset apropriado aqui
+
+#     # Adicionar os nomes das colunas como a primeira linha dos dados
+#     data.append([
+#         'Total Salários Gestores', 'Total Salários Prestadores', 'Total Prestadores',
+#         'Total Meses Condomínio', 'Total Gastos Condomínio', 'Total Meses Calendário',
+#         'Total Meses Horas Produtivas','Custo Hora Condominio'
+#     ])
+
+#     for auxiliar in auxiliares:
+#         data.append([
+#             f"R$ {auxiliar.total_salarios_gestores:.2f}",
+#             f"R$ {auxiliar.total_salarios_prestadores:.2f}",
+#             auxiliar.total_prestadores,
+#             auxiliar.total_meses_condominio,
+#             f"R$ {auxiliar.total_gastos_condominio:.2f}",
+#             auxiliar.total_meses_calendario,
+#             f"R$ {auxiliar.total_meses_horasprodutivas:.2f}",
+#              f"R${auxiliar.total_gastos_condominio / auxiliar.total_meses_horasprodutivas:.2f}"
+#         ])
+
+#     table = Table(data)
+#     style = TableStyle([
+#         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+#         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+#         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+#         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+#         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+#         ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+#         ('GRID', (0, 0), (-1, -1), 1, colors.black)
+#     ])
+
+#     table.setStyle(style)
+#     elements = [table]
+
+#     doc.build(elements)
+#     response.write(buffer.getvalue())
+#     buffer.close()
+
+#     return response
+
+def export_pdf_condominio(request):
+    # Crie um arquivo temporário para o PDF
+    temp_file = tempfile.NamedTemporaryFile(delete=False)
+
+    # Crie o PDF no arquivo temporário
+    doc = SimpleDocTemplate(temp_file, pagesize=landscape(A3))
 
     data = []
     auxiliares = AuxiliarCalculo.objects.all()  # Use o queryset apropriado aqui
@@ -1083,7 +1143,7 @@ def export_pdf_condominio(request):
     data.append([
         'Total Salários Gestores', 'Total Salários Prestadores', 'Total Prestadores',
         'Total Meses Condomínio', 'Total Gastos Condomínio', 'Total Meses Calendário',
-        'Total Meses Horas Produtivas','Custo Hora Condominio'
+        'Total Meses Horas Produtivas', 'Custo Hora Condominio'
     ])
 
     for auxiliar in auxiliares:
@@ -1095,7 +1155,7 @@ def export_pdf_condominio(request):
             f"R$ {auxiliar.total_gastos_condominio:.2f}",
             auxiliar.total_meses_calendario,
             f"R$ {auxiliar.total_meses_horasprodutivas:.2f}",
-             f"R${auxiliar.total_gastos_condominio / auxiliar.total_meses_horasprodutivas:.2f}"
+            f"R${auxiliar.total_gastos_condominio / auxiliar.total_meses_horasprodutivas:.2f}"
         ])
 
     table = Table(data)
@@ -1113,10 +1173,62 @@ def export_pdf_condominio(request):
     elements = [table]
 
     doc.build(elements)
-    response.write(buffer.getvalue())
-    buffer.close()
+    temp_file.close()
+
+    # Abra o arquivo temporário para leitura
+    temp_file = open(temp_file.name, 'rb')
+    response = HttpResponse(temp_file.read(), content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="auxiliar_calculo.pdf"'
+    temp_file.close()
 
     return response
+def export_pdf_condominio_temporary():
+    # Crie um arquivo temporário para o PDF
+    temp_file = tempfile.NamedTemporaryFile(delete=False)
+
+    # Crie o PDF no arquivo temporário
+    doc = SimpleDocTemplate(temp_file, pagesize=landscape(A3))
+
+    data = []
+    auxiliares = AuxiliarCalculo.objects.all()  # Use o queryset apropriado aqui
+
+    # Adicionar os nomes das colunas como a primeira linha dos dados
+    data.append([
+        'Total Salários Gestores', 'Total Salários Prestadores', 'Total Prestadores',
+        'Total Meses Condomínio', 'Total Gastos Condomínio', 'Total Meses Calendário',
+        'Total Meses Horas Produtivas', 'Custo Hora Condominio'
+    ])
+
+    for auxiliar in auxiliares:
+        data.append([
+            f"R$ {auxiliar.total_salarios_gestores:.2f}",
+            f"R$ {auxiliar.total_salarios_prestadores:.2f}",
+            auxiliar.total_prestadores,
+            auxiliar.total_meses_condominio,
+            f"R$ {auxiliar.total_gastos_condominio:.2f}",
+            auxiliar.total_meses_calendario,
+            f"R$ {auxiliar.total_meses_horasprodutivas:.2f}",
+            f"R${auxiliar.total_gastos_condominio / auxiliar.total_meses_horasprodutivas:.2f}"
+        ])
+
+    table = Table(data)
+    style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ])
+
+    table.setStyle(style)
+    elements = [table]
+
+    doc.build(elements)
+
+    # Não feche o arquivo temporário aqui
+    return temp_file
 
 
 def export_csv_condominio(request):
@@ -1171,12 +1283,17 @@ def enviar_email_personalizado(request, auxiliar_calculo_id):
                   f'Total Gastos Condomínio: {auxiliar_calculo.total_gastos_condominio}\n' \
                   f'Total Meses Calendário: {auxiliar_calculo.total_meses_calendario}\n' \
                   f'Total Meses Horas Produtivas: {auxiliar_calculo.total_meses_horasprodutivas}\n' \
-                  f'Hora Condominio :R${auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_horasprodutivas:.2f}\n' \
-                    
-                  # Adicione os outros campos aqui
+                  f'Hora Condominio :R${auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_horasprodutivas:.2f}\n'
 
+        # Anexar o arquivo PDF ao e-mail
+        pdf_file = export_pdf_condominio_temporary()
+        pdf_file.seek(0)
         email = EmailMessage(subject, message, to=[destinatario_email])
+        email.attach('auxiliar_calculo.pdf', pdf_file.read(), 'application/pdf')
         email.send()
+
+        # Feche e exclua o arquivo temporário
+        pdf_file.close()
 
         return HttpResponse('Email enviado com sucesso!')
 
