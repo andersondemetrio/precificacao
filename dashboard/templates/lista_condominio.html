@@ -23,53 +23,60 @@
                         <div class="div-logo"></div>
                         <h2 class="mb-4">Valor Hora Condomínio</h2>
                         <div class="table-container-horas"> 
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th class="table_tam3">Informações</th>
-                                    <th class="table_tam4">Valores</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th class="th-inicio">CONDOMÍNIO</th>
-                                    <td class="td-horas formatarValor">{{ auxiliar_calculo.total_gastos_condominio }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="th-inicio">HORAS PRODUTIVAS(Mês)</th>
-                                    <td class="td-horas">{{ auxiliar_calculo.total_meses_horasprodutivas|floatformat:2 }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="th-inicio">CUSTO HORA CONDOMÍNIO</th>
-                                    <td class="td-horas formatarValor"> 
-                                        {% if custo_hora_condominio is not None %}
-                                            {{ custo_hora_condominio }}
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="table_tam3">Informações</th>
+                                        <th class="table_tam4">Valores</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th class="th-inicio">CONDOMÍNIO</th>
+                                        <td class="td-horas formatarValor">{{ auxiliar_calculo.total_gastos_condominio }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="th-inicio">HORAS PRODUTIVAS(Mês)</th>
+                                        <td class="td-horas">{{ auxiliar_calculo.total_meses_horasprodutivas|floatformat:2 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="th-inicio">CUSTO HORA CONDOMÍNIO</th>
+                                        <td class="td-horas formatarValor"> 
+                                            {% if custo_hora_condominio is not None %}
+                                                {{ custo_hora_condominio }}
+                                            {% else %}
+                                                Divisão por zero
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="th-inicio">CAPACIDADE PRODUTIVA(Prestadores)</th>
+                                        <td class="td-horas">{{ auxiliar_calculo.total_prestadores }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="th-inicio">HORA CONDOMÍNIO PERCÁPTA</th>
+                                        <td class="td-horas formatarValor">
+                                        {% if custo_hora_percapta is not None %}
+                                            {{ custo_hora_percapta }}
                                         {% else %}
                                             Divisão por zero
                                         {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="th-inicio">CAPACIDADE PRODUTIVA(Prestadores)</th>
-                                    <td class="td-horas">{{ auxiliar_calculo.total_prestadores }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="th-inicio">HORA CONDOMÍNIO PERCÁPTA</th>
-                                    <td class="td-horas formatarValor">
-                                    {% if custo_hora_percapta is not None %}
-                                        {{ custo_hora_percapta }}
-                                    {% else %}
-                                        Divisão por zero
-                                    {% endif %}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="d-flex justify-content-center mt-3 div-button">
-                            <a href="{% url 'dashboard' %}" class="btn btn-secondary mr-2">Voltar para o Dashboard</a>
-                            <a href="{% url 'export_csv' %}" class="btn btn-success mr-2">Baixar como CSV</a>
-                            <a href="{% url 'export_pdf' %}" class="btn btn-danger">Baixar como PDF</a>
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="{% url 'dashboard' %}" class="btn btn-secondary mx-2">Voltar para o Dashboard</a>
+                            <a href="{% url 'export_csv_condominio' %}" class="btn btn-success mx-2">Baixar como CSV</a>
+                            <a href="{% url 'export_pdf_condominio' %}" class="btn btn-danger mx-2">Baixar como PDF</a>
+                        </div>
+                        <div class="d-flex justify-content-center mt-3">
+                            <form method="post" action="{% url 'enviar_email_personalizado' auxiliar_calculo.id %}" class="d-flex">
+                                {% csrf_token %}
+                                <input type="text" name="destinatario_email" placeholder="Digite o endereço de e-mail do destinatário" class="form-control mr-2">
+                                <button type="submit" class="btn btn-primary">Enviar Email Personalizado</button>
+                            </form>
                         </div>
                     </div>
                 </div>

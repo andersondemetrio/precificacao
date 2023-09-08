@@ -41,7 +41,10 @@ class HorasProdutivasForm(forms.ModelForm):
         model = HorasProdutivas
         fields = "__all__"
 
-
+class EmailForm(forms.ModelForm):
+    class Meta:
+        model = AuxiliarCalculo
+        fields = ['destinatario_email']
 
 
 # class EmployeeForm(forms.Form):
