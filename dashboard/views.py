@@ -662,7 +662,6 @@ def inserir_encargo(request):
         )
         
         colaborador.setor = setor
-        colaborador.cargo_id = cargo.id
         colaborador.save() 
         
         atualizar_dados_banco()
