@@ -821,7 +821,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{% url 'inserir_calendario' %}">
+                    <form method="post" action="{% url 'inserir_calendario' %}" id="calendarioForm">
                         {% csrf_token %}
                         <div class="calendario-container">
                             <div class="mb-3">
@@ -845,6 +845,7 @@
                         </div>
                         <input type="hidden" id="horas_produtivas" name="horas_produtivas">
                         <input type="hidden" id="dias_uteis" name="dias_uteis">
+                        <p id="successMessageCalendario" class="text-success" style="display: none;">Hora Mensal cadastrada com sucesso!</p>
                         <button type="submit" class="btn btn-primary" id="submitBtn">Salvar</button>
                     </form>
                 </div>

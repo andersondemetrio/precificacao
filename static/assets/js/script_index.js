@@ -302,8 +302,16 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelector("#horas_produtivas").value = horasProdutivas;
         document.querySelector("#dias_uteis").value = diasUteis;
 
-        // Enviar o formulário
-        form.submit();
+        $.ajax({
+            type: "POST",
+            url: "inserir_calendario/",
+            data: $(form).serialize(), // Use $(form) para serializar o formulário
+            success: function(response) {
+                // Aqui você pode adicionar qualquer ação adicional após o sucesso da requisição
+                form.reset();
+                $("#successMessageCalendario").show();
+            }
+        });
     });
 });
 
