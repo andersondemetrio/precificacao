@@ -4,6 +4,15 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault(); // Impede o comportamento padrão do link
         location.reload(); // Recarrega a página
       });  
+    
+    // Recarrega a página ao clicar no botão Home
+    var closeButtons = document.getElementsByClassName("close");
+    for (var i = 0; i < closeButtons.length; i++) {
+        closeButtons[i].addEventListener("click", function(event) {
+            event.preventDefault(); // Impede o comportamento padrão do link
+            location.reload(); // Recarrega a página
+        });
+    } 
 
     // Requisição Fetch para endereços
     fetch(enderecoUrl)
@@ -177,6 +186,12 @@ function popularSelectFuncionarioPorClasse(classeSelect) {
     const selects = document.querySelectorAll('.' + classeSelect);
 
     selects.forEach(funcionarioSelect => {
+        // Adicione a primeira opção "Selecione um Funcionário..."
+        const firstOption = document.createElement('option');
+        firstOption.value = '';
+        firstOption.textContent = 'Selecione um Funcionário...';
+        funcionarioSelect.appendChild(firstOption);
+
         fetch(colaboradoresUrl)
             .then(response => response.json())
             .then(data => {
@@ -194,6 +209,7 @@ document.addEventListener('DOMContentLoaded', function () {
     popularSelectFuncionarioPorClasse('funcionarioInputS');
 });
 
+//Função para buscar a lista de Funcionários só Prestadores
 const colaboradoresUrlFilter = 'colaboradores_view_filter/';
 function popularSelectFuncionarioPorClasseC(classeSelect) {
     const selects = document.querySelectorAll('.' + classeSelect);
@@ -222,23 +238,28 @@ function popularSelectCargoPorClasse(classeSelect) {
     const selects = document.querySelectorAll('.' + classeSelect);
 
     selects.forEach(cargoSelect => {
+        // Adicione a primeira opção "Selecione um Cargo..."
+        const firstOption = document.createElement('option');
+        firstOption.value = '';
+        firstOption.textContent = 'Selecione um Cargo...';
+        cargoSelect.appendChild(firstOption);
+
         fetch(cargosUrl)
             .then(response => response.json())
-            .then(data => {    
+            .then(data => {
                 data.cargos.forEach(cargo => {
                     const option = document.createElement('option');
                     option.value = cargo.id;
                     option.textContent = cargo.nome_cargo;
                     cargoSelect.appendChild(option);
-                    });
                 });
             });
-    }
-    
-    document.addEventListener('DOMContentLoaded', function () {
-        popularSelectCargoPorClasse('inputCargoS');
     });
-
+}
+    
+document.addEventListener('DOMContentLoaded', function () {
+    popularSelectCargoPorClasse('inputCargoS');
+});
 
 //Função para calcular dias úteis na modal do Calendário
 function calcularDiasUteis(ano, mes) {
@@ -471,7 +492,61 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
+
+    // Cadastro Beneficio (msg em tela e não fecha modal)
+    $(document).ready(function() {
+        $("#formBeneficio").submit(function(event) {
+            event.preventDefault();
+            // Fazer uma requisição AJAX para enviar os dados do formulário
+            $.ajax({
+                type: "POST",
+                url: "inserir_beneficio/",
+                data: $(this).serialize(),
+                success: function(response) {
+                    $("#formBeneficio input[type=text], #formBeneficio input[type=number]").val("");
+                    $("#successMessageBeneficio").show();
+                }
+            });
+        });
+    });
+
+    // Cadastro Cargo (msg em tela e não fecha modal)
+    $(document).ready(function() {
+        $("#formCargo").submit(function(event) {
+            event.preventDefault();
+            // Fazer uma requisição AJAX para enviar os dados do formulário
+            $.ajax({
+                type: "POST",
+                url: "inserir_cargo/",
+                data: $(this).serialize(),
+                success: function(response) {
+                    $("#formCargo input[type=text], #formCargo input[type=number]").val("");
+                    $("#successMessageCargo").show();
+                }
+            });
+        });
+    });
+
+    // Cadastro Encargo (msg em tela e não fecha modal)
+    $(document).ready(function() {
+        $("#formEncargo").submit(function(event) {
+            event.preventDefault();
+            // Fazer uma requisição AJAX para enviar os dados do formulário
+            $.ajax({
+                type: "POST",
+                url: "inserir_encargo/",
+                data: $(this).serialize(),
+                success: function(response) {
+                    $("#formEncargo input[type=text], #formEncargo input[type=number]").val("");
+                    $("#successMessageEncargo").show();
+                    $(".inputCargoS").val(""); // Para selects com a classe "inputCargoS"
+                    $(".funcionarioInputS").val(""); // Para selects com a classe "funcionarioInputS"
+                }
+            });
+        });
+    });
 });
+
 
     //Recupera valores do Banco de Dados para Usar no Rateio da Estrutura do RH
     $(document).ready(function() {

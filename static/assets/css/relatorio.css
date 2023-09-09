@@ -151,3 +151,12 @@ th {
   font-size: 14px;
   text-align: center;
 }
+
+.div-email {
+  height: 40px;
+  width: 500px;
+}
+
+.btn-tam {
+  width: 200px;
+}
