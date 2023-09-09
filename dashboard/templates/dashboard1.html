@@ -48,13 +48,13 @@
 <body class="fundo">
     <header>
         <div class="d-flex flex-row justify-content-end align-items-center header">
-            <div class="dropdown">
-                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="dropdown d-flex flex-row">
+                <p class="p-header">Bem-vindo, <span class="userName">{{ nome_usuario }}.</span></p>
+                <a class="btn-sair dropdown d-flex flex-row justify-content-end align-items-center" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="far fa-user"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li class="nav-item">
-                        <p class="p-header">Bem-vindo, <span class="userName">{{ nome_usuario }}</span>.</p>
                     </li>
                     <li class="nav-item">
                         <a class="dropdown-item" href="{% url 'logout' %}">
@@ -133,7 +133,7 @@
                             <div id="precificacaoCollapse" class="collapse">
                                 <ul class="ul-item">
                                     <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalPrecificacao">Cadastrar Orçamento</a></li>
-                                    <li class="li-pad"><a class="nav-sub" href="#" data-url="{% url 'calcular_soma_beneficio_funcionario' %}">Memórias de Cálculos</a></li>
+                                    <li class="li-pad"><a class="nav-sub" href="#">Memórias de Cálculos</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -497,7 +497,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{% url 'inserir_cargo' %}">
+                    <form method="post" action="{% url 'inserir_cargo' %}" id="formCargo">
                         {% csrf_token %}
                         <div class="cargo-container">
 
@@ -510,6 +510,7 @@
                                 <input type="number" class="form-control" name="salario" step="0.01" required>
                             </div>
                         </div>
+                        <p id="successMessageCargo" class="text-success" style="display: none;">Cargo cadastrado com sucesso!</p>
                         <button type="submit" class="btn btn-primary">Cadastrar Cargo</button>
                     </form>
                 </div>
@@ -559,7 +560,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{% url 'inserir_beneficio' %}" id="formBeneficios">
+                    <form method="post" action="{% url 'inserir_beneficio' %}" id="formBeneficio">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="funcionario" class="form-label">Funcionário</label>
@@ -575,6 +576,7 @@
                             <label for="valor" class="form-label">Valor</label>
                             <input type="text" class="form-control" id="valor" name="valor" required>
                         </div>
+                        <p id="successMessageBeneficio" class="text-success" style="display: none;">Benefício cadastrado com sucesso!</p>
                         <button type="submit" class="btn btn-primary">Cadastrar Benefício</button>
                     </form>
                 </div>
@@ -624,7 +626,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{% url 'inserir_encargo' %}">
+                    <form method="post" action="{% url 'inserir_encargo' %}" id="formEncargo">
                         {% csrf_token %}
                         <div class="encargo-container">
                             <div class="mb-3">
@@ -642,10 +644,10 @@
                             <div class="mb-3">
                                 <label for="funcionario" class="form-label">Funcionário</label>
                                 <select class="form-select funcionarioInputS" id="funcionarioInput" name="funcionario" required>
-                                    <!-- Popule as opções usando o JavaScript -->
                                 </select>
                             </div>
                         </div>
+                        <p id="successMessageEncargo" class="text-success" style="display: none;">Encargos cadastrados com sucesso!</p>
                         <button type="submit" class="btn btn-primary">Cadastrar Encargos</button>
                     </form>
                 </div>
@@ -819,7 +821,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{% url 'inserir_calendario' %}" id="calendarioForm">
+                    <form method="post" action="{% url 'inserir_calendario' %}">
                         {% csrf_token %}
                         <div class="calendario-container">
                             <div class="mb-3">
@@ -843,7 +845,6 @@
                         </div>
                         <input type="hidden" id="horas_produtivas" name="horas_produtivas">
                         <input type="hidden" id="dias_uteis" name="dias_uteis">
-                        <p id="successMessageTotal" class="text-success" style="display: none;">Despesa cadastrada com sucesso!</p>
                         <button type="submit" class="btn btn-primary" id="submitBtn">Salvar</button>
                     </form>
                 </div>

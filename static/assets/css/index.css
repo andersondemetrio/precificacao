@@ -13,14 +13,26 @@
 .header {
   background: rgb(37, 31, 77);
   height: 50px;
+  padding-top: 4px;
 }
 
 .p-header {
-  margin-right: 3px;
   margin-top: 7px;
   color: rgb(255, 255, 255);
   font-weight: bold;
   letter-spacing: 1px;
+}
+
+.btn-sair {
+  width: 45px;
+  border-radius: 50%;
+  background: rgb(37, 31, 77);
+  margin-right: 10px;
+  height: 45px;
+}
+
+.btn-sair:hover {
+  background: rgb(63, 53, 132);
 }
 
 .userName {
@@ -34,8 +46,9 @@
 .fa-user {
   height: 24px;
   font-weight: bold;
+  font-size: 22px;
   color: rgb(255, 255, 255);
-  margin-right: 20px;
+  margin-right: 13px;
 }
 
 .fa  {
