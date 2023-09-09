@@ -112,15 +112,12 @@ def inserir_mao_de_obra(request):
         matricula = request.POST['matricula']
         nome = request.POST['nome']
         cpf = request.POST['cpf']
-        cargo_id = request.POST['cargo']
 
-        cargo = Cargos.objects.get(id=cargo_id)
         
         mao_de_obra = Colaboradores(
             matricula=matricula,
             nome=nome,
             cpf=cpf.replace('.', '').replace('-', ''),
-            cargo=cargo,  # Associando o cargo à mão de obra
         )
         mao_de_obra.save()
         return redirect('dashboard')
@@ -146,15 +143,11 @@ def editar_colaborador(request, id):
         matricula = request.POST['matricula']
         nome = request.POST['nome']
        # cpf = request.POST['cpf']
-        cargo_id = request.POST['cargo']
-        
-        cargo = Cargos.objects.get(id=cargo_id)
 
         # Atualize os campos do colaborador existente
         colaborador.nome = nome
         colaborador.matricula = matricula
         #colaborador.cpf = cpf
-        colaborador.cargo = cargo
         colaborador.save()
         return redirect('dashboard')
 
@@ -669,6 +662,7 @@ def inserir_encargo(request):
         )
         
         colaborador.setor = setor
+        colaborador.cargo_id = cargo.id
         colaborador.save() 
         
         atualizar_dados_banco()
