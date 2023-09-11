@@ -1083,6 +1083,18 @@ def verificar_email(request):
     else: 
         print(email)
         return JsonResponse({'email_existe': False})
+    
+def verificar_numero(request):
+    numero_empresa = request.GET.get('numero_empresa')
+    print(numero_empresa)
+    if Empresa.objects.filter(numero_empresa= numero_empresa ).exists():
+        print(numero_empresa)
+        return JsonResponse({'numero_existe' : True})
+    
+    else:
+        print(numero_empresa)
+        return JsonResponse({'numero_existe' : False})
+
 
 # def export_pdf_condominio(request):
 #     response = HttpResponse(content_type='application/pdf')

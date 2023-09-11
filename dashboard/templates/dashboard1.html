@@ -35,6 +35,8 @@
     <script defer src="{% static 'assets/js/mascaras_cnpj.js' %}"></script>
     <script defer src="{% static 'assets/js/mascaras_email.js' %}"></script>
     <script defer src="{% static 'assets/js/mascaras_telefone.js' %}"></script>
+    <script defer src="{% static 'assets/js/validacao_numero.js' %}"></script>
+
     
     <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-all.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}">
@@ -208,7 +210,7 @@
 
                             <div class="mb-3">
                                 <label for="numero_empresa" class="form-label">Número da Empresa</label>
-                                <input type="number" class="form-control" name="numero_empresa" max="9999" required>
+                                <input type="number" class="form-control" name="numero_empresa" max="9999" id="numeroInput" required >
                             </div>
                             <div class="mb-3">
                                 <label for="nome_empresa" class="form-label">Nome da Empresa</label>

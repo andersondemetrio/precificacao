@@ -8,7 +8,7 @@ $(document).ready(function () {
 
         // Realizar a verificação apenas se o CNPJ não estiver vazio
         if (cnpj.trim() !== '') {
-            $.get('/dashboard/calcular_gasto_fixo/', { cnpj: cnpj }, function(data) {
+            $.get('/dashboard/verificar_cnpj/', { cnpj: cnpj }, function(data) {
                 if (data.cnpj_existe) {
                     console.log("Valor do CNPJ: " + cnpj);
                     alert('CNPJ já existe no banco de dados. Por favor, insira um CNPJ diferente.');
