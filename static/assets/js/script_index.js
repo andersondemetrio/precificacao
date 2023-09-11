@@ -538,17 +538,53 @@ document.addEventListener('DOMContentLoaded', function () {
     // Cadastro Encargo (msg em tela e não fecha modal)
     $(document).ready(function() {
         $("#formEncargo").submit(function(event) {
-            event.preventDefault();
-            // Fazer uma requisição AJAX para enviar os dados do formulário
+            // event.preventDefault();
+            // Obtenha os valores dos campos do formulário
+            const colaboradorId = $("#funcionario").val();
+            const cargoId = $("#cargos").val();
+            const setor = $("#setor").val();
+    
+            // Fazer uma requisição AJAX para verificar se o encargo já existe no banco
             $.ajax({
-                type: "POST",
-                url: "inserir_encargo/",
-                data: $(this).serialize(),
+                type: "GET",
+                url: "encargo_view/",
+                data: {
+                    colaborador_id: colaboradorId,
+                    cargo_id: cargoId,
+                    setor: setor
+                },
                 success: function(response) {
-                    $("#formEncargo input[type=text], #formEncargo input[type=number]").val("");
-                    $("#successMessageEncargo").show();
-                    $(".inputCargoS").val(""); // Para selects com a classe "inputCargoS"
-                    $(".funcionarioInputS").val(""); // Para selects com a classe "funcionarioInputS"
+                    if (response.exists) {
+                        window.location.href = "/encargo_duplicado.html";
+                        console.log(window.location.href)
+                    } else {
+                        // Continuar com a submissão do formulário se não existir
+                        $.ajax({
+                            type: "POST",
+                            url: "inserir_encargo/",
+                            data: $("#formEncargo").serialize(),
+                            success: function(response) {
+                                // Limpar os campos do formulário após o envio bem-sucedido
+                                $("#formEncargo input[type=text], #formEncargo input[type=number]").val("");
+                                $(".inputCargoS").val("");
+                                $(".funcionarioInputS").val("");
+                                
+                                // Exibir a mensagem de sucesso
+                                $("#successMessageEncargo").show();
+    
+                                // Fechar o modal manualmente (substitua "#seuModal" pelo seletor correto)
+                                $("#seuModal").modal("hide");
+                            },
+                            error: function(xhr, status, error) {
+                                alert("Erro ao enviar o formulário. Por favor, tente novamente mais tarde.");
+                                console.error(error);
+                            }
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("Erro ao verificar o encargo. Por favor, tente novamente mais tarde.");
+                    console.error(error);
                 }
             });
         });
