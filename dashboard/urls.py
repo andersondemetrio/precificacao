@@ -27,6 +27,8 @@ urlpatterns = [
     path('verificar_cpf/', verificar_cpf, name='verificar_cpf'),
     path('verificar_cnpj/', verificar_cnpj, name='verificar_cnpj'),
     path('verificar_email/',verificar_email, name='verificar_email'),
+    path('verificar_numero/',verificar_numero, name='verificar_numero'),
+     path('verificar_matricula/',verificar_matricula, name='verificar_matricula'),
     
     path('inserir_mao_de_obra/', inserir_mao_de_obra, name='inserir_mao_de_obra'),
     path('colaboradores_view/',colaboradores_view,name='colaboradores_view'),

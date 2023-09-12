@@ -1063,6 +1063,14 @@ def verificar_cpf(request):
     else:
         return JsonResponse({'cpf_existe': False})
 
+def verificar_matricula(request):
+    matricula = request.GET.get('matricula')
+    if Colaboradores.objects.filter(matricula=matricula).exists():
+        return JsonResponse({'matricula_existe': True})
+    else:
+        return JsonResponse({'matricula_existe': False})
+
+
 # Verifica se o CPF não existe
 def verificar_cnpj(request):
     cnpj = request.GET.get('cnpj')
@@ -1083,6 +1091,18 @@ def verificar_email(request):
     else: 
         print(email)
         return JsonResponse({'email_existe': False})
+    
+def verificar_numero(request):
+    numero_empresa = request.GET.get('numero_empresa')
+    print(numero_empresa)
+    if Empresa.objects.filter(numero_empresa= numero_empresa ).exists():
+        print(numero_empresa)
+        return JsonResponse({'numero_existe' : True})
+    
+    else:
+        print(numero_empresa)
+        return JsonResponse({'numero_existe' : False})
+
 
 # def export_pdf_condominio(request):
 #     response = HttpResponse(content_type='application/pdf')
