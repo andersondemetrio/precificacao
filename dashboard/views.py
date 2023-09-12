@@ -1063,6 +1063,14 @@ def verificar_cpf(request):
     else:
         return JsonResponse({'cpf_existe': False})
 
+def verificar_matricula(request):
+    matricula = request.GET.get('matricula')
+    if Colaboradores.objects.filter(matricula=matricula).exists():
+        return JsonResponse({'matricula_existe': True})
+    else:
+        return JsonResponse({'matricula_existe': False})
+
+
 # Verifica se o CPF não existe
 def verificar_cnpj(request):
     cnpj = request.GET.get('cnpj')

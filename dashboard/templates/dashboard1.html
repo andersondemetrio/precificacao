@@ -31,11 +31,12 @@
     <script defer src="{% static 'assets/js/Simple-Slider.js' %}"></script>
     <script defer src="{% static 'assets/js/jquery.mask.js' %}"></script>
     <script defer src="{% static 'assets/js/jquery.mask.min.js' %}"></script>
-    <script defer src="{% static 'assets/js/mascaras.js' %}"></script>
     <script defer src="{% static 'assets/js/mascaras_cnpj.js' %}"></script>
     <script defer src="{% static 'assets/js/mascaras_email.js' %}"></script>
     <script defer src="{% static 'assets/js/mascaras_telefone.js' %}"></script>
+    <script defer src="{% static 'assets/js/mascaras_cpf.js' %}"></script>
     <script defer src="{% static 'assets/js/validacao_numero.js' %}"></script>
+    <script defer src="{% static 'assets/js/validacao_matricula.js' %}"></script>
 
     
     <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-all.min.css' %}">
@@ -308,7 +309,7 @@
                         <div class="mao-de-obra-container">
                             <div class="mb-3">
                                 <label for="matricula" class="form-label">Matrícula</label>
-                                <input type="text" class="form-control" name="matricula" required>
+                                <input type="text" class="form-control" name="matricula" id="matriculaInput" required>
                             </div>
                             <div class="mb-3">
                                 <label for="nome" class="form-label">Nome</label>
