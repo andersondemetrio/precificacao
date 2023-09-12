@@ -181,7 +181,7 @@ $(document).ready(function () {
     });
 });
 
-//Função para buscar a lista de Funcionários
+// Função para buscar a lista de Funcionários
 function popularSelectFuncionarioPorClasse(classeSelect) {
     const selects = document.querySelectorAll('.' + classeSelect);
 
@@ -195,15 +195,31 @@ function popularSelectFuncionarioPorClasse(classeSelect) {
         fetch(colaboradoresUrl)
             .then(response => response.json())
             .then(data => {
+                const options = []; // Array para armazenar as opções de funcionários
+
                 data.colaboradores.forEach(colaborador => {
                     const option = document.createElement('option');
                     option.value = colaborador.id;
                     option.textContent = colaborador.nome;
+                    options.push(option); // Adicione a opção ao array
+                });
+
+                // Remova todas as opções existentes no select
+                while (funcionarioSelect.options.length > 1) {
+                    funcionarioSelect.remove(1);
+                }
+
+                // Ordene as opções em ordem alfabética com base no texto
+                options.sort((a, b) => a.textContent.localeCompare(b.textContent));
+
+                // Adicione as opções ordenadas de volta ao select
+                options.forEach(option => {
                     funcionarioSelect.appendChild(option);
                 });
             });
     });
 }
+
 
 document.addEventListener('DOMContentLoaded', function () {
     popularSelectFuncionarioPorClasse('funcionarioInputS');
@@ -211,6 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 //Função para buscar a lista de Funcionários só Prestadores
 const colaboradoresUrlFilter = 'colaboradores_view_filter/';
+
 function popularSelectFuncionarioPorClasseC(classeSelect) {
     const selects = document.querySelectorAll('.' + classeSelect);
 
@@ -218,15 +235,31 @@ function popularSelectFuncionarioPorClasseC(classeSelect) {
         fetch(colaboradoresUrlFilter)
             .then(response => response.json())
             .then(data => {
+                const options = []; // Array para armazenar as opções de funcionários
+
                 data.colaboradores.forEach(colaborador => {
-                        const option = document.createElement('option');
-                        option.value = colaborador.id;
-                        option.textContent = colaborador.nome;
-                        funcionariosSelect.appendChild(option);
+                    const option = document.createElement('option');
+                    option.value = colaborador.id;
+                    option.textContent = colaborador.nome;
+                    options.push(option); // Adicione a opção ao array
+                });
+
+                // Remova todas as opções existentes no select
+                while (funcionariosSelect.options.length > 0) {
+                    funcionariosSelect.remove(0);
+                }
+
+                // Ordene as opções em ordem alfabética com base no texto
+                options.sort((a, b) => a.textContent.localeCompare(b.textContent));
+
+                // Adicione as opções ordenadas de volta ao select
+                options.forEach(option => {
+                    funcionariosSelect.appendChild(option);
                 });
             });
     });
 }
+
 
 document.addEventListener('DOMContentLoaded', function () {
     popularSelectFuncionarioPorClasseC('funcionarioInputC');
@@ -234,6 +267,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 //Função para buscar a lista de Cargos
+// Função para buscar a lista de Cargos
 function popularSelectCargoPorClasse(classeSelect) {
     const selects = document.querySelectorAll('.' + classeSelect);
 
@@ -247,15 +281,31 @@ function popularSelectCargoPorClasse(classeSelect) {
         fetch(cargosUrl)
             .then(response => response.json())
             .then(data => {
+                const options = []; // Array para armazenar as opções de cargos
+
                 data.cargos.forEach(cargo => {
                     const option = document.createElement('option');
                     option.value = cargo.id;
                     option.textContent = cargo.nome_cargo;
+                    options.push(option); // Adicione a opção ao array
+                });
+
+                // Remova todas as opções existentes no select
+                while (cargoSelect.options.length > 1) {
+                    cargoSelect.remove(1);
+                }
+
+                // Ordene as opções em ordem alfabética com base no texto
+                options.sort((a, b) => a.textContent.localeCompare(b.textContent));
+
+                // Adicione as opções ordenadas de volta ao select
+                options.forEach(option => {
                     cargoSelect.appendChild(option);
                 });
             });
     });
 }
+
     
 document.addEventListener('DOMContentLoaded', function () {
     popularSelectCargoPorClasse('inputCargoS');

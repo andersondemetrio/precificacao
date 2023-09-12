@@ -663,7 +663,7 @@ def inserir_encargo(request):
         
         colaborador.setor = setor
         colaborador.save() 
-        
+        calcular_soma_beneficio_funcionario(request)
         atualizar_dados_banco()
         # Redirecionar para a página desejada após a inserção
         return redirect('dashboard')
