@@ -181,7 +181,7 @@ $(document).ready(function () {
     });
 });
 
-//Função para buscar a lista de Funcionários
+// Função para buscar a lista de Funcionários
 function popularSelectFuncionarioPorClasse(classeSelect) {
     const selects = document.querySelectorAll('.' + classeSelect);
 
@@ -195,15 +195,31 @@ function popularSelectFuncionarioPorClasse(classeSelect) {
         fetch(colaboradoresUrl)
             .then(response => response.json())
             .then(data => {
+                const options = []; // Array para armazenar as opções de funcionários
+
                 data.colaboradores.forEach(colaborador => {
                     const option = document.createElement('option');
                     option.value = colaborador.id;
                     option.textContent = colaborador.nome;
+                    options.push(option); // Adicione a opção ao array
+                });
+
+                // Remova todas as opções existentes no select
+                while (funcionarioSelect.options.length > 1) {
+                    funcionarioSelect.remove(1);
+                }
+
+                // Ordene as opções em ordem alfabética com base no texto
+                options.sort((a, b) => a.textContent.localeCompare(b.textContent));
+
+                // Adicione as opções ordenadas de volta ao select
+                options.forEach(option => {
                     funcionarioSelect.appendChild(option);
                 });
             });
     });
 }
+
 
 document.addEventListener('DOMContentLoaded', function () {
     popularSelectFuncionarioPorClasse('funcionarioInputS');
@@ -211,6 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 //Função para buscar a lista de Funcionários só Prestadores
 const colaboradoresUrlFilter = 'colaboradores_view_filter/';
+
 function popularSelectFuncionarioPorClasseC(classeSelect) {
     const selects = document.querySelectorAll('.' + classeSelect);
 
@@ -218,15 +235,31 @@ function popularSelectFuncionarioPorClasseC(classeSelect) {
         fetch(colaboradoresUrlFilter)
             .then(response => response.json())
             .then(data => {
+                const options = []; // Array para armazenar as opções de funcionários
+
                 data.colaboradores.forEach(colaborador => {
-                        const option = document.createElement('option');
-                        option.value = colaborador.id;
-                        option.textContent = colaborador.nome;
-                        funcionariosSelect.appendChild(option);
+                    const option = document.createElement('option');
+                    option.value = colaborador.id;
+                    option.textContent = colaborador.nome;
+                    options.push(option); // Adicione a opção ao array
+                });
+
+                // Remova todas as opções existentes no select
+                while (funcionariosSelect.options.length > 0) {
+                    funcionariosSelect.remove(0);
+                }
+
+                // Ordene as opções em ordem alfabética com base no texto
+                options.sort((a, b) => a.textContent.localeCompare(b.textContent));
+
+                // Adicione as opções ordenadas de volta ao select
+                options.forEach(option => {
+                    funcionariosSelect.appendChild(option);
                 });
             });
     });
 }
+
 
 document.addEventListener('DOMContentLoaded', function () {
     popularSelectFuncionarioPorClasseC('funcionarioInputC');
@@ -234,6 +267,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 //Função para buscar a lista de Cargos
+// Função para buscar a lista de Cargos
 function popularSelectCargoPorClasse(classeSelect) {
     const selects = document.querySelectorAll('.' + classeSelect);
 
@@ -247,15 +281,31 @@ function popularSelectCargoPorClasse(classeSelect) {
         fetch(cargosUrl)
             .then(response => response.json())
             .then(data => {
+                const options = []; // Array para armazenar as opções de cargos
+
                 data.cargos.forEach(cargo => {
                     const option = document.createElement('option');
                     option.value = cargo.id;
                     option.textContent = cargo.nome_cargo;
+                    options.push(option); // Adicione a opção ao array
+                });
+
+                // Remova todas as opções existentes no select
+                while (cargoSelect.options.length > 1) {
+                    cargoSelect.remove(1);
+                }
+
+                // Ordene as opções em ordem alfabética com base no texto
+                options.sort((a, b) => a.textContent.localeCompare(b.textContent));
+
+                // Adicione as opções ordenadas de volta ao select
+                options.forEach(option => {
                     cargoSelect.appendChild(option);
                 });
             });
     });
 }
+
     
 document.addEventListener('DOMContentLoaded', function () {
     popularSelectCargoPorClasse('inputCargoS');
@@ -538,17 +588,53 @@ document.addEventListener('DOMContentLoaded', function () {
     // Cadastro Encargo (msg em tela e não fecha modal)
     $(document).ready(function() {
         $("#formEncargo").submit(function(event) {
-            event.preventDefault();
-            // Fazer uma requisição AJAX para enviar os dados do formulário
+            // event.preventDefault();
+            // Obtenha os valores dos campos do formulário
+            const colaboradorId = $("#funcionario").val();
+            const cargoId = $("#cargos").val();
+            const setor = $("#setor").val();
+    
+            // Fazer uma requisição AJAX para verificar se o encargo já existe no banco
             $.ajax({
-                type: "POST",
-                url: "inserir_encargo/",
-                data: $(this).serialize(),
+                type: "GET",
+                url: "encargo_view/",
+                data: {
+                    colaborador_id: colaboradorId,
+                    cargo_id: cargoId,
+                    setor: setor
+                },
                 success: function(response) {
-                    $("#formEncargo input[type=text], #formEncargo input[type=number]").val("");
-                    $("#successMessageEncargo").show();
-                    $(".inputCargoS").val(""); // Para selects com a classe "inputCargoS"
-                    $(".funcionarioInputS").val(""); // Para selects com a classe "funcionarioInputS"
+                    if (response.exists) {
+                        window.location.href = "/encargo_duplicado.html";
+                        console.log(window.location.href)
+                    } else {
+                        // Continuar com a submissão do formulário se não existir
+                        $.ajax({
+                            type: "POST",
+                            url: "inserir_encargo/",
+                            data: $("#formEncargo").serialize(),
+                            success: function(response) {
+                                // Limpar os campos do formulário após o envio bem-sucedido
+                                $("#formEncargo input[type=text], #formEncargo input[type=number]").val("");
+                                $(".inputCargoS").val("");
+                                $(".funcionarioInputS").val("");
+                                
+                                // Exibir a mensagem de sucesso
+                                $("#successMessageEncargo").show();
+    
+                                // Fechar o modal manualmente (substitua "#seuModal" pelo seletor correto)
+                                $("#seuModal").modal("hide");
+                            },
+                            error: function(xhr, status, error) {
+                                alert("Erro ao enviar o formulário. Por favor, tente novamente mais tarde.");
+                                console.error(error);
+                            }
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("Erro ao verificar o encargo. Por favor, tente novamente mais tarde.");
+                    console.error(error);
                 }
             });
         });
@@ -578,36 +664,3 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-// Validação do CPF
-
-// $(document).ready(function() {
-//     // Referência ao elemento #cpfInput
-//     var cpfInput = $('#cpfInput');
-
-//     // Evento para limitar o campo a no máximo 11 caracteres
-//     cpfInput.on('input', function() {
-//         var cpf = cpfInput.val();
-//         cpf = cpf.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos
-//         if (cpf.length > 11) {
-//             cpf = cpf.substring(0, 11); // Limita a 11 caracteres
-//         }
-//         cpfInput.val(cpf);
-//     });
-
-//     // Evento para validar o CPF quando o campo perder o foco
-//     cpfInput.blur(function() {
-//         var cpf = cpfInput.val();
-//         if (cpf.length !== 11) {
-//             alert('CPF inválido! Por favor, digite um CPF com 11 números.');
-//             cpfInput.val(''); // Limpar o campo
-//         } else {
-//             // Se o CPF tiver o formato correto, faça a verificação no banco de dados
-//             $.get('/dashboard/verificar_cpf/', { cpf: cpf }, function(data) {
-//                 if (data.cpf_existe) {
-//                     alert('CPF já existe no banco de dados. Por favor, insira um CPF diferente.');
-//                     cpfInput.val(''); // Limpar o campo
-//                 }
-//             });
-//         }
-//     });
-// });

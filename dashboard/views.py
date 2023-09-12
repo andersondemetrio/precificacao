@@ -111,17 +111,16 @@ def inserir_mao_de_obra(request):
         matricula = request.POST['matricula']
         nome = request.POST['nome']
         cpf = request.POST['cpf']
-        cargo_id = request.POST['cargo']
 
         # Verifique se já existe um registro com o mesmo CPF
         if not Colaboradores.objects.filter(cpf=cpf.replace('.', '').replace('-', '')):
-            cargo = Cargos.objects.get(id=cargo_id)
+            #cargo = Cargos.objects.get(id=cargo_id)
         
             mao_de_obra = Colaboradores(
                 matricula=matricula,
                 nome=nome,
                 cpf=cpf.replace('.', '').replace('-', ''),
-                cargo=cargo,  # Associando o cargo à mão de obra
+               # cargo=cargo,  # Associando o cargo à mão de obra
             )
             mao_de_obra.save()
             return redirect('dashboard')
@@ -152,15 +151,11 @@ def editar_colaborador(request, id):
         matricula = request.POST['matricula']
         nome = request.POST['nome']
        # cpf = request.POST['cpf']
-        cargo_id = request.POST['cargo']
-        
-        cargo = Cargos.objects.get(id=cargo_id)
 
         # Atualize os campos do colaborador existente
         colaborador.nome = nome
         colaborador.matricula = matricula
         #colaborador.cpf = cpf
-        colaborador.cargo = cargo
         colaborador.save()
         return redirect('dashboard')
 
@@ -676,7 +671,7 @@ def inserir_encargo(request):
         
         colaborador.setor = setor
         colaborador.save() 
-        
+        calcular_soma_beneficio_funcionario(request)
         atualizar_dados_banco()
         # Redirecionar para a página desejada após a inserção
         return redirect('dashboard')
@@ -1068,13 +1063,29 @@ def colaboradores_view_filter(request):
     return JsonResponse({"colaboradores": colaboradores_datas})
 
 
-# Verifica se o CPF não existe
+#Verifica se o CPF não existe
 def verificar_cpf(request):
     cpf = request.GET.get('cpf')
     if Colaboradores.objects.filter(cpf=cpf).exists():
         return JsonResponse({'cpf_existe': True})
     else:
         return JsonResponse({'cpf_existe': False})
+
+# def verificar_cpf(request):
+#     cpf = request.GET.get('cpf')
+
+#     return JsonResponse({
+#         'cpf_existe': Colaboradores.objects.filter(cpf=cpf).exists()
+#     })
+
+
+def verificar_matricula(request):
+    matricula = request.GET.get('matricula')
+    if Colaboradores.objects.filter(matricula=matricula).exists():
+        return JsonResponse({'matricula_existe': True})
+    else:
+        return JsonResponse({'matricula_existe': False})
+
 
 # Verifica se o CPF não existe
 def verificar_cnpj(request):
@@ -1096,55 +1107,18 @@ def verificar_email(request):
     else: 
         print(email)
         return JsonResponse({'email_existe': False})
+    
+def verificar_numero(request):
+    numero_empresa = request.GET.get('numero_empresa')
+    print(numero_empresa)
+    if Empresa.objects.filter(numero_empresa= numero_empresa ).exists():
+        print(numero_empresa)
+        return JsonResponse({'numero_existe' : True})
+    
+    else:
+        print(numero_empresa)
+        return JsonResponse({'numero_existe' : False})
 
-# def export_pdf_condominio(request):
-#     response = HttpResponse(content_type='application/pdf')
-#     response['Content-Disposition'] = 'attachment; filename="auxiliar_calculo.pdf"'
-
-#     buffer = io.BytesIO()
-#     doc = SimpleDocTemplate(buffer, pagesize=landscape(A3))
-
-#     data = []
-#     auxiliares = AuxiliarCalculo.objects.all()  # Use o queryset apropriado aqui
-
-#     # Adicionar os nomes das colunas como a primeira linha dos dados
-#     data.append([
-#         'Total Salários Gestores', 'Total Salários Prestadores', 'Total Prestadores',
-#         'Total Meses Condomínio', 'Total Gastos Condomínio', 'Total Meses Calendário',
-#         'Total Meses Horas Produtivas','Custo Hora Condominio'
-#     ])
-
-#     for auxiliar in auxiliares:
-#         data.append([
-#             f"R$ {auxiliar.total_salarios_gestores:.2f}",
-#             f"R$ {auxiliar.total_salarios_prestadores:.2f}",
-#             auxiliar.total_prestadores,
-#             auxiliar.total_meses_condominio,
-#             f"R$ {auxiliar.total_gastos_condominio:.2f}",
-#             auxiliar.total_meses_calendario,
-#             f"R$ {auxiliar.total_meses_horasprodutivas:.2f}",
-#              f"R${auxiliar.total_gastos_condominio / auxiliar.total_meses_horasprodutivas:.2f}"
-#         ])
-
-#     table = Table(data)
-#     style = TableStyle([
-#         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-#         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-#         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-#         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-#         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-#         ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-#         ('GRID', (0, 0), (-1, -1), 1, colors.black)
-#     ])
-
-#     table.setStyle(style)
-#     elements = [table]
-
-#     doc.build(elements)
-#     response.write(buffer.getvalue())
-#     buffer.close()
-
-#     return response
 
 def export_pdf_condominio(request):
     # Crie um arquivo temporário para o PDF

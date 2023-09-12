@@ -19,8 +19,7 @@
             <th>Id</th>
             <th>Matricula</th>
             <th>Nome</th>
-            <th>Cpf</th>
-            <th>Cargo</th>
+            <th>CPF</th>
             <th></th>
         </tr>
     </thead>    
@@ -30,7 +29,6 @@
             <td>{{ colaborador.matricula }}</td>
             <td>{{ colaborador.nome }}</td>
             <td>{{ colaborador.cpf }}</td> 
-            <td>{{ colaborador.cargo.nome_cargo }}</td> 
             <td>
                 <a href="{% url 'detalhes_colaborador' colaborador.id %}">
                     <i class="bi bi-pencil-fill"></i>

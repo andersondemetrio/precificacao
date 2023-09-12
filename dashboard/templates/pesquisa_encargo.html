@@ -19,6 +19,7 @@
             <th>Id</th>
             <th>Colaborador</th>
             <th>Setor</th>
+            <th>Cargo</th>
             <th></th>
         </tr>
     </thead>    
@@ -27,6 +28,7 @@
             <td>{{ encargo.id }}</td>
             <td>{{ encargo.colaborador.nome }}</td>
             <td>{{ encargo.setor }}</td>
+            <td>{{ encargo.cargo.nome_cargo }}</td>
             <td>
                 <a href="{% url 'deletar_encargo' encargo.id %}">
                     <i class="bi bi-trash-fill delete-icon"></i>

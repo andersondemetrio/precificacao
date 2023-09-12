@@ -63,7 +63,6 @@ class Colaboradores(models.Model):
     nome = models.CharField(max_length=100)
     matricula = models.CharField(max_length=12)
     cpf = models.CharField(max_length=14)
-    cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE)
     setor = models.CharField(max_length=50, null=True)
     usuario = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     
