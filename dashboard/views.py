@@ -106,7 +106,6 @@ def alterar_senha(request):
 
 
 # Funções do CRUD de Colaboradores
-
 def inserir_mao_de_obra(request):
     if request.method == 'POST':
         matricula = request.POST['matricula']
@@ -114,16 +113,23 @@ def inserir_mao_de_obra(request):
         cpf = request.POST['cpf']
         cargo_id = request.POST['cargo']
 
-        cargo = Cargos.objects.get(id=cargo_id)
+        # Verifique se já existe um registro com o mesmo CPF
+        if not Colaboradores.objects.filter(cpf=cpf.replace('.', '').replace('-', '')):
+            cargo = Cargos.objects.get(id=cargo_id)
         
-        mao_de_obra = Colaboradores(
-            matricula=matricula,
-            nome=nome,
-            cpf=cpf.replace('.', '').replace('-', ''),
-            cargo=cargo,  # Associando o cargo à mão de obra
-        )
-        mao_de_obra.save()
-        return redirect('dashboard')
+            mao_de_obra = Colaboradores(
+                matricula=matricula,
+                nome=nome,
+                cpf=cpf.replace('.', '').replace('-', ''),
+                cargo=cargo,  # Associando o cargo à mão de obra
+            )
+            mao_de_obra.save()
+            return redirect('dashboard')
+        else:
+            # Retorne uma mensagem de erro informando que o CPF já existe
+            error_message = "Já existe um registro com o mesmo CPF."
+            return render(request, 'dashboard1.html', {'error_message': error_message})
+    
     return render(request, 'dashboard1.html')
 
 def buscar_colaborador(request): 
