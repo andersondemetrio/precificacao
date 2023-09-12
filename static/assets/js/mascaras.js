@@ -1,3 +1,5 @@
+// // Todos os scripts daqui estão em document_mask.js
+
 // $(document).ready(function () {
 //     // Aplicar a máscara de CPF
 //     $('#cpfInput').mask('000.000.000-00');
@@ -18,3 +20,4 @@
 //         }
 //     });
 // });
+// Todos os scripts daqui estão em document_mask.js

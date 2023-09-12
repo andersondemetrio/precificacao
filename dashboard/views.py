@@ -106,21 +106,29 @@ def alterar_senha(request):
 
 
 # Funções do CRUD de Colaboradores
-
 def inserir_mao_de_obra(request):
     if request.method == 'POST':
         matricula = request.POST['matricula']
         nome = request.POST['nome']
         cpf = request.POST['cpf']
 
+        # Verifique se já existe um registro com o mesmo CPF
+        if not Colaboradores.objects.filter(cpf=cpf.replace('.', '').replace('-', '')):
+            #cargo = Cargos.objects.get(id=cargo_id)
         
-        mao_de_obra = Colaboradores(
-            matricula=matricula,
-            nome=nome,
-            cpf=cpf.replace('.', '').replace('-', ''),
-        )
-        mao_de_obra.save()
-        return redirect('dashboard')
+            mao_de_obra = Colaboradores(
+                matricula=matricula,
+                nome=nome,
+                cpf=cpf.replace('.', '').replace('-', ''),
+               # cargo=cargo,  # Associando o cargo à mão de obra
+            )
+            mao_de_obra.save()
+            return redirect('dashboard')
+        else:
+            # Retorne uma mensagem de erro informando que o CPF já existe
+            error_message = "Já existe um registro com o mesmo CPF."
+            return render(request, 'dashboard1.html', {'error_message': error_message})
+    
     return render(request, 'dashboard1.html')
 
 def buscar_colaborador(request): 
@@ -1055,13 +1063,21 @@ def colaboradores_view_filter(request):
     return JsonResponse({"colaboradores": colaboradores_datas})
 
 
-# Verifica se o CPF não existe
+#Verifica se o CPF não existe
 def verificar_cpf(request):
     cpf = request.GET.get('cpf')
     if Colaboradores.objects.filter(cpf=cpf).exists():
         return JsonResponse({'cpf_existe': True})
     else:
         return JsonResponse({'cpf_existe': False})
+
+# def verificar_cpf(request):
+#     cpf = request.GET.get('cpf')
+
+#     return JsonResponse({
+#         'cpf_existe': Colaboradores.objects.filter(cpf=cpf).exists()
+#     })
+
 
 def verificar_matricula(request):
     matricula = request.GET.get('matricula')
@@ -1103,55 +1119,6 @@ def verificar_numero(request):
         print(numero_empresa)
         return JsonResponse({'numero_existe' : False})
 
-
-# def export_pdf_condominio(request):
-#     response = HttpResponse(content_type='application/pdf')
-#     response['Content-Disposition'] = 'attachment; filename="auxiliar_calculo.pdf"'
-
-#     buffer = io.BytesIO()
-#     doc = SimpleDocTemplate(buffer, pagesize=landscape(A3))
-
-#     data = []
-#     auxiliares = AuxiliarCalculo.objects.all()  # Use o queryset apropriado aqui
-
-#     # Adicionar os nomes das colunas como a primeira linha dos dados
-#     data.append([
-#         'Total Salários Gestores', 'Total Salários Prestadores', 'Total Prestadores',
-#         'Total Meses Condomínio', 'Total Gastos Condomínio', 'Total Meses Calendário',
-#         'Total Meses Horas Produtivas','Custo Hora Condominio'
-#     ])
-
-#     for auxiliar in auxiliares:
-#         data.append([
-#             f"R$ {auxiliar.total_salarios_gestores:.2f}",
-#             f"R$ {auxiliar.total_salarios_prestadores:.2f}",
-#             auxiliar.total_prestadores,
-#             auxiliar.total_meses_condominio,
-#             f"R$ {auxiliar.total_gastos_condominio:.2f}",
-#             auxiliar.total_meses_calendario,
-#             f"R$ {auxiliar.total_meses_horasprodutivas:.2f}",
-#              f"R${auxiliar.total_gastos_condominio / auxiliar.total_meses_horasprodutivas:.2f}"
-#         ])
-
-#     table = Table(data)
-#     style = TableStyle([
-#         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-#         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-#         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-#         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-#         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-#         ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-#         ('GRID', (0, 0), (-1, -1), 1, colors.black)
-#     ])
-
-#     table.setStyle(style)
-#     elements = [table]
-
-#     doc.build(elements)
-#     response.write(buffer.getvalue())
-#     buffer.close()
-
-#     return response
 
 def export_pdf_condominio(request):
     # Crie um arquivo temporário para o PDF

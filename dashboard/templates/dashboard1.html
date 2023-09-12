@@ -34,7 +34,8 @@
     <script defer src="{% static 'assets/js/mascaras_cnpj.js' %}"></script>
     <script defer src="{% static 'assets/js/mascaras_email.js' %}"></script>
     <script defer src="{% static 'assets/js/mascaras_telefone.js' %}"></script>
-    <script defer src="{% static 'assets/js/mascaras_cpf.js' %}"></script>
+    <!--script defer src="{% static 'assets/js/mascaras_cpf.js' %}"></script-->
+    <script defer src="{% static 'assets/js/document_mask.js' %}"></script>
     <script defer src="{% static 'assets/js/validacao_numero.js' %}"></script>
     <script defer src="{% static 'assets/js/validacao_matricula.js' %}"></script>
 
@@ -375,7 +376,7 @@
                         <div class="endereco-container">
                             <div class="mb-3">
                                 <label for="cep" class="form-label">CEP</label>
-                                <input type="text" class="form-control" id="cepInput" name="cep" required>
+                                <input type="number" class="form-control" id="cepInput" name="cep" required maxlength="8">
                             </div>
                             <button type="button" class="btn btn-primary" id="btnBuscarCEP">Buscar CEP</button>
                         

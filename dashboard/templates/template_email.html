@@ -18,14 +18,14 @@
 <body>
     <div class="div-logo">
         <p>Olá, aqui estão os valores do modelo AuxiliarCalculo:</p>
-        <p>Total Salários Gestores: {{ auxiliar_calculo.total_salarios_gestores }}</p>
-        <p>Total Salários Prestadores: {{ auxiliar_calculo.total_salarios_prestadores }}</p>
+        <p>Total Salários Gestores: R$ {{ auxiliar_calculo.total_salarios_gestores }}</p>
+        <p>Total Salários Prestadores: R$ {{ auxiliar_calculo.total_salarios_prestadores }}</p>
         <p>Total Prestadores: {{ auxiliar_calculo.total_prestadores }}</p>
         <p>Total Meses Condomínio: {{ auxiliar_calculo.total_meses_condominio }}</p>
-        <p>Total Gastos Condomínio: {{ auxiliar_calculo.total_gastos_condominio }}</p>
+        <p>Total Gastos Condomínio: R$ {{ auxiliar_calculo.total_gastos_condominio }}</p>
         <p>Total Meses Calendário: {{ auxiliar_calculo.total_meses_calendario }}</p>
         <p>Total Meses Horas Produtivas: {{ auxiliar_calculo.total_meses_horasprodutivas }}</p>
-        <p>Hora Condominio: R{{ hora_condominio|floatformat:2 }}</p>
+        <p>Hora Condominio: R$ {{ hora_condominio|floatformat:2 }}</p>
         
         <!-- Adicione outros elementos personalizados aqui -->
     </div>
