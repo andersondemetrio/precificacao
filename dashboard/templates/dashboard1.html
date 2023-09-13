@@ -864,7 +864,7 @@
             <span class="close">&times;</span>
           </div>
           <div class="modal-body">
-            <form id="searchFormVincularCargos" method="get" action="{% url 'buscar_beneficio' %}">
+            <form id="searchFormVincularCargos" method="get" action="{% url 'buscar_vinculo' %}">
                 <div class="">
                     <div class="input-group div-modal-person">
                         <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar por Orçamento">
@@ -893,7 +893,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{% url 'inserir_beneficio' %}" id="searchFormVincularCargos">
+                    <form method="post" action="{% url 'inserir_vinculo' %}" id="FormVincularCargos">
                         {% csrf_token %}
                         <div class="mb-3 d-flex flex-column">
                             <label for="cargos" class="form-label">Cargo</label>

@@ -598,6 +598,24 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Cadastro de Vinculos (msg em tela e não fecha modal)
+    $(document).ready(function() {
+        $("#FormVincularCargos").submit(function(event) {
+            event.preventDefault();
+            // Fazer uma requisição AJAX para enviar os dados do formulário
+            $.ajax({
+                type: "POST",
+                url: "inserir_vinculo/",
+                data: $(this).serialize(),
+                success: function(response) {
+                    $("#FormVincularCargos input[type=text], #FormVincularCargos input[type=number]").val("");
+                    $("#successMessageVinculo").show();
+                    $(".inputCargoS").val("");
+                }
+            });
+        });
+    });
+
     // Cadastro Encargo (msg em tela e não fecha modal)
     $(document).ready(function() {
         $("#formEncargo").submit(function(event) {

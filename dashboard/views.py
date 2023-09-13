@@ -21,7 +21,7 @@ from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
 import random
-from .models import GastosFixos, Colaboradores, Cargos, Endereco, Empresa, CalendarioMensal, Employee, Beneficios
+from .models import GastosFixos, Colaboradores, Cargos, Endereco, Empresa, CalendarioMensal, Employee, Beneficios, DescricaoObra
 import csv
 
 from reportlab.lib import colors
@@ -764,6 +764,66 @@ def deletar_beneficio(request, beneficio_id):
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
 
 
+#Funções do CRUD de Vincular Cargos
+
+def inserir_vinculo(request):
+    if request.method == 'POST':
+        horas = request.POST['horas']
+        quantidade = request.POST['quantidade']
+        orcamento_id = request.POST['numeroOrcamento']
+        cargo_id = request.POST['cargos']
+        cargo = Cargos.objects.get(id=cargo_id)
+        
+        auxiliar_calculo = AuxiliarCalculo.objects.first()
+        
+        vinculo = DescricaoObra.objects.create(
+            cargo=cargo,
+            horas=horas,
+            quantidade=quantidade,
+            orcamento_id=orcamento_id,
+            custo_mod=0,
+            custo_hora_con=0,
+            custo_total=0,
+            auxiliarcalculo=auxiliar_calculo
+        )
+        vinculo.save()
+        # calcular_soma_beneficio_funcionario(request)
+        
+        return redirect('dashboard')
+    return render(request, 'dashboard1.html')
+
+def buscar_vinculo(request): 
+    q = request.GET.get('search')   
+    vinculo = DescricaoObra.objects.filter(orcamento_id__icontains=q).order_by('orcamento_id', 'cargo__nome_cargo')
+    return render(request, 'pesquisa_vinculo.html', {'vinculo': vinculo})
+
+def vinculo_view(request):
+    vinculo = DescricaoObra.objects.all()
+    vinculo_list = [
+        {
+            'id': vinculo.id,
+            'vinculo': f"{vinculo.id}, {vinculo.horas}, {vinculo.quantidade}, {vinculo.orcamento_id}, {vinculo.custo_mod}, {vinculo.custo_hora_con}, {vinculo.custo_total}"
+        }
+        for vinculo in vinculo
+    ]
+    return JsonResponse({'vinculo': vinculo_list})
+
+def deletar_vinculo(request, vinculo_id):
+    if request.method == 'POST':
+        try:
+            vinculo = DescricaoObra.objects.get(pk=vinculo_id)
+            vinculo.delete()
+            # calcular_soma_beneficio_funcionario(request)
+            return redirect('dashboard')
+        except DescricaoObra.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
+    else:
+        try:
+            vinculo = DescricaoObra.objects.get(pk=vinculo_id)
+            return render(request, 'confirm_delete.html')
+        except DescricaoObra.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Registro não encontrado"})
+        
 
 def inserir_data(request):
     return render(request, 'dashboard1.html', context={})    
@@ -1228,6 +1288,7 @@ def export_csv_condominio(request):
     filename = f"auxiliar_calculo_{timestamp}.csv"
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
+    response.write(codecs.BOM_UTF8)
     # Crie o objeto CSV
     writer = csv.writer(response, delimiter=';')
     
