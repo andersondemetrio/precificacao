@@ -136,6 +136,7 @@
                             <i class="fa fa-clipboard"></i>Orçamento</a>
                             <div id="precificacaoCollapse" class="collapse">
                                 <ul class="ul-item">
+                                    <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#">Vincular Cargos</a></li>
                                     <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalPrecificacao">Cadastrar Orçamento</a></li>
                                     <li class="li-pad"><a class="nav-sub" href="#">Memórias de Cálculos</a></li>
                                 </ul>
@@ -853,6 +854,72 @@
         </div>
     </div>
 	<!--Fim modal / CALENDÁRIO -->
+
+    
+    <!--Início modal Personalizado / VINCULAR CARGOS -->
+    <div id="myModalVincularCargos" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Vincular Cargos</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormVincularCargos" method="get" action="{% url 'buscar_beneficio' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar por Orçamento">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalPerfilVincularCargos">Cadastrar Vínculo</button>
+                    </div>
+                </div>
+            </form>
+            <table id="searchResultsTableVincularCargos">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim modal Personalizado / VINCULAR CARGOS -->
+    <!-- Começo Modal / VINCULAR CARGOS -->
+    <div class="modal fade" id="modalPerfilBeneficios" tabindex="-1" aria-labelledby="modalPerfilBeneficioLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalPerfilBeneficioLabel">Cadastrar Benefício</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_beneficio' %}" id="formBeneficio">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="funcionario" class="form-label">Funcionário</label>
+                            <select class="form-select funcionarioInputS" id="funcionarioInput" name="funcionario" required>
+                                <!-- Popule as opções usando o JavaScript -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descricao" class="form-label">Descricão</label>
+                            <input type="text" class="form-control" id="descricao" name="descricao" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="valor" class="form-label">Valor</label>
+                            <input type="text" class="form-control" id="valor" name="valor" required>
+                        </div>
+                        <p id="successMessageBeneficio" class="text-success" style="display: none;">Benefício cadastrado com sucesso!</p>
+                        <button type="submit" class="btn btn-primary">Cadastrar Benefício</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim modal / VINCULAR CARGOS -->
 
 
     <!-- Começo Modal / RELATÓRIO ENCARGO -->
