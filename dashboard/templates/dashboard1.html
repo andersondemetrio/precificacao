@@ -376,7 +376,8 @@
                         <div class="endereco-container">
                             <div class="mb-3">
                                 <label for="cep" class="form-label">CEP</label>
-                                <input type="number" class="form-control" id="cepInput" name="cep" required maxlength="8">
+                                <input type="text" class="form-control" id="cepInput" name="cep" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+
                             </div>
                             <button type="button" class="btn btn-primary" id="btnBuscarCEP">Buscar CEP</button>
                         

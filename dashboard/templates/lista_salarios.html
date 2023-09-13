@@ -40,6 +40,7 @@
                                     <th class="table_tam">Custo Salário</th>
                                     <th class="table_tam">Rateio</th>
                                     <th class="table_tam">Custo Mês</th>
+                                    <th class="table_tam">Beneficios</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,6 +60,7 @@
                                     <td class="text-monospace">R$ {{ employee.custo_salario|floatformat:2 }}</td>
                                     <td>R$ {{ employee.rateio|floatformat:2 }}</td>
                                     <td class="text-monospace">R$ {{ employee.custo_mes|floatformat:2 }}</td>
+                                    <td class="text-monospace">R$ {{ employee.beneficios|floatformat:2 }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

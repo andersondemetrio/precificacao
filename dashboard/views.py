@@ -161,6 +161,23 @@ def editar_colaborador(request, id):
 
     return render(request, 'dashboard1.html', {'colaborador': colaborador})
 
+# def deletar_colaborador(request, colaborador_id):
+#     if request.method == 'POST':
+#         try:
+#             colaborador = Colaboradores.objects.get(pk=colaborador_id)
+#             colaborador.delete()
+#             atualizar_dados_banco()
+#             return redirect('dashboard')
+#         except Colaboradores.DoesNotExist:
+#             return JsonResponse({"success": False, "error": "Registro não encontrado"})
+#     else:
+#         try:
+#             colaborador = Colaboradores.objects.get(pk=colaborador_id)
+#             return render(request, 'confirm_delete.html')
+#         except colaborador.DoesNotExist:
+#             return JsonResponse({"success": False, "error": "Registro não encontrado"})
+
+
 def deletar_colaborador(request, colaborador_id):
     if request.method == 'POST':
         try:
@@ -174,9 +191,8 @@ def deletar_colaborador(request, colaborador_id):
         try:
             colaborador = Colaboradores.objects.get(pk=colaborador_id)
             return render(request, 'confirm_delete.html')
-        except colaborador.DoesNotExist:
+        except Colaboradores.DoesNotExist:  # Corrigido aqui
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
-
 
 # Funções do CRUD de cargos
 

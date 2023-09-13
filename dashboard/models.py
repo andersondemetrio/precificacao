@@ -116,6 +116,16 @@ class Employee(models.Model):
     colaborador = models.ForeignKey(Colaboradores, on_delete=models.CASCADE)
     cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE)
 
+# class DescricaoObra(models.Model):
+#     horas = models.CharField(max_length=100)
+#     quantidade = models.PositiveIntegerField(default=0)
+#     orcamento_id = models.PositiveIntegerField(default=0)
+#     custo_mod =  models.CharField(max_length=100)
+#     custo_hora_con =  models.CharField(max_length=100)
+#     custo_total =  models.CharField(max_length=100)
+#     cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE)
+#     auxiliarcalculo=models.ForeignKey(AuxiliarCalculo, on_delete=models.CASCADE)
+
 # class Rubrica(models.Model):
 #     tributos =  models.DecimalField(max_digits=10, decimal_places=2)
 #     compra_materiais=models.DecimalField(max_digits=10, decimal_places=2)
@@ -142,7 +152,7 @@ class Employee(models.Model):
 #     seguros_obra_dvs=models.DecimalField(max_digits=10, decimal_places=2)
 #     manutencao_conservacao=models.DecimalField(max_digits=10, decimal_places=2)
 #     distrato_multas=models.DecimalField(max_digits=10, decimal_places=2)
-#     funcionario = models.ForeignKey(Colaboradores, on_delete=models.CASCADE)
+#     funcionario = models.ForeignKey(Colaboradores, on_delete=models.CASCADE, related_name='rubricas_colaborador')
 #     auxiliarcalculo=models.ForeignKey(AuxiliarCalculo, on_delete=models.CASCADE)
 #     insumos = models.ForeignKey(Insumos, on_delete=models.CASCADE)
 
