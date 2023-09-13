@@ -136,7 +136,7 @@
                             <i class="fa fa-clipboard"></i>Orçamento</a>
                             <div id="precificacaoCollapse" class="collapse">
                                 <ul class="ul-item">
-                                    <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#">Vincular Cargos</a></li>
+                                    <li class="li-pad"><a class="nav-sub" id="openModalButtonVincularCargos">Vincular Cargos</a></li>
                                     <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalPrecificacao">Cadastrar Orçamento</a></li>
                                     <li class="li-pad"><a class="nav-sub" href="#">Memórias de Cálculos</a></li>
                                 </ul>
@@ -885,32 +885,35 @@
     </div>
     <!--Fim modal Personalizado / VINCULAR CARGOS -->
     <!-- Começo Modal / VINCULAR CARGOS -->
-    <div class="modal fade" id="modalPerfilBeneficios" tabindex="-1" aria-labelledby="modalPerfilBeneficioLabel" aria-hidden="true">
+    <div class="modal fade" id="modalPerfilVincularCargos" tabindex="-1" aria-labelledby="modalPerfilVincularCargos" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalPerfilBeneficioLabel">Cadastrar Benefício</h5>
+                    <h5 class="modal-title" id="modalPerfilVincularCargos">Cadastrar Vínculo</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{% url 'inserir_beneficio' %}" id="formBeneficio">
+                    <form method="post" action="{% url 'inserir_beneficio' %}" id="searchFormVincularCargos">
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="funcionario" class="form-label">Funcionário</label>
-                            <select class="form-select funcionarioInputS" id="funcionarioInput" name="funcionario" required>
-                                <!-- Popule as opções usando o JavaScript -->
+                        <div class="mb-3 d-flex flex-column">
+                            <label for="cargos" class="form-label">Cargo</label>
+                            <select class="form-select inputCargoS" name="cargos" required>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="descricao" class="form-label">Descricão</label>
-                            <input type="text" class="form-control" id="descricao" name="descricao" required>
+                            <label for="horas" class="form-label">Qtd Horas</label>
+                            <input type="text" class="form-control" id="horas" name="horas" required>
                         </div>
                         <div class="mb-3">
-                            <label for="valor" class="form-label">Valor</label>
-                            <input type="text" class="form-control" id="valor" name="valor" required>
+                            <label for="quantidade" class="form-label">Qtd Prestadores</label>
+                            <input type="text" class="form-control" id="quantidade" name="quantidade" required>
                         </div>
-                        <p id="successMessageBeneficio" class="text-success" style="display: none;">Benefício cadastrado com sucesso!</p>
-                        <button type="submit" class="btn btn-primary">Cadastrar Benefício</button>
+                        <div class="mb-3">
+                            <label for="numeroOrcamento" class="form-label">Nº Orçamento</label>
+                            <input type="text" class="form-control" id="numeroOrcamento" name="numeroOrcamento" required>
+                        </div>
+                        <p id="successMessageVinculo" class="text-success" style="display: none;">Vínculo cadastrado com sucesso!</p>
+                        <button type="submit" class="btn btn-primary">Cadastrar Vínculo</button>
                     </form>
                 </div>
                 <div class="modal-footer">

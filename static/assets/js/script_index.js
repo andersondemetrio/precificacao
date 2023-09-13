@@ -265,8 +265,6 @@ document.addEventListener('DOMContentLoaded', function () {
     popularSelectFuncionarioPorClasseC('funcionarioInputC');
 });
 
-
-//Função para buscar a lista de Cargos
 // Função para buscar a lista de Cargos
 function popularSelectCargoPorClasse(classeSelect) {
     const selects = document.querySelectorAll('.' + classeSelect);
@@ -482,6 +480,21 @@ openModalButtonBeneficios.addEventListener("click", () => {
 for (const closeButtonBen of closeButtonsBeneficios) {
     closeButtonBen.addEventListener("click", () => {
         modalBeneficios.style.display = "none";
+    });
+}
+
+// Função para abrir modal personalizado Vincular Cargos
+const openModalButtonVincularCargos = document.getElementById("openModalButtonVincularCargos");
+const modalVincularCargos = document.getElementById("myModalVincularCargos");
+const closeButtonsVincularCargos = document.getElementsByClassName("close");
+
+openModalButtonVincularCargos.addEventListener("click", () => {
+    modalVincularCargos.style.display = "block";
+});
+
+for (const closeButtonVinc of closeButtonsVincularCargos) {
+    closeButtonVinc.addEventListener("click", () => {
+        modalVincularCargos.style.display = "none";
     });
 }
 
