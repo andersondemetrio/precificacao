@@ -189,3 +189,27 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 });
+
+// Busca dinâmica de dados na tabela Benefícios
+document.addEventListener("DOMContentLoaded", function () {
+    const searchFormVincularCargos = document.getElementById("searchFormVincularCargos");
+    const modal = document.getElementById("myModal");
+
+    searchFormVincularCargos.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(searchFormVincularCargos);
+
+        fetch(searchFormVincularCargos.action + '?' + new URLSearchParams(formData), {
+            method: 'GET'
+        })
+            .then(response => response.text())
+            .then(data => {
+                const searchResultsTableVincularCargos = document.getElementById("searchResultsTableVincularCargos");
+                searchResultsTableVincularCargos.innerHTML = data; // Atualiza a tabela de resultados
+            })
+            .catch(error => {
+                console.error('Erro na busca:', error);
+            });
+    });
+});

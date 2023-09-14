@@ -62,7 +62,12 @@ urlpatterns = [
     path('inserir_beneficio/', inserir_beneficio, name='inserir_beneficio'),
     path('buscar_beneficio/', buscar_beneficio, name='buscar_beneficio'),
     path('beneficio_view/', beneficio_view, name='beneficio_view'),
-    path('deletar_beneficio/<int:beneficio_id>/', deletar_beneficio, name='deletar_beneficio'),  
+    path('deletar_beneficio/<int:beneficio_id>/', deletar_beneficio, name='deletar_beneficio'), 
+    
+    path('inserir_vinculo/', inserir_vinculo, name='inserir_vinculo'),  
+    path('buscar_vinculo/', buscar_vinculo, name='buscar_vinculo'),
+    path('vinculo_view/', vinculo_view, name='vinculo_view'),
+    path('deletar_vinculo/<int:vinculo_id>/', deletar_vinculo, name='deletar_vinculo'),   
     
     path('inserir_data/', inserir_data, name='inserir_data'),
     path('inserir_jornada/', inserir_jornada, name='inserir_jornada'),
