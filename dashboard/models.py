@@ -124,7 +124,11 @@ class DescricaoObra(models.Model):
     custo_hora_con =  models.CharField(max_length=100)
     custo_total =  models.CharField(max_length=100)
     cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE)
-    auxiliarcalculo=models.ForeignKey(AuxiliarCalculo, on_delete=models.CASCADE)
+    horas_produtivas = models.DecimalField(max_digits=10, decimal_places=2)
+    total_mod = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total_condominio = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total_custo = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    auxiliarcalculo= models.ForeignKey(AuxiliarCalculo, on_delete=models.CASCADE)
 
 class Rubrica(models.Model):
     tributos =  models.DecimalField(max_digits=10, decimal_places=2)

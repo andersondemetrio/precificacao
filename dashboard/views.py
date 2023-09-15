@@ -768,22 +768,55 @@ def deletar_beneficio(request, beneficio_id):
 
 def inserir_vinculo(request):
     if request.method == 'POST':
-        horas = request.POST['horas']
-        quantidade = request.POST['quantidade']
+        horas_str = request.POST['horas']
+        quantidade_str = request.POST['quantidade']
+        try:
+            horas = float(horas_str)
+            quantidade = float(quantidade_str)
+        except ValueError:
+            horas = 0.0
+            quantidade = 0.0
         orcamento_id = request.POST['numeroOrcamento']
         cargo_id = request.POST['cargos']
         cargo = Cargos.objects.get(id=cargo_id)
         
+        
         auxiliar_calculo = AuxiliarCalculo.objects.first()
+        horas_produtivas = auxiliar_calculo.total_meses_horasprodutivas
+        horas_condominio = round(auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_horasprodutivas / auxiliar_calculo.total_prestadores, 2)
+        horas_condominio = (float(horas_condominio))
+        
+        # Calcular a soma do custo_mes para todos os funcionários com o mesmo cargo
+        total_custo_mes = Employee.objects.filter(cargo=cargo).aggregate(Sum('custo_mes'))['custo_mes__sum']
+        
+        if total_custo_mes is None:
+            total_custo_mes = 0
+            
+        if horas_produtivas != 0:
+            resultado_custo_mod = round(total_custo_mes / horas_produtivas, 2)
+        else:
+            resultado_custo_mod = 0
+        
+        resultado_custo_mod = float(resultado_custo_mod)
+                
+        if total_custo_mes is None:
+            total_custo_mes = 0
+            
+        total_mod = round(horas * quantidade * resultado_custo_mod, 2)
+        total_condominio = round(horas * quantidade * horas_condominio, 2)
         
         vinculo = DescricaoObra.objects.create(
             cargo=cargo,
             horas=horas,
             quantidade=quantidade,
             orcamento_id=orcamento_id,
-            custo_mod=0,
-            custo_hora_con=0,
-            custo_total=0,
+            custo_mod=resultado_custo_mod,
+            custo_hora_con=horas_condominio,
+            custo_total=round(horas_condominio+resultado_custo_mod, 2),
+            horas_produtivas=horas_produtivas,
+            total_mod=total_mod,
+            total_condominio=total_condominio,
+            total_custo=round(total_mod + total_condominio, 2),
             auxiliarcalculo=auxiliar_calculo
         )
         vinculo.save()
@@ -1089,7 +1122,7 @@ def calcular_media_horas_produtivas(request):
     }
 
     return JsonResponse(response_data)
-
+    
 
 def calcular_soma_beneficio_funcionario(request):
     funcionarios = Colaboradores.objects.all()
