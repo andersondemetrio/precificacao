@@ -8,6 +8,7 @@ django-pagination==1.0.7
 Pillow==10.0.0
 psycopg2==2.9.7
 python-decouple==3.8
+pywin32==306
 reportlab==4.0.4
 soupsieve==2.4.1
 sqlparse==0.4.4
