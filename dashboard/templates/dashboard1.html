@@ -137,7 +137,7 @@
                             <div id="precificacaoCollapse" class="collapse">
                                 <ul class="ul-item">
                                     <li class="li-pad"><a class="nav-sub" id="openModalButtonVincularCargos">Vincular Cargos</a></li>
-                                    <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalPrecificacao">Cadastrar Orçamento</a></li>
+                                    <li class="li-pad"><a class="nav-sub" id="openModalButtonOrcamento">Cadastrar Orçamento</a></li>
                                     <li class="li-pad"><a class="nav-sub" href="#">Memórias de Cálculos</a></li>
                                 </ul>
                             </div>
@@ -560,10 +560,9 @@
                 <div class="modal-body">
                     <form method="post" action="{% url 'inserir_beneficio' %}" id="formBeneficio">
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="funcionario" class="form-label">Funcionário</label>
-                            <select class="form-select funcionarioInputS" id="funcionarioInput" name="funcionario" required>
-                                <!-- Popule as opções usando o JavaScript -->
+                        <div class="mb-3 d-flex flex-column">
+                            <label for="cargos" class="form-label">Cargo</label>
+                            <select class="form-select inputCargoS" name="cargos" required>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -923,6 +922,63 @@
         </div>
     </div>
     <!--Fim modal / VINCULAR CARGOS -->
+
+
+    <!--Início modal Personalizado / CADASTRAR ORÇAMENTO -->
+    <div id="myModalOrcamento" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Orçamentos</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormOrcamento" method="get" action="{% url 'buscar_orcamento' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Orçamento">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCriarOrcamento">Cadastrar Orçamento</button>
+                    </div>
+                </div>
+            </form>
+            <table id="searchResultsTableOrcamento">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim modal Personalizado / CADASTRAR ORÇAMENTO -->
+    <!-- Começo Modal / CRIAR ORÇAMENTO -->
+    <div class="modal fade" id="modalCriarOrcamento" tabindex="-1" aria-labelledby="modalCriarOrcamentoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalCriarOrcamentoLabel">Criar Novo Orçamento</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <form id="myForm" method="get" action="{% url 'inserir_orcamento' %}">
+                    {% csrf_token %}
+                    <div class="mb-3 d-flex flex-row justify-content-center align-items-center" style="width: 495px;">
+                        <label for="numeroNovoOrcamento" class="form-label" style="width: 120px;"><b>Identificador *</b></label>
+                        <input type="text" class="form-control" style="width: 310px;" id="numeroNovoOrcamento" name="numeroNovoOrcamento" required>
+                    </div>
+                    <div class="modal-footer d-flex flex-row justify-content-between align-items-center">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-dollar"></i> Novo Orçamento
+                        </button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar para o Dashboard</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>       
+    <!-- Fim Modal / CRIAR ORÇAMENTO -->
 
 
     <!-- Começo Modal / RELATÓRIO ENCARGO -->

@@ -213,3 +213,27 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 });
+
+// Busca dinâmica de dados na tabela Rubricas
+document.addEventListener("DOMContentLoaded", function () {
+    const searchFormOrcamento = document.getElementById("searchFormOrcamento");
+    const modal = document.getElementById("myModal");
+
+    searchFormOrcamento.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(searchFormOrcamento);
+
+        fetch(searchFormOrcamento.action + '?' + new URLSearchParams(formData), {
+            method: 'GET'
+        })
+            .then(response => response.text())
+            .then(data => {
+                const searchResultsTableOrcamento = document.getElementById("searchResultsTableOrcamento");
+                searchResultsTableOrcamento.innerHTML = data; // Atualiza a tabela de resultados
+            })
+            .catch(error => {
+                console.error('Erro na busca:', error);
+            });
+    });
+});

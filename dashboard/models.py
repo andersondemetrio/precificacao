@@ -21,8 +21,8 @@ class Cargos(models.Model):
     nome_cargo = models.CharField(max_length=100)
     salario = models.DecimalField(max_digits=10, decimal_places=2)
     
-    def __str__(self):
-        return self.nome
+    # def __str__(self):
+    #     return self.nome
 
 class HorasProdutivas(models.Model):
     data = models.DateField()
@@ -69,7 +69,7 @@ class Colaboradores(models.Model):
 class Beneficios(models.Model):
     descricao = models.CharField(max_length=100)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
-    funcionario = models.ForeignKey(Colaboradores, on_delete=models.CASCADE)
+    cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE)
 
 class GastosVariaveis(models.Model):
     colaborador = models.ForeignKey(Colaboradores, on_delete=models.CASCADE)
@@ -119,7 +119,7 @@ class Employee(models.Model):
 class DescricaoObra(models.Model):
     horas = models.CharField(max_length=100)
     quantidade = models.PositiveIntegerField(default=0)
-    orcamento_id = models.PositiveIntegerField(default=0)
+    orcamento_id = models.CharField(max_length=100)
     custo_mod =  models.CharField(max_length=100)
     custo_hora_con =  models.CharField(max_length=100)
     custo_total =  models.CharField(max_length=100)
@@ -131,6 +131,7 @@ class DescricaoObra(models.Model):
     auxiliarcalculo= models.ForeignKey(AuxiliarCalculo, on_delete=models.CASCADE)
 
 class Rubrica(models.Model):
+    orcamento_id = models.CharField(max_length=20)
     tributos =  models.DecimalField(max_digits=10, decimal_places=2)
     compra_materiais=models.DecimalField(max_digits=10, decimal_places=2)
     materiais_dvs=models.DecimalField(max_digits=10, decimal_places=2)
