@@ -17,6 +17,7 @@ import tempfile
 from reportlab.pdfgen import canvas
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
+from django.http import HttpResponseServerError
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -46,7 +47,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from io import BytesIO
-
+from django.db.models import Q
 
 import tempfile
 from reportlab.lib.pagesizes import landscape, A3
@@ -678,10 +679,54 @@ def inserir_encargo(request):
     
     return render(request, 'dashboard1.html')
 
-def buscar_encargo(request): 
-    q = request.GET.get('search')   
-    encargo = Employee.objects.filter(setor__icontains=q).order_by('id')
+from django.http import HttpResponseServerError
+
+def buscar_encargo(request):
+    q = request.GET.get('search')
+    print(f'Valor de q: {q}')  # Adicione esta linha para depurar o valor de q
+
+    encargo = Employee.objects.all()  # Começa com todos os registros
+
+    if q:
+        if q.isdigit():
+            # Tente buscar o colaborador pelo ID
+            encargo = encargo.filter(id=q)
+        else:
+            # Tente buscar o colaborador pelo nome do colaborador ou setor
+            encargo = encargo.filter(
+                Q(colaborador__nome__icontains=q) | Q(setor__icontains=q)
+            ).order_by('id')
+
+    if not encargo:
+        # Se nenhum resultado for encontrado, lance um erro 500 (Internal Server Error)
+        print('Nenhum colaborador encontrado')  # Mensagem de depuração
+        return HttpResponseServerError('Nenhum colaborador encontrado')
+
     return render(request, 'pesquisa_encargo.html', {'encargo': encargo})
+
+
+def buscar_encargo_1(request): 
+    q = request.GET.get('search')
+    print(f'Valor de q: {q}')  # Adicione esta linha para depurar o valor de q
+
+    encargo = Employee.objects.all()  # Começa com todos os registros
+
+    if q:
+        if q.isdigit():
+            # Tente buscar o colaborador pelo ID
+            encargo = encargo.filter(id=q)
+        else:
+            # Tente buscar o colaborador pelo nome do colaborador ou setor
+            encargo = encargo.filter(
+                Q(colaborador__nome__icontains=q) | Q(setor__icontains=q)
+            ).order_by('id')
+
+    if not encargo:
+        # Se nenhum resultado for encontrado, lance um erro 500 (Internal Server Error)
+        print('Nenhum colaborador encontrado')  # Mensagem de depuração
+        return HttpResponseServerError('Nenhum colaborador encontrado')
+    return render(request, 'pesquisa_encargo1.html', {'encargo': encargo})
+
 
 def encargo_view(request):
     encargo = Employee.objects.all()
@@ -1428,3 +1473,87 @@ def enviar_email_personalizado(request, auxiliar_calculo_id):
         return render(request, 'email_condominio.html')
 
     return render(request, 'dashboard1.html', {'auxiliar_calculo': auxiliar_calculo})
+from django.http import HttpResponse
+import io
+from django.shortcuts import render
+from .models import Employee
+
+def imprimir_tabela(request):
+    # Crie uma resposta HTTP com tipo de conteúdo HTML
+    response = HttpResponse(content_type='text/html; charset=utf-8')
+
+    # Abra um buffer para escrever os dados HTML
+    buffer = io.StringIO()
+
+    # Crie uma tabela HTML
+    buffer.write('<table border="1">')
+    buffer.write('<thead>')
+    buffer.write('<tr>')
+    buffer.write('<th>Colaborador</th>')
+    buffer.write('<th>Salário</th>')
+    buffer.write('<th>Setor</th>')
+    buffer.write('<th>Cargo</th>')
+    buffer.write('<th>Periculosidade</th>')
+    buffer.write('<th>FGTS</th>')
+    buffer.write('<th>1/3 Férias</th>')
+    buffer.write('<th>FGTS Férias</th>')
+    buffer.write('<th>13º Salário</th>')
+    buffer.write('<th>FGTS 13º</th>')
+    buffer.write('<th>Multa Rescisória</th>')
+    buffer.write('<th>Custo Salário</th>')
+    buffer.write('<th>Rateio</th>')
+    buffer.write('<th>Custo Mês</th>')
+    buffer.write('</tr>')
+    buffer.write('</thead>')
+    buffer.write('<tbody>')
+
+    employees = Employee.objects.all()  # Use o queryset apropriado
+
+    for employee in employees:
+        buffer.write('<tr>')
+        buffer.write(f'<td>{employee.colaborador.nome}</td>')
+        buffer.write(f'<td>R$ {employee.cargo.salario:.2f}</td>')
+        buffer.write(f'<td>{employee.setor}</td>')
+        buffer.write(f'<td>{employee.cargo.nome_cargo}</td>')
+        buffer.write(f'<td>R$ {employee.periculosidade:.2f}</td>')
+        buffer.write(f'<td>R$ {employee.fgts:.2f}</td>')
+        buffer.write(f'<td>R$ {employee.um_terco_ferias:.2f}</td>')
+        buffer.write(f'<td>R$ {employee.fgts_ferias:.2f}</td>')
+        buffer.write(f'<td>R$ {employee.decimo_terceiro:.2f}</td>')
+        buffer.write(f'<td>R$ {employee.fgts_decimo_terceiro:.2f}</td>')
+        buffer.write(f'<td>R$ {employee.multa_rescisoria:.2f}</td>')
+        buffer.write(f'<td>R$ {employee.custo_salario:.2f}</td>')
+        buffer.write(f'<td>R$ {employee.rateio:.2f}</td>')
+        buffer.write(f'<td>R$ {employee.custo_mes:.2f}</td>')
+        buffer.write('</tr>')
+
+    buffer.write('</tbody>')
+    buffer.write('</table>')
+
+    # Adicione o botão para acionar a impressão
+    buffer.write('<button class="botao-imprimir" onclick="imprimir()">Imprimir</button>')
+
+    # Adicione o código CSS para ocultar o botão durante a impressão
+    buffer.write('<style>')
+    buffer.write('@media print {')
+    buffer.write('  .botao-imprimir {')
+    buffer.write('    display: none;')
+    buffer.write('  }')
+    buffer.write('  @page {')
+    buffer.write('    header: "Impressão Cargos";')  # Defina o título no cabeçalho da página impressa
+    buffer.write('  }')
+    buffer.write('}')
+    buffer.write('</style>')
+
+    # Adicione o código JavaScript no final da página
+    buffer.write('<script>')
+    buffer.write('function imprimir() {')
+    buffer.write('  window.print();')
+    buffer.write('}')
+    buffer.write('</script>')
+
+    # Feche o buffer e defina o conteúdo da resposta HTTP
+    buffer.seek(0)
+    response.content = buffer.read()
+
+    return response
