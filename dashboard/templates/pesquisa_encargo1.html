@@ -69,10 +69,9 @@
         {% endfor %}
     </table>
     <div class="d-flex justify-content-center mt-3 div-button">
-        <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-sm mr-2">Voltar</a>
-        <a href="{% url 'export_csv' %}" class="btn btn-success btn-sm mr-2">CSV</a>
-        <a href="{% url 'export_pdf' %}" class="btn btn-danger btn-sm">PDF</a>
-        <a href="{% url 'imprimir_tabela' %}" class="btn btn-success btn-sm mr-2">Impressora</a>
+        <a href="{% url 'export_csv' %}" class="btn btn-success btn-sm mr-2">Gerar CSV</a>
+        <a href="{% url 'export_pdf' %}" class="btn btn-danger btn-sm">Gerar PDF</a>
+        <a href="{% url 'imprimir_tabela' %}" class="btn btn-success btn-sm mr-2">Imprimir</a>
     
 </body>
 </html>
