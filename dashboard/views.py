@@ -22,7 +22,7 @@ from django.http import HttpResponseServerError
 from django.core.mail import send_mail
 from django.conf import settings
 import random
-from .models import GastosFixos, Colaboradores, Cargos, Endereco, Empresa, CalendarioMensal, Employee, Beneficios, DescricaoObra
+from .models import GastosFixos, Colaboradores, Cargos, Endereco, Empresa, CalendarioMensal, Employee, Beneficios, DescricaoObra, Rubrica
 import csv
 
 from reportlab.lib import colors
@@ -762,13 +762,14 @@ def inserir_beneficio(request):
     if request.method == 'POST':
         descricao = request.POST['descricao']
         valor = request.POST['valor']
-        colaborador_id = request.POST['funcionario']
-        colaborador = Colaboradores.objects.get(id=colaborador_id)
+        cargo_id = request.POST['cargos']
+        cargo = Cargos.objects.get(pk=cargo_id)
+
         
         beneficio = Beneficios(
             descricao=descricao,
             valor=valor,
-            funcionario=colaborador,
+            cargo=cargo,
         )
         beneficio.save()
         calcular_soma_beneficio_funcionario(request)
@@ -778,7 +779,7 @@ def inserir_beneficio(request):
 
 def buscar_beneficio(request): 
     q = request.GET.get('search')   
-    beneficio = Beneficios.objects.filter(descricao__icontains=q).order_by('funcionario_id')
+    beneficio = Beneficios.objects.filter(descricao__icontains=q).order_by('cargo_id')
     return render(request, 'pesquisa_beneficio.html', {'beneficio': beneficio})
 
 def beneficio_view(request):
@@ -901,7 +902,54 @@ def deletar_vinculo(request, vinculo_id):
             return render(request, 'confirm_delete.html')
         except DescricaoObra.DoesNotExist:
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
-        
+
+
+#Funções do CRUD do Orçamento   
+
+def inserir_orcamento(request):
+    numero_novo_orcamento = request.GET.get('numeroNovoOrcamento', '')
+
+    # if request.method == 'POST':
+    #     # Lidar com a solicitação POST, se necessário
+    
+    descricao_obras = DescricaoObra.objects.filter(orcamento_id=numero_novo_orcamento)
+    
+    total = 0
+    
+    for descricao_obra in descricao_obras:
+        # Consulte a tabela Beneficios para encontrar registros correspondentes
+        beneficios = Beneficios.objects.filter(cargo_id=descricao_obra.cargo_id)
+
+        # Para cada registro correspondente na tabela Beneficios, calcule o valor e adicione ao total
+        for beneficio in beneficios:
+            total += beneficio.valor * descricao_obra.quantidade
+
+    # Calcule a soma dos valores
+    custo_total = sum(descricao.total_mod for descricao in descricao_obras)
+    total_prestadores = sum(descricao.quantidade for descricao in descricao_obras)
+    custo_condominio = sum(descricao.total_condominio for descricao in descricao_obras)
+
+    return render(request, 'novo_orcamento.html', {'numero_novo_orcamento': numero_novo_orcamento,
+                'custo_total': custo_total, 'custo_condominio': custo_condominio, 'total': total,
+                'total_prestadores': total_prestadores})
+
+def buscar_orcamento(request): 
+    q = request.GET.get('search')   
+    orcamento = Rubrica.objects.filter(orcamento_id__icontains=q).order_by('orcamento_id')
+    return render(request, 'pesquisa_orcamento.html', {'orcamento': orcamento})
+
+def orcamento_view(request):
+    orcamento = Rubrica.objects.all()
+    orcamento_list = [
+        {
+            'id': orcamento.id,
+            'orcamento': f"{orcamento.id}"
+        }
+        for orcamento in orcamento
+    ]
+    return JsonResponse({'orcamento': orcamento_list})
+
+ 
 
 def inserir_data(request):
     return render(request, 'dashboard1.html', context={})    
@@ -1170,26 +1218,26 @@ def calcular_media_horas_produtivas(request):
     
 
 def calcular_soma_beneficio_funcionario(request):
-    funcionarios = Colaboradores.objects.all()
+    cargos = Cargos.objects.all()
     
     resultados = []
 
-    for funcionario in funcionarios:
-        soma_beneficios = Beneficios.objects.filter(funcionario=funcionario).aggregate(Sum('valor'))['valor__sum'] or 0
+    for cargo in cargos:
+        soma_beneficios = Beneficios.objects.filter(cargo=cargo).aggregate(Sum('valor'))['valor__sum'] or 0
 
         # Cria um dicionário com as informações do funcionário e a soma dos benefícios
         resultado = {
-            'funcionario': funcionario,
+            'cargo': cargo,
             'soma_beneficios': soma_beneficios
         }
 
         # Adiciona o resultado à lista
         resultados.append(resultado)
         
-        print(f"Soma dos benefícios para o funcionário {funcionario.nome}: R$ {soma_beneficios}")
+        print(f"Soma dos benefícios para o cargo {cargo.nome_cargo}: R$ {soma_beneficios}")
         
         # Atualiza os valores na tabela Employee para o funcionário atual
-        Employee.objects.filter(colaborador=funcionario).update(beneficios=soma_beneficios)
+        Employee.objects.filter(cargo_id=cargo).update(beneficios=soma_beneficios)
 
     return render(request, 'dashboard1.html', {'resultados': resultados})
 

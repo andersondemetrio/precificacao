@@ -72,6 +72,10 @@ urlpatterns = [
     path('vinculo_view/', vinculo_view, name='vinculo_view'),
     path('deletar_vinculo/<int:vinculo_id>/', deletar_vinculo, name='deletar_vinculo'),   
     
+    path('inserir_orcamento/', inserir_orcamento, name='inserir_orcamento'),
+    path('buscar_orcamento/', buscar_orcamento, name='buscar_orcamento'),
+    path('orcamento_view/', orcamento_view, name='orcamento_view'),  
+    
     path('inserir_data/', inserir_data, name='inserir_data'),
     path('inserir_jornada/', inserir_jornada, name='inserir_jornada'),
     path('inserir_horas/', inserir_horas, name='inserir_horas'),      

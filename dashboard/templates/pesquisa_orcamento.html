@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Pesquisa Beneficios</title>
+    <title>Pesquisa Orçamento</title>
     <link rel="stylesheet" href="{% static 'assets/css/tabelas.css' %}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -17,22 +17,29 @@
     <thead>    
         <tr>
             <th>Id</th>
-            <th>Cargo</th>
-            <th>Descrição</th>
-            <th>Valor</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Status</th>
             <th></th>
         </tr>
     </thead>    
-    {% for beneficio in beneficio %}
+    {% for orcamento in orcamento %}
         <tr>
-            <td>{{ beneficio.id }}</td>
-            <td>{{ beneficio.cargo.nome_cargo }}</td>
-            <td>{{ beneficio.descricao }}</td>
-            <td>{{ beneficio.valor }}</td>
+            <td>{{ orcamento.id }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td> 
+            <td></td> 
             <td>
-                <a href="{% url 'deletar_beneficio' beneficio.id %}">
-                    <i class="bi bi-trash-fill delete-icon"></i>
+                {% comment %} <a href="{% url 'detalhes_endereco' endereco.id %}">
+                    <i class="bi bi-pencil-fill"></i>
                 </a>
+                <a href="{% url 'deletar_endereco' endereco.id %}">
+                    <i class="bi bi-trash-fill delete-icon"></i>
+                </a> {% endcomment %}
             </td>
         </tr>
     {% endfor %}
