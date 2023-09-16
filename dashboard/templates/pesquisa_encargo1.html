@@ -1,0 +1,78 @@
+{% load bootstrap4 %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Listar Salários</title>
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/relatorio.css' %}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="{% static 'assets/js/format_valor.js' %}"></script>
+    <script>
+        function imprimirTabela() {
+            var tabela = document.querySelector('table');
+            var janelaImpressao = window.open('', '', 'width=800,height=600');
+            janelaImpressao.document.write('<html><head><title>Tabela de Salários</title></head><body>');
+            janelaImpressao.document.write(tabela.outerHTML);
+            janelaImpressao.document.write('</body></html>');
+            janelaImpressao.document.close();
+            janelaImpressao.print();
+            janelaImpressao.close();
+        }
+    </script>
+</head>
+<body >
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Colaborador</th>
+                <th>Setor</th>
+                <th>Cargo</th>
+                <th>Salário</th>
+                <th>Periculosidade</th>
+                <th>FGTS</th>
+                <th>1/3 Férias</th>
+                <th>FGTS Férias</th>
+                <th>13º Salário</th>
+                <th>FGTS 13º</th>
+                <th>Multa Rescisória</th>
+                <th>Custo Salário</th>
+                <th>Rateio</th>
+                <th>Custo Mês</th>
+            </tr>
+        </thead>
+        {% for encargo in encargo %}
+        <tr>
+            <td>{{ encargo.id }}</td>
+            <td>{{ encargo.colaborador.nome }}</td>
+            <td>{{ encargo.setor }}</td>
+            <td>{{ encargo.cargo.nome_cargo }}</td>
+            <td class="font-weight-bold">R$ {{ encargo.cargo.salario|floatformat:2 }}</td>
+            <td class="text-success">R$ {{ encargo.periculosidade|floatformat:2 }}</td>
+            <td class="text-info">R$ {{ encargo.fgts|floatformat:2 }}</td>
+            <td class="text-primary">R$ {{ encargo.um_terco_ferias|floatformat:2 }}</td>
+            <td class="text-warning">R$ {{ encargo.fgts_ferias|floatformat:2 }}</td>
+            <td class="text-success">R$ {{ encargo.decimo_terceiro|floatformat:2 }}</td>
+            <td class="text-info">R$ {{ encargo.fgts_decimo_terceiro|floatformat:2 }}</td>
+            <td class="text-danger">R$ {{ encargo.multa_rescisoria|floatformat:2 }}</td>
+            <td class="text-monospace">R$ {{ encargo.custo_salario|floatformat:2 }}</td>
+            <td>R$ {{ encargo.rateio|floatformat:2 }}</td>
+            <td class="text-monospace">R$ {{ encargo.custo_mes|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div class="d-flex justify-content-center mt-3 div-button">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-sm mr-2">Voltar</a>
+        <a href="{% url 'export_csv' %}" class="btn btn-success btn-sm mr-2">CSV</a>
+        <a href="{% url 'export_pdf' %}" class="btn btn-danger btn-sm">PDF</a>
+        <a href="{% url 'imprimir_tabela' %}" class="btn btn-success btn-sm mr-2">Impressora</a>
+    
+</body>
+</html>

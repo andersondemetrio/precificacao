@@ -160,3 +160,17 @@ th {
 .btn-tam {
   width: 200px;
 }
+
+@media print {
+  .table-container table {
+      width: 100%; /* Defina a largura da tabela durante a impressão */
+  }
+  
+  .table-container table td,
+  .table-container table th {
+      font-size: 12px; /* Tamanho da fonte durante a impressão */
+      text-align: center; /* Alinhamento de texto durante a impressão */
+  }
+  
+  /* Adicione outros estilos específicos, se necessário */
+}
