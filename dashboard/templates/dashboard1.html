@@ -150,6 +150,9 @@
                                         <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalRelatorios">DRE</a></li>
                                         <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalEngargoslista">Encargos</a></li>
                                         <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalHoraslista">Valor Hora Fixa</a></li>
+                                        <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalEncargosRelatorios">Encargos Filtro</a></li>
+                                        
+
                             </ul>
                         </div>
                     </li>
@@ -1033,5 +1036,33 @@
         </div>
     </div>       
     <!-- Fim Modal / RELATÓRIO HORA CONDOMÍNIO -->
+
+    <!-- Começo Modal com Filtros -->
+
+
+    <div id="modalEncargosRelatorios" class="modal">
+        <div class="modal-personalizado">
+            <div class="modal-header">
+                <p class="p-modal-person mb-0">Encargos</p>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="searchFormEncargosRelatorios" method="get" action="{% url 'buscar_encargo_1' %}">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Encargos">
+                        <button type="submit" id="searchButtonEncargosRelatorios" class="btn btn-outline-primary">Buscar</button>
+                    </div>
+                </form>
+                
+                <table class="tab-emp" id="searchResultsTableEncargosRelatorios">
+                    <tbody>
+                        <!-- Resultados da pesquisa aqui -->
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+    
 </body>
 </html>

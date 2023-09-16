@@ -34,6 +34,8 @@ urlpatterns = [
     path('colaboradores_view/',colaboradores_view,name='colaboradores_view'),
     path('colaboradores_view_filter/',colaboradores_view_filter,name='colaboradores_view_filter'),
     path('editar_colaborador/<int:id>/', editar_colaborador, name='editar_colaborador'),
+    path('imprimir_tabela/', imprimir_tabela, name='imprimir_tabela'),
+    
     path('buscar_colaborador/', buscar_colaborador, name='buscar_colaborador'),
     path('detalhes_colaborador/<int:id>/', detalhes_colaborador, name='detalhes_colaborador'),
     path('deletar_colaborador/<int:colaborador_id>/', deletar_colaborador, name='deletar_colaborador'),
@@ -56,6 +58,7 @@ urlpatterns = [
      
     path('inserir_encargo/', inserir_encargo, name='inserir_encargo'),  
     path('buscar_encargo/', buscar_encargo, name='buscar_encargo'),
+    path('buscar_encargo_1/', buscar_encargo_1, name='buscar_encargo_1'),
     path('encargo_view/', encargo_view, name='encargo_view'),
     path('deletar_encargo/<int:encargo_id>/', deletar_encargo, name='deletar_encargo'),  
     

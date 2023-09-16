@@ -207,6 +207,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 const searchResultsTableVincularCargos = document.getElementById("searchResultsTableVincularCargos");
                 searchResultsTableVincularCargos.innerHTML = data; // Atualiza a tabela de resultados
+                console.log(data);
             })
             .catch(error => {
                 console.error('Erro na busca:', error);
@@ -214,6 +215,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+<<<<<<< HEAD
 // Busca dinâmica de dados na tabela Rubricas
 document.addEventListener("DOMContentLoaded", function () {
     const searchFormOrcamento = document.getElementById("searchFormOrcamento");
@@ -237,3 +239,28 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 });
+=======
+// lista os encargos 
+
+document.addEventListener("DOMContentLoaded", function () {
+    const searchFormEncargosRelatorios = document.getElementById("searchFormEncargosRelatorios");
+
+    searchFormEncargosRelatorios.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(searchFormEncargosRelatorios);
+
+        fetch(searchFormEncargosRelatorios.action + '?' + new URLSearchParams(formData), {
+            method: 'GET'
+        })
+        .then(response => response.text())
+        .then(data => {
+            const searchResultsTableEncargosRelatorios = document.getElementById("searchResultsTableEncargosRelatorios");
+            searchResultsTableEncargosRelatorios.innerHTML = data; // Atualiza a tabela de resultados
+        })
+        .catch(error => {
+            console.error('Erro na busca:', error);
+        });
+    });
+});
+>>>>>>> 057391b8ee4a6da6615cf45e053b7c7d842e7f46
