@@ -1521,10 +1521,7 @@ def enviar_email_personalizado(request, auxiliar_calculo_id):
         return render(request, 'email_condominio.html')
 
     return render(request, 'dashboard1.html', {'auxiliar_calculo': auxiliar_calculo})
-from django.http import HttpResponse
-import io
-from django.shortcuts import render
-from .models import Employee
+
 
 def imprimir_tabela(request):
     # Crie uma resposta HTTP com tipo de conteúdo HTML
@@ -1577,9 +1574,8 @@ def imprimir_tabela(request):
 
     buffer.write('</tbody>')
     buffer.write('</table>')
-
     # Adicione o botão para acionar a impressão
-    buffer.write('<button class="botao-imprimir" onclick="imprimir()">Imprimir</button>')
+    buffer.write('<button class="botao-imprimir btn btn-success" onclick="imprimir()">Imprimir Tabela</button>')
 
     # Adicione o código CSS para ocultar o botão durante a impressão
     buffer.write('<style>')
@@ -1590,7 +1586,6 @@ def imprimir_tabela(request):
     buffer.write('  @page {')
     buffer.write('    header: "Impressão Cargos";')  # Defina o título no cabeçalho da página impressa
     buffer.write('  }')
-    buffer.write('}')
     buffer.write('</style>')
 
     # Adicione o código JavaScript no final da página
