@@ -88,4 +88,6 @@ urlpatterns = [
     path('export_pdf_condominio/', export_pdf_condominio, name='export_pdf_condominio'),
     path('export_csv_condominio/', export_csv_condominio, name='export_csv_condominio'),
     path('enviar_email_personalizado/<int:auxiliar_calculo_id>/', enviar_email_personalizado, name='enviar_email_personalizado'),
+    path('dre_report/', dre_report, name='dre_report'),
+
 ]

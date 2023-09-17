@@ -261,3 +261,26 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const searchFormEncargosRelatorios = document.getElementById("searchFormEncargosRelatorios");
+
+    searchFormEncargosRelatorios.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(searchFormEncargosRelatorios);
+
+        fetch(searchFormEncargosRelatorios.action + '?' + new URLSearchParams(formData), {
+            method: 'GET'
+        })
+        .then(response => response.text())
+        .then(data => {
+            const searchResultsTableEncargosRelatorios = document.getElementById("searchResultsTableEncargosRelatorios");
+            searchResultsTableEncargosRelatorios.innerHTML = data; // Atualiza a tabela de resultados
+        })
+        .catch(error => {
+            console.error('Erro na busca:', error);
+        });
+    });
+});

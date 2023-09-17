@@ -17,6 +17,7 @@
 		const colaboradoresUrl = "{% url 'colaboradores_view' %}";
         const lista_salariosUrl = "{% url 'lista_salarios_view' %}";
         const verificarCpfUrl = "{% url 'verificar_cpf' %}";
+        const dre= "{% url 'dre_report' %}";
 
         var keepModalOpen = {% if keep_modal_open %}true{% else %}false{% endif %};
         var messagesExist = {% if messages %}true{% else %}false{% endif %};
@@ -152,6 +153,7 @@
                                 <i class="fa fa-print"></i>Relatórios</a>
                                 <div id="relatorioCollapse" class="collapse">
                                     <ul class="ul-item">
+                                        <!--li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalRelatorios">DRE</a></li-->
                                         <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalRelatorios">DRE</a></li>
                                         <!--li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="##modalEncargosRelatorios">Encargos</a></li-->
                                         <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalEncargosRelatorios">Encargos</a></li>
@@ -1068,6 +1070,51 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal DRE-->
+<!-- Modal "Encargos" -->
+<div id="modalEncargosRelatorios" class="modal">
+    <div class="modal-personalizado">
+        <div class="modal-header">
+            <p class="p-modal-person mb-0">Encargos</p>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="searchFormEncargosRelatorios" method="get" action="{% url 'buscar_encargo_1' %}">
+                <div class="input-group div-modal-person">
+                    <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Encargos">
+                    <button type="submit" id="searchButtonEncargosRelatorios" class="btn btn-outline-primary">Buscar</button>
+                </div>
+            </form>
+            
+            <!-- Botão para abrir o modal DRE -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDRE">Ver DRE</button>
+            
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal "DRE" -->
+<div id="modalRelatorios" class="modal">
+    <div class="modal-personalizado">
+        <div class="modal-header">
+            <p class="p-modal-person mb-0">DRE</p>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="searchFormDRE_report" method="get" action="{% url 'dre_report' %}">
+                <div class="input-group div-modal-person">
+                    <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Encargos">
+                    <button type="submit" id="searchFormDRE_report" class="btn btn-outline-primary">Buscar</button>
+                </div>
+            </form>
+        </div>
+        <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>    
+    </div>
+
+</div>
+<!-- Fim Modal DRE -->
     
 </body>
 </html>
