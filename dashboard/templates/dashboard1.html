@@ -50,8 +50,12 @@
 </head>
 
 <body class="fundo">
-    <header>
+    
+     <header>
+        
         <div class="d-flex flex-row justify-content-end align-items-center header">
+            
+       
             <div class="dropdown d-flex flex-row">
                 <p class="p-header">Bem-vindo, <span class="userName">{{ nome_usuario }}.</span></p>
                 <a class="btn-sair dropdown d-flex flex-row justify-content-end align-items-center" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -69,12 +73,13 @@
             </div>
         </div>
         
-        
-        
     </header>
+ 
     <div class="offcanvas-sm offcanvas-start bg-body" tabindex="-1" data-bs-scroll="true" data-bs-backdrop="false" id="offcanvas-menu">
         <div class="offcanvas-body d-flex flex-column justify-content-between pt-0">
-            <div class="div-logo"></div>
+            <div class="div-logo">
+                
+            </div>
             <div>
                 <hr class="mt-0">
                 <ul class="nav nav-pills flex-column mb-auto">
@@ -158,7 +163,7 @@
                         </div>
                     </li>
                     
-                    
+                      
                     <li class="nav-item">
                         <a class="a-titulo" href="{% url 'logout' %}">
                             <i class="fa fa-sign-in me-2"></i>Sair</a>
