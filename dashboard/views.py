@@ -1648,3 +1648,11 @@ def imprimir_tabela(request):
     response.content = buffer.read()
 
     return response
+
+#  Começo DRE relatório
+
+def dre_report(request):
+   q = request.GET.get('search')   
+   orcamento = Rubrica.objects.filter(orcamento_id__icontains=q).order_by('orcamento_id')
+   return render(request, 'dre_template.html', {'orcamento': orcamento})
+

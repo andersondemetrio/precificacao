@@ -1,0 +1,122 @@
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Pesquisa Orçamento</title>
+    <link rel="stylesheet" href="{% static 'assets/css/tabelas.css' %}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="{% static 'assets/js/script_tabelas.js' %}"></script>
+    <script defer src="{% static 'assets/js/delete.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Estilo personalizado para ajustar o tamanho do gráfico */
+        #myChart {
+            max-width: 50%; /* Define a largura máxima como 100% do container pai */
+            margin: auto; /* Centraliza o gráfico */
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Identificador</th>
+                    <th>Prestadores</th>
+                    <th>Impostos</th>
+                    <th>Lucro</th>
+                    <th>Valor Sugerido</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for orcamento in orcamento %}
+                    <tr>
+                        <td>{{ orcamento.id }}</td>
+                        <td>{{ orcamento.orcamento_id }}</td>
+                        <td>{{ orcamento.quantidade }}</td>
+                        <td>{{ orcamento.tributos }}%</td>
+                        <td>{{ orcamento.lucros }}%</td>
+                        <td>{{ orcamento.valor_sugerido }}</td>
+                        <td>{{ orcamento.status }}</td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+    
+    <script>
+        // Crie listas separadas para valores de Preço Sugerido e Tributos
+        var valoresPrecoSugerido = [{% for orcamento in orcamento %}{{ orcamento.valor_sugerido }},{% endfor %}];
+        var valoresTributos = [{% for orcamento in orcamento %}{{ orcamento.tributos }},{% endfor %}];
+
+        // Crie rótulos com base no identificador do orçamento
+        var rotulos = [{% for orcamento in orcamento %}"{{ orcamento.orcamento_id }}",{% endfor %}];
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'scatter', // Tipo de gráfico de dispersão
+            data: {
+                datasets: [{
+                    label: 'Preço Sugerido vs. Tributos',
+                    data: [],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    pointRadius: 3, // Tamanho dos pontos no gráfico
+                    pointHoverRadius: 5, // Tamanho dos pontos ao passar o mouse
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Preço Sugerido'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Tributos'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                var label = rotulos[context.dataIndex];
+                                return label + ': (' + context.parsed.x + ', ' + context.parsed.y + ')';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Adicione os valores ao conjunto de dados
+        for (var i = 0; i < valoresPrecoSugerido.length; i++) {
+            myChart.data.datasets[0].data.push({ x: valoresPrecoSugerido[i], y: valoresTributos[i] });
+        }
+
+        myChart.update(); // Atualize o gráfico
+    </script>
+</body>
+</html>
