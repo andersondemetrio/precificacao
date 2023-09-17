@@ -17,10 +17,11 @@
     <thead>    
         <tr>
             <th>Id</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
+            <th>Identificador</th>
+            <th>Prestadores</th>
+            <th>Impostos</th>
+            <th>Lucro</th>
+            <th>Valor Sugerido</th>
             <th>Status</th>
             <th></th>
         </tr>
@@ -28,11 +29,12 @@
     {% for orcamento in orcamento %}
         <tr>
             <td>{{ orcamento.id }}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td> 
-            <td></td> 
+            <td>{{ orcamento.orcamento_id }}</td>
+            <td>{{ orcamento.quantidade }}</td>
+            <td>{{ orcamento.tributos }}%</td>
+            <td>{{ orcamento.lucros }}%</td> 
+            <td>{{ orcamento.valor_sugerido }}</td> 
+            <td>{{ orcamento.status }}</td> 
             <td>
                 {% comment %} <a href="{% url 'detalhes_endereco' endereco.id %}">
                     <i class="bi bi-pencil-fill"></i>
