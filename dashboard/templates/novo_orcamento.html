@@ -9,15 +9,14 @@
     <title>Novo Orçamento</title>
     <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}" />
     <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'assets/css/edicao.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/orcamento.css' %}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script>
       const cargosUrl = "{% url 'cargos_vieww' %}";
       const enderecoUrl = "{% url 'endereco_view' %}";
     </script>
     <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script defer src="{% static 'assets/js/script_index.js' %}"></script>
-    <script defer src="{% static 'assets/js/script_edicao.js' %}"></script>
+    <script defer src="{% static 'assets/js/script_orcamento.js' %}"></script>
 </head>
     <body class="fundo">
         <div class="container pl-0 pr-0">
@@ -26,45 +25,144 @@
               <div class="d-flex flex-column justify-content-between align-items-center">
                 <div class="d-flex flex-column align-items-center div-right-int">
                 <div class="div-logo"></div>
+                <div class="div-orcamento">
                 <form method="post" action="" id="novo-form-orcamento">
                     {% csrf_token %}
                     <div class="orcamento-container">  
                         <div class="mb-3 d-flex flex-row">
-                            <label for="orcamento_id" class="form-label"><b>Identificador</b></label>
-                            <input type="text" class="form-control" id="orcamento_id" name="orcamento_id" value="{{ numero_novo_orcamento }}" required disabled>
+                            <label for="orcamento_id" class="form-label label-orcamento"><b>Identificador</b></label>
+                            <input type="text" class="form-control input-orcamento" id="orcamento_id" name="orcamento_id" value="{{ numero_novo_orcamento }}" required disabled>
                         </div>    
                         <div class="mb-3 d-flex flex-row">
-                          <label for="orcamentoCapacidadeProd" class="form-label"><b>Capacidade Produtiva (Prestadores)</b></label>
-                          <input type="text" class="form-control" id="orcamentoCapacidadeProd" name="orcamentoCapacidadeProd" value="{{ total_prestadores }}" required disabled>
+                          <label for="orcamentoCapacidadeProd" class="form-label label-orcamento"><b>Capacidade Produtiva (Prestadores)</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoCapacidadeProd" name="orcamentoCapacidadeProd" value="{{ total_prestadores }}" required disabled>
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoCompraMateriais" class="form-label label-orcamento"><b>Compra Materiais</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoCompraMateriais" name="orcamentoCompraMateriais" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoMateriaisDvs" class="form-label label-orcamento"><b>Materiais DVS</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoMateriaisDvs" name="orcamentoMateriaisDvs" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoDvsSocios" class="form-label label-orcamento"><b>DVS Sócios</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoDvsSocios" name="orcamentoDvsSocios" value="" required step="0.01">
                         </div>      
                         <div class="mb-3 d-flex flex-row">
-                          <label for="orcamentoCustoHora" class="form-label"><b>Custo Hora</b></label>
-                          <input type="text" class="form-control" id="orcamentoCustoHora" name="orcamentoCustoHora" value="{{ custo_total }}" required disabled>
+                          <label for="orcamentoCustoHora" class="form-label label-orcamento"><b>Custo Hora</b></label>
+                          <input type="text" class="form-control input-orcamento" id="orcamentoCustoHora" name="orcamentoCustoHora" value="{{ custo_total }}" required disabled>
                         </div>
                         <div class="mb-3 d-flex flex-row">
-                          <label for="orcamentoBeneficios" class="form-label"><b>Benefícios</b></label>
-                          <input type="text" class="form-control" id="orcamentoBeneficios" name="orcamentoBeneficios" value="{{ total }}" required disabled>
+                          <label for="orcamentoBeneficios" class="form-label label-orcamento"><b>Benefícios</b></label>
+                          <input type="text" class="form-control input-orcamento" id="orcamentoBeneficios" name="orcamentoBeneficios" value="{{ total }}" required disabled>
                         </div>
                         <div class="mb-3 d-flex flex-row">
-                          <label for="estado" class="form-label"><b>TESTE</b></label>
-                          <input type="text" class="form-control" id="estado" name="estado" value="" required>
+                          <label for="orcamentoTelefonia" class="form-label label-orcamento"><b>Telefonia / Comunicação</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoTelefonia" name="orcamentoTelefonia" value="" required step="0.01">
                         </div>
                         <div class="mb-3 d-flex flex-row">
-                          <label for="estado" class="form-label"><b>TESTE</b></label>
-                          <input type="text" class="form-control" id="estado" name="estado" value="" required>
+                          <label for="orcamentoSeguroEquipamentos" class="form-label label-orcamento"><b>Seguro Máquinas / Equipamentos</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoSeguroEquipamentos" name="orcamentoSeguroEquipamentos" value="" required step="0.01">
                         </div>
                         <div class="mb-3 d-flex flex-row">
-                          <label for="estado" class="form-label"><b>Condomínio (Fixo)</b></label>
-                          <input type="text" class="form-control" id="estado" name="estado" value="{{ custo_condominio }}" required disabled>
+                          <label for="orcamentoManutencao" class="form-label label-orcamento"><b>Manutenções</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoManutencao" name="orcamentoManutencao" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoDvsOperacao" class="form-label label-orcamento"><b>DVS Operação</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoDvsOperacao" name="orcamentoDvsOperacao" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoBonus" class="form-label label-orcamento"><b>Bônus Resultado</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoBonus" name="orcamentoBonus" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoPlr" class="form-label label-orcamento"><b>PLR</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoPlr" name="orcamentoPlr" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoHorasExtras" class="form-label label-orcamento"><b>Horas Extras</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoHorasExtras" name="orcamentoHorasExtras" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoExame" class="form-label label-orcamento"><b>Exame Admissional / Demissional</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoExame" name="orcamentoExame" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoTerceirizados" class="form-label label-orcamento"><b>Terceirizados (+ Horas Condomínio)</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoTerceirizados" name="orcamentoTerceirizados" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoAlimentacao" class="form-label label-orcamento"><b>Alimentação</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoAlimentacao" name="orcamentoAlimentacao" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoHospedagem" class="form-label label-orcamento"><b>Hospedagem</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoHospedagem" name="orcamentoHospedagem" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoQuilometragem" class="form-label label-orcamento"><b>Quilometragem</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoQuilometragem" name="orcamentoQuilometragem" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoDeslocamento" class="form-label label-orcamento"><b>Descolamento (Táxi, Uber, etc)</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoDeslocamento" name="orcamentoDeslocamento" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoCombustivel" class="form-label label-orcamento"><b>Combustível</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoCombustivel" name="orcamentoCombustivel" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoEstacionamento" class="form-label label-orcamento"><b>Estacionamento / Pedágios</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoEstacionamento" name="orcamentoEstacionamento" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoComissoes" class="form-label label-orcamento"><b>Comissões</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoComissoes" name="orcamentoComissoes" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoSeguroObra" class="form-label label-orcamento"><b>Seguro de Obras e DVS</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoSeguroObra" name="orcamentoSeguroObra" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoInsumos" class="form-label label-orcamento"><b>Insumos</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoInsumos" name="orcamentoInsumos" value="" required step="0.01">
+                        </div>                        
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoManutencaoECons" class="form-label label-orcamento"><b>Manutenção e Conservação</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoManutencaoECons" name="orcamentoManutencaoECons" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoDistrato" class="form-label label-orcamento"><b>Distrato / Multas</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoDistrato" name="orcamentoDistrato" value="" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoCondominio" class="form-label label-orcamento"><b>Condomínio (Fixo)</b></label>
+                          <input type="text" class="form-control input-orcamento" id="orcamentoCondominio" name="orcamentoCondominio" value="{{ custo_condominio }}" required disabled>
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoImpostos" class="form-label label-orcamento"><b>Impostos ( % )</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoImpostos" name="orcamentoImpostos" value="" min="1" max="100" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoLucro" class="form-label label-orcamento"><b>Lucro ( % )</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoLucro" name="orcamentoLucro" value="" min="1" max="100" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoSugerido" class="form-label label-orcamento"><b>Valor total Sugerido</b></label>
+                          <span id="totalSugeridoDisplay" style="display: none;"></span>
+                          <input type="number" class="form-control input-orcamento campo-verde" id="orcamentoSugerido" name="totalSugerido" value="" required step="0.01" readonly>
                         </div>
 
                     </div>
                     <div class="d-flex flex-row justify-content-center div-button">
-                        <button type="button" class="btn btn-success" id="alterar-btnorc">Salvar</button>
+                        <button type="submit" class="btn btn-success" id="alterar-btnorc">Salvar</button>
                         <button type="button" class="btn btn-danger"><a href="/dashboard/">Cancelar</a></button>
                         <button type="button" class="btn btn-primary" id="">Finalizar</button>
                     </div>
                 </form>
+                </div>
               </div>
               </div>
             </div>

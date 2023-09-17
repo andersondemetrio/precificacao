@@ -37,4 +37,13 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('alterar-btncal').addEventListener('click', function () {
         document.getElementById('editar-form-gasto-fixo').submit();
     });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("novo-form-orcamento");
+    
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            window.location.href = "/dashboard/";
+        });
+    });
 });
