@@ -829,27 +829,34 @@ def inserir_vinculo(request):
         
         auxiliar_calculo = AuxiliarCalculo.objects.first()
         horas_produtivas = auxiliar_calculo.total_meses_horasprodutivas
-        horas_condominio = round(auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_horasprodutivas / auxiliar_calculo.total_prestadores, 2)
+        horas_condominio = round(auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_horasprodutivas / auxiliar_calculo.total_prestadores, 6)
         horas_condominio = (float(horas_condominio))
         
         # Calcular a soma do custo_mes para todos os funcionários com o mesmo cargo
         total_custo_mes = Employee.objects.filter(cargo=cargo).aggregate(Sum('custo_mes'))['custo_mes__sum']
         
-        if total_custo_mes is None:
-            total_custo_mes = 0
+        # Contar o número de funcionários com o mesmo cargo
+        num_funcionarios = Employee.objects.filter(cargo=cargo).count()
+
+        # Calcular o custo médio por funcionário
+        custo_medio_por_funcionario = round(total_custo_mes / num_funcionarios, 6)
+        
+        if custo_medio_por_funcionario is None:
+            custo_medio_por_funcionario = 0
             
         if horas_produtivas != 0:
-            resultado_custo_mod = round(total_custo_mes / horas_produtivas, 2)
+            resultado_custo_mod = round(custo_medio_por_funcionario / horas_produtivas, 6)
         else:
             resultado_custo_mod = 0
         
         resultado_custo_mod = float(resultado_custo_mod)
                 
-        if total_custo_mes is None:
-            total_custo_mes = 0
+        if custo_medio_por_funcionario is None:
+            custo_medio_por_funcionario = 0
             
-        total_mod = round(horas * quantidade * resultado_custo_mod, 2)
-        total_condominio = round(horas * quantidade * horas_condominio, 2)
+        total_mod = round(horas * quantidade * resultado_custo_mod, 6)
+        total_condominio = round(horas * quantidade * horas_condominio, 6)
+        total_custo = round(total_mod + total_condominio, 6)
         
         vinculo = DescricaoObra.objects.create(
             cargo=cargo,
@@ -862,7 +869,7 @@ def inserir_vinculo(request):
             horas_produtivas=horas_produtivas,
             total_mod=total_mod,
             total_condominio=total_condominio,
-            total_custo=round(total_mod + total_condominio, 2),
+            total_custo=total_custo,
             auxiliarcalculo=auxiliar_calculo
         )
         vinculo.save()
@@ -907,12 +914,9 @@ def deletar_vinculo(request, vinculo_id):
 #Funções do CRUD do Orçamento   
 
 def inserir_orcamento(request):
-    numero_novo_orcamento = request.GET.get('numeroNovoOrcamento', '')
-
-    # if request.method == 'POST':
-    #     # Lidar com a solicitação POST, se necessário
+    numero_novo_orcamento = request.GET.get('numeroNovoOrcamento', '')           
     
-    descricao_obras = DescricaoObra.objects.filter(orcamento_id=numero_novo_orcamento)
+    descricao_obras = DescricaoObra.objects.filter(orcamento_id__iexact=numero_novo_orcamento)
     
     total = 0
     
@@ -928,6 +932,50 @@ def inserir_orcamento(request):
     custo_total = sum(descricao.total_mod for descricao in descricao_obras)
     total_prestadores = sum(descricao.quantidade for descricao in descricao_obras)
     custo_condominio = sum(descricao.total_condominio for descricao in descricao_obras)
+    
+    if request.method == 'POST':
+        # orcamento_id = request.POST['orcamento_id']
+        # quantidade = request.POST['orcamentoCapacidadeProd']
+        compra_materiais = request.POST['orcamentoCompraMateriais']
+        materiais_dvs = request.POST['orcamentoMateriaisDvs']
+        dvs_socio = request.POST['orcamentoDvsSocios']
+        # custo_hora = request.POST['orcamentoCustoHora']
+        # beneficios = request.POST['orcamentoBeneficios']
+        telefonia_comunicacao = request.POST['orcamentoTelefonia']
+        seguro_maquinas_equipamentos = request.POST['orcamentoSeguroEquipamentos']
+        manutencao = request.POST['orcamentoManutencao']
+        dvs_operacao = request.POST['orcamentoDvsOperacao']
+        bonus_resultado = request.POST['orcamentoBonus']
+        plr = request.POST['orcamentoPlr']
+        horas_extras = request.POST['orcamentoHorasExtras']
+        exames_adiciona_demissional = request.POST['orcamentoExame']
+        terceirizados = request.POST['orcamentoTerceirizados']
+        alimentacao = request.POST['orcamentoAlimentacao']
+        hospedagem = request.POST['orcamentoHospedagem']
+        quilometragem = request.POST['orcamentoQuilometragem']
+        deslocamento = request.POST['orcamentoDeslocamento']
+        combustivel =  request.POST['orcamentoCombustivel']
+        estacionamento_pedagio = request.POST['orcamentoEstacionamento']
+        comissoes = request.POST['orcamentoComissoes']
+        seguros_obra_dvs = request.POST['orcamentoSeguroObra']
+        insumos = request.POST['orcamentoInsumos']
+        manutencao_conservacao = request.POST['orcamentoManutencaoECons']
+        distrato_multas = request.POST['orcamentoDistrato']
+        # condominio = request.POST['orcamentoCondominio']
+        tributos = request.POST['orcamentoImpostos']
+        lucros = request.POST['orcamentoLucro']
+        valor_sugerido = request.POST.get('totalSugerido', 0)
+        
+        Rubrica.objects.create(orcamento_id=numero_novo_orcamento, quantidade=total_prestadores, compra_materiais=compra_materiais, 
+                               materiais_dvs=materiais_dvs, dvs_socio=dvs_socio, custo_hora=custo_total, beneficios=total, 
+                               telefonia_comunicacao=telefonia_comunicacao, seguro_maquinas_equipamentos=seguro_maquinas_equipamentos, 
+                               manutencao=manutencao, dvs_operacao=dvs_operacao, bonus_resultado=bonus_resultado, plr=plr, 
+                               horas_extras=horas_extras, exames_adiciona_demissional=exames_adiciona_demissional, 
+                               terceirizados=terceirizados, alimentacao=alimentacao, hospedagem=hospedagem, quilometragem=quilometragem, 
+                               deslocamento=deslocamento, combustivel=combustivel, estacionamento_pedagio=estacionamento_pedagio, 
+                               comissoes=comissoes, seguros_obra_dvs=seguros_obra_dvs, insumos=insumos, manutencao_conservacao=manutencao_conservacao, 
+                               distrato_multas=distrato_multas, condominio=custo_condominio, tributos=tributos, lucros=lucros, status='Aberto', valor_sugerido=valor_sugerido)
+        return redirect('dashboard')
 
     return render(request, 'novo_orcamento.html', {'numero_novo_orcamento': numero_novo_orcamento,
                 'custo_total': custo_total, 'custo_condominio': custo_condominio, 'total': total,
