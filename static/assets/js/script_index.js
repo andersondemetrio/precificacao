@@ -709,4 +709,3 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
-
