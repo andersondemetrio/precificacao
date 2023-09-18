@@ -283,4 +283,5 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error('Erro na busca:', error);
         });
     });
-});
+}
+);

@@ -21,9 +21,15 @@
             align-items: center;
             height: 300px;
         }
+        .centered-text {
+            text-align: center;
+          }
     </style>
 </head>
 <body>
+    <div class="container"> 
+    <p class="centered-text">Orçamento</p>
+    </div>
     <div class="container">
         <table class="table table-striped">
             <thead>
@@ -34,6 +40,7 @@
                     <th>Impostos</th>
                     <th>Lucro</th>
                     <th>Valor Sugerido</th>
+                    <th>custo hora</th>
                     <th>Status</th>
                     <th></th>
                 </tr>
@@ -47,6 +54,7 @@
                         <td>{{ orcamento.tributos }}%</td>
                         <td>{{ orcamento.lucros }}%</td>
                         <td>{{ orcamento.valor_sugerido }}</td>
+                        <td>{{ orcamento.custo_hora }}</td>
                         <td>{{ orcamento.status }}</td>
                         <td></td>
                     </tr>
