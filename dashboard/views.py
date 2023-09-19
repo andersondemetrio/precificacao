@@ -58,6 +58,7 @@ from django.http import HttpResponse
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.db import connection
 
 @login_required
 def dashboard_view(request):
@@ -779,7 +780,7 @@ def inserir_beneficio(request):
 
 def buscar_beneficio(request): 
     q = request.GET.get('search')   
-    beneficio = Beneficios.objects.filter(descricao__icontains=q).order_by('cargo_id')
+    beneficio = Beneficios.objects.filter(descricao__icontains=q).order_by('cargo__nome_cargo')
     return render(request, 'pesquisa_beneficio.html', {'beneficio': beneficio})
 
 def beneficio_view(request):
@@ -920,13 +921,30 @@ def inserir_orcamento(request):
     
     total = 0
     
+    # sql_query = """
+    # SELECT SUM(b.valor) AS total_beneficios
+    # FROM dashboard_colaboradores c
+    # INNER JOIN dashboard_cargos cg ON c.cargo_id = cg.id
+    # INNER JOIN dashboard_beneficios b ON cg.id = b.cargo_id
+    # WHERE c.setor = 'Prestador de Serviço'
+    # """
+
+    # # Execute a consulta
+    # with connection.cursor() as cursor:
+    #     cursor.execute(sql_query)
+    #     resultado = cursor.fetchone()
+
+    # # O resultado será uma tupla com o valor total de benefícios
+    # total_beneficios = resultado[0] if resultado else 0.0
+    # print(f'Total de benefícios: {total_beneficios}')
+    
     for descricao_obra in descricao_obras:
         # Consulte a tabela Beneficios para encontrar registros correspondentes
         beneficios = Beneficios.objects.filter(cargo_id=descricao_obra.cargo_id)
 
         # Para cada registro correspondente na tabela Beneficios, calcule o valor e adicione ao total
         for beneficio in beneficios:
-            total += beneficio.valor * descricao_obra.quantidade
+            total += round(beneficio.valor * descricao_obra.quantidade / descricao_obra.horas_produtivas * descricao_obra.horas, 2)
 
     # Calcule a soma dos valores
     custo_total = sum(descricao.total_mod for descricao in descricao_obras)
