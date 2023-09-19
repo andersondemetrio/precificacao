@@ -446,7 +446,13 @@ def inserir_calendario(request):
         jornada_diaria = float(request.POST.get("jornada_diaria"))
         funcionario_id = int(request.POST.get("funcionario"))
         horas_produtivas = float(request.POST.get("horas_produtivas"))
-        dias_uteis = int(request.POST.get("dias_uteis"))  # Pegar o valor dos dias úteis
+        dias_uteis_str = request.POST.get("dias_uteis")  # Pegar a string dos dias úteis
+        # Substituir ',' por '.' para garantir a formatação correta
+        dias_uteis_str = dias_uteis_str.replace(",", ".")
+        
+        # Converter a string formatada para um número de ponto flutuante
+        dias_uteis = float(dias_uteis_str)
+        print(dias_uteis)
 
         funcionario = Colaboradores.objects.get(pk=funcionario_id)
 
@@ -456,8 +462,9 @@ def inserir_calendario(request):
             jornada_diaria=jornada_diaria,
             funcionario=funcionario,
             horas_produtivas=horas_produtivas,
-            dias_uteis=dias_uteis  # Definir o valor dos dias úteis
+            dias_uteis=round(dias_uteis, 2) # Definir o valor dos dias úteis
         )
+        print(dias_uteis)
         calendario.save()
         calcular_media_horas_produtivas(request)
 
@@ -918,25 +925,37 @@ def inserir_orcamento(request):
     numero_novo_orcamento = request.GET.get('numeroNovoOrcamento', '')           
     
     descricao_obras = DescricaoObra.objects.filter(orcamento_id__iexact=numero_novo_orcamento)
+    horas_obras = DescricaoObra.objects.filter(orcamento_id__iexact=numero_novo_orcamento).values_list('horas', flat=True)
+    quantidade_linhas = len(horas_obras)        
+    primeira_hora_produtiva = DescricaoObra.objects.filter(orcamento_id__iexact=numero_novo_orcamento).first()
+    gestores = Employee.objects.filter(setor='Gestores')
+    
+    soma_horas = 0
+    totalGes = 0
+
+    # Percorra as horas e calcule a soma
+    for horas in horas_obras:
+        soma_horas += horas
+
+    total_beneficios_gestores = 0
+
+    for gestor in gestores:
+        total_beneficios_gestores += gestor.beneficios
+        
+    print(f'Total dos benefícios dos gestores: {total_beneficios_gestores}')
+    
+    if primeira_hora_produtiva:
+        valor_primeira_hora = primeira_hora_produtiva.horas_produtivas
+    else:
+        valor_primeira_hora = None
+    print(f'Valor da primeira hora produtiva: {valor_primeira_hora}')
+    
+    media_para_gestores = soma_horas / quantidade_linhas
+    print(f'Média para gestores: {media_para_gestores}')
+    totalGes += round(total_beneficios_gestores * 1 / valor_primeira_hora * media_para_gestores, 2)
+    print(f'Total dos benefícios dos gestores: {totalGes}')
     
     total = 0
-    
-    # sql_query = """
-    # SELECT SUM(b.valor) AS total_beneficios
-    # FROM dashboard_colaboradores c
-    # INNER JOIN dashboard_cargos cg ON c.cargo_id = cg.id
-    # INNER JOIN dashboard_beneficios b ON cg.id = b.cargo_id
-    # WHERE c.setor = 'Prestador de Serviço'
-    # """
-
-    # # Execute a consulta
-    # with connection.cursor() as cursor:
-    #     cursor.execute(sql_query)
-    #     resultado = cursor.fetchone()
-
-    # # O resultado será uma tupla com o valor total de benefícios
-    # total_beneficios = resultado[0] if resultado else 0.0
-    # print(f'Total de benefícios: {total_beneficios}')
     
     for descricao_obra in descricao_obras:
         # Consulte a tabela Beneficios para encontrar registros correspondentes
@@ -945,6 +964,9 @@ def inserir_orcamento(request):
         # Para cada registro correspondente na tabela Beneficios, calcule o valor e adicione ao total
         for beneficio in beneficios:
             total += round(beneficio.valor * descricao_obra.quantidade / descricao_obra.horas_produtivas * descricao_obra.horas, 2)
+            
+    totalSoma = round(total + totalGes, 2)
+    print(totalSoma)
 
     # Calcule a soma dos valores
     custo_total = sum(descricao.total_mod for descricao in descricao_obras)
@@ -952,13 +974,9 @@ def inserir_orcamento(request):
     custo_condominio = sum(descricao.total_condominio for descricao in descricao_obras)
     
     if request.method == 'POST':
-        # orcamento_id = request.POST['orcamento_id']
-        # quantidade = request.POST['orcamentoCapacidadeProd']
         compra_materiais = request.POST['orcamentoCompraMateriais']
         materiais_dvs = request.POST['orcamentoMateriaisDvs']
         dvs_socio = request.POST['orcamentoDvsSocios']
-        # custo_hora = request.POST['orcamentoCustoHora']
-        # beneficios = request.POST['orcamentoBeneficios']
         telefonia_comunicacao = request.POST['orcamentoTelefonia']
         seguro_maquinas_equipamentos = request.POST['orcamentoSeguroEquipamentos']
         manutencao = request.POST['orcamentoManutencao']
@@ -985,7 +1003,7 @@ def inserir_orcamento(request):
         valor_sugerido = request.POST.get('totalSugerido', 0)
         
         Rubrica.objects.create(orcamento_id=numero_novo_orcamento, quantidade=total_prestadores, compra_materiais=compra_materiais, 
-                               materiais_dvs=materiais_dvs, dvs_socio=dvs_socio, custo_hora=custo_total, beneficios=total, 
+                               materiais_dvs=materiais_dvs, dvs_socio=dvs_socio, custo_hora=custo_total, beneficios=totalSoma, 
                                telefonia_comunicacao=telefonia_comunicacao, seguro_maquinas_equipamentos=seguro_maquinas_equipamentos, 
                                manutencao=manutencao, dvs_operacao=dvs_operacao, bonus_resultado=bonus_resultado, plr=plr, 
                                horas_extras=horas_extras, exames_adiciona_demissional=exames_adiciona_demissional, 
@@ -996,7 +1014,7 @@ def inserir_orcamento(request):
         return redirect('dashboard')
 
     return render(request, 'novo_orcamento.html', {'numero_novo_orcamento': numero_novo_orcamento,
-                'custo_total': custo_total, 'custo_condominio': custo_condominio, 'total': total,
+                'custo_total': custo_total, 'custo_condominio': custo_condominio, 'totalSoma': totalSoma,
                 'total_prestadores': total_prestadores})
 
 def buscar_orcamento(request): 

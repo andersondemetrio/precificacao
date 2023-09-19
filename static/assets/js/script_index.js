@@ -320,9 +320,26 @@ function calcularDiasUteis(ano, mes) {
             diasUteis++;
         }
     }
+    console.log(diasUteis);
+
+    // Crie uma cópia de inicioMes para contar os sábados
+    const inicioMesCopia = new Date(ano, mes - 1, 1);
+    let numSabados = 0;
+    while (inicioMesCopia.getMonth() === mes - 1) {
+        if (inicioMesCopia.getDay() === 6) {
+            numSabados++;
+        }
+        inicioMesCopia.setDate(inicioMesCopia.getDate() + 1);
+    }
+    console.log(numSabados);
+
+    // Adicione metade de um dia útil para cada sábado
+    diasUteis += numSabados * 0.5;
+    console.log(diasUteis);
 
     return diasUteis;
 }
+
 
 // função para calcular horas produtivas do funcionario
 document.addEventListener("DOMContentLoaded", function () {

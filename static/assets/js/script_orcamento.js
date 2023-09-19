@@ -97,17 +97,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("orcamentoCondominio").addEventListener("input", calcularTotalSugerido);
     document.getElementById("orcamentoImpostos").addEventListener("input", calcularTotalSugerido);
     document.getElementById("orcamentoLucro").addEventListener("input", calcularTotalSugerido);
-    // document.getElementById("orcamentoSugerido").addEventListener("input", calcularTotalSugerido);
-    // Adicione outros campos relevantes aqui
-
-    // Pegue o valor do span
-
-    // var valorSugerido = 0;
-    // document.getElementById("orcamentoSugerido").value = valorSugerido;
-
-    // // Em seguida, envie o formulário
-    // document.getElementById("novo-form-orcamento").submit();
-
 });
 
 const valorSpan = document.getElementById("totalSugeridoDisplay").textContent;
