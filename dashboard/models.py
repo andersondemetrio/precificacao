@@ -117,7 +117,7 @@ class Employee(models.Model):
     cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE)
 
 class DescricaoObra(models.Model):
-    horas = models.CharField(max_length=100)
+    horas = models.DecimalField(max_digits=10, decimal_places=2)
     quantidade = models.PositiveIntegerField(default=0)
     orcamento_id = models.CharField(max_length=100)
     custo_mod = models.DecimalField(max_digits=10, decimal_places=2)
