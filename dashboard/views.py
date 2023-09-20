@@ -449,6 +449,7 @@ def inserir_calendario(request):
         dias_uteis_str = request.POST.get("dias_uteis")  # Pegar a string dos dias úteis
         # Substituir ',' por '.' para garantir a formatação correta
         dias_uteis_str = dias_uteis_str.replace(",", ".")
+        feriado = float(request.POST.get("feriados"))
         
         # Converter a string formatada para um número de ponto flutuante
         dias_uteis = float(dias_uteis_str)
@@ -462,7 +463,8 @@ def inserir_calendario(request):
             jornada_diaria=jornada_diaria,
             funcionario=funcionario,
             horas_produtivas=horas_produtivas,
-            dias_uteis=round(dias_uteis, 2) # Definir o valor dos dias úteis
+            dias_uteis=round(dias_uteis - feriado, 2), # Definir o valor dos dias úteis
+            feriado=feriado
         )
         print(dias_uteis)
         calendario.save()
@@ -933,45 +935,48 @@ def inserir_orcamento(request):
     soma_horas = 0
     totalGes = 0
 
-    # Percorra as horas e calcule a soma
-    for horas in horas_obras:
-        soma_horas += horas
+    # # Percorra as horas e calcule a soma
+    # for horas in horas_obras:
+    #     soma_horas += horas
 
-    total_beneficios_gestores = 0
+    # total_beneficios_gestores = 0
 
-    for gestor in gestores:
-        total_beneficios_gestores += gestor.beneficios
+    # for gestor in gestores:
+    #     total_beneficios_gestores += gestor.beneficios
         
-    print(f'Total dos benefícios dos gestores: {total_beneficios_gestores}')
+    # print(f'Total dos benefícios dos gestores: {total_beneficios_gestores}')
     
-    if primeira_hora_produtiva:
-        valor_primeira_hora = primeira_hora_produtiva.horas_produtivas
-    else:
-        valor_primeira_hora = None
-    print(f'Valor da primeira hora produtiva: {valor_primeira_hora}')
+    # if primeira_hora_produtiva:
+    #     valor_primeira_hora = primeira_hora_produtiva.horas_produtivas
+    # else:
+    #     valor_primeira_hora = None
+    # print(f'Valor da primeira hora produtiva: {valor_primeira_hora}')
     
-    media_para_gestores = soma_horas / quantidade_linhas
-    print(f'Média para gestores: {media_para_gestores}')
-    totalGes += round(total_beneficios_gestores * 1 / valor_primeira_hora * media_para_gestores, 2)
-    print(f'Total dos benefícios dos gestores: {totalGes}')
+    # media_para_gestores = soma_horas / quantidade_linhas
+    # print(f'Média para gestores: {media_para_gestores}')
+    # totalGes += round(total_beneficios_gestores * 1 / valor_primeira_hora * media_para_gestores, 2)
+    # print(f'Total dos benefícios dos gestores: {totalGes}')
     
-    total = 0
+    # total = 0
     
-    for descricao_obra in descricao_obras:
-        # Consulte a tabela Beneficios para encontrar registros correspondentes
-        beneficios = Beneficios.objects.filter(cargo_id=descricao_obra.cargo_id)
+    # for descricao_obra in descricao_obras:
+    #     # Consulte a tabela Beneficios para encontrar registros correspondentes
+    #     beneficios = Beneficios.objects.filter(cargo_id=descricao_obra.cargo_id)
 
-        # Para cada registro correspondente na tabela Beneficios, calcule o valor e adicione ao total
-        for beneficio in beneficios:
-            total += round(beneficio.valor * descricao_obra.quantidade / descricao_obra.horas_produtivas * descricao_obra.horas, 2)
+    #     # Para cada registro correspondente na tabela Beneficios, calcule o valor e adicione ao total
+    #     for beneficio in beneficios:
+    #         total += round(beneficio.valor * descricao_obra.quantidade / descricao_obra.horas_produtivas * descricao_obra.horas, 2)
             
-    totalSoma = round(total + totalGes, 2)
-    print(totalSoma)
+    # totalSoma = round(total + totalGes, 2)
+    # print(totalSoma)
+    
 
     # Calcule a soma dos valores
     custo_total = sum(descricao.total_mod for descricao in descricao_obras)
     total_prestadores = sum(descricao.quantidade for descricao in descricao_obras)
     custo_condominio = sum(descricao.total_condominio for descricao in descricao_obras)
+    
+    totalSoma = round(custo_total * 10 / 100, 2)
     
     if request.method == 'POST':
         compra_materiais = request.POST['orcamentoCompraMateriais']

@@ -90,7 +90,8 @@ class CalendarioMensal(models.Model):
     ano = models.PositiveIntegerField()
     funcionario = models.ForeignKey(Colaboradores, on_delete=models.CASCADE)
     dias_uteis = models.DecimalField(max_digits=5, decimal_places=2)
-    jornada_diaria = models.DecimalField(max_digits=5, decimal_places=2)  # Adicione este campo
+    jornada_diaria = models.DecimalField(max_digits=5, decimal_places=2)
+    feriado = models.DecimalField(max_digits=5, decimal_places=2)
     horas_produtivas = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
 
