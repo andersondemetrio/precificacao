@@ -351,7 +351,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const mes = parseInt(document.querySelector("#mes").value);
         const ano = parseInt(document.querySelector("#ano").value);
         const jornadaDiariaValue = document.querySelector("#jornada_diaria").value;
-        const funcionario = document.querySelector("#funcionario").value;
+        const funcionario = document.querySelector("#funcionario").value;        
+        const feriadoValue = document.querySelector("#feriados").value;
 
         if (isNaN(mes) || isNaN(ano) || jornadaDiariaValue === "" || funcionario === "") {
             alert("Preencha todos os campos obrigatórios corretamente.");
@@ -359,9 +360,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const jornadaDiaria = parseFloat(jornadaDiariaValue);
+        const feriado = (feriadoValue);
 
         const diasUteis = calcularDiasUteis(ano, mes);
-        const horasProdutivas = diasUteis * jornadaDiaria;
+        const horasProdutivas = (diasUteis - feriado) * jornadaDiaria;
 
         // Preencher os valores calculados nos campos de horas_produtivas e dias_uteis
         document.querySelector("#horas_produtivas").value = horasProdutivas;
