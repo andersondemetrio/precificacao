@@ -124,6 +124,7 @@
                             <i class="fa fa-calendar"></i>Horas Produtivas</a>
                         <div id="horasProdutivasCollapse" class="collapse">
                             <ul class="ul-item">
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalCapacidadeProdutiva">Capacidade Produtiva</a></li>
                                 <li class="li-pad"><a class="nav-sub" id="openModalButtonCalendario">Calendário mensal</a></li>
                             </ul>
                         </div>
@@ -790,6 +791,32 @@
     </div>
     <!-- Fim do modal para / GASTOS FIXOS (LISTA)  -->
 
+
+    <!-- Começo Modal / CAPACIDADE PRODUTIVA -->
+    <div class="modal fade" id="modalCapacidadeProdutiva" tabindex="-1" aria-labelledby="modalCapacidadeProdutivaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalCapacidadeProdutivaLabel">Cadastrar Capacidade Produtiva</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <form method="post" action="{% url 'inserir_capacidade_produtiva' %}">
+                    {% csrf_token %}
+                    <div class="mb-3 d-flex flex-row justify-content-center align-items-center" style="width: 495px;">
+                        <label for="capacidadeProdutiva" class="form-label" style="width: 180px;"><b>Capacidade Produtiva</b></label>
+                        <input type="text" class="form-control" style="width: 210px;" id="capacidadeProdutiva" name="capacidadeProdutiva" required>
+                    </div>
+                    <div class="modal-footer d-flex flex-row justify-content-between align-items-center">
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar para o Dashboard</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Fim Modal / CAPACIDADE PRODUTIVA -->
 
 
     <!--Início Modal Personalizado / CALENDÁRIO -->

@@ -1038,7 +1038,24 @@ def orcamento_view(request):
     ]
     return JsonResponse({'orcamento': orcamento_list})
 
- 
+
+def inserir_capacidade_produtiva(request):
+    auxiliar_calculo, created = AuxiliarCalculo.objects.get_or_create(pk=1)
+    
+    if created:
+        auxiliar_calculo.total_salarios_gestores = 0
+        auxiliar_calculo.total_salarios_prestadores = 0
+        auxiliar_calculo.save()
+    
+    if request.method == 'POST':
+        total_prestadores = request.POST['capacidadeProdutiva']
+        auxiliar_calculo.total_prestadores = total_prestadores
+        auxiliar_calculo.save()
+
+        return redirect('dashboard')
+    
+    return render(request, 'dashboard1.html', context={})
+
 
 def inserir_data(request):
     return render(request, 'dashboard1.html', context={})    

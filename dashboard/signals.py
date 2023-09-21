@@ -43,7 +43,7 @@ def recalcula_encargos(sender, instance, **kwargs):
         atualizar_dados_banco()
         
 def atualizar_dados_banco():
-    prestadores_count = Employee.objects.filter(setor='Prestador de Serviço').count()
+    # prestadores_count = Employee.objects.filter(setor='Prestador de Serviço').count()
     custo_prestadores = Employee.objects.filter(setor='Prestador de Serviço').aggregate(Sum('custo_salario'))['custo_salario__sum']
     custo_gestores = Employee.objects.filter(setor='Gestores').aggregate(Sum('custo_salario'))['custo_salario__sum']
     
@@ -51,7 +51,7 @@ def atualizar_dados_banco():
     if created:
         auxiliar_calculo.total_salarios_gestores = 0
         auxiliar_calculo.total_salarios_prestadores = 0
-        auxiliar_calculo.total_prestadores = 0
+        # auxiliar_calculo.total_prestadores = 0
         auxiliar_calculo.save()
   
       
@@ -70,7 +70,7 @@ def atualizar_dados_banco():
                     
                 auxiliar_calculo.total_salarios_gestores = custo_gestores
                 auxiliar_calculo.total_salarios_prestadores = custo_prestadores
-                auxiliar_calculo.total_prestadores = prestadores_count
+                # auxiliar_calculo.total_prestadores = prestadores_count
 
                 auxiliar_calculo.save()
 
@@ -79,14 +79,14 @@ def atualizar_dados_banco():
                 employee.custo_mes = employee.custo_salario + rateio
                 employee.save()
                 
-    print(f'Prestadores Count: {prestadores_count}')
+    # print(f'Prestadores Count: {prestadores_count}')
     print(f'Custo Prestadores: {custo_prestadores}')
     print(f'Custo Gestores: {custo_gestores}')
 
     # Você pode retornar os valores calculados ou fazer o que for necessário com eles
     # Por exemplo, retornar um dicionário de valores ou registrá-los em um arquivo de log
     return {
-        'prestadores_count': prestadores_count,
+        # 'prestadores_count': prestadores_count,
         'custo_prestadores': custo_prestadores,
         'custo_gestores': custo_gestores,
     }

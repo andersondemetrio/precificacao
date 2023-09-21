@@ -77,6 +77,7 @@ urlpatterns = [
     path('orcamento_view/', orcamento_view, name='orcamento_view'),  
     
     path('inserir_data/', inserir_data, name='inserir_data'),
+    path('inserir_capacidade_produtiva/', inserir_capacidade_produtiva, name='inserir_capacidade_produtiva'),
     path('inserir_jornada/', inserir_jornada, name='inserir_jornada'),
     path('inserir_horas/', inserir_horas, name='inserir_horas'),      
     path('lista_salarios_view/', lista_salarios_view, name='lista_salarios_view'),
