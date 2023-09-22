@@ -41,11 +41,11 @@ urlpatterns = [
     path('deletar_colaborador/<int:colaborador_id>/', deletar_colaborador, name='deletar_colaborador'),
     
     path('inserir_calendario/',inserir_calendario,name='inserir_calendario'),
-    path('editar_calendario/<int:id>/', editar_calendario, name='editar_calendario'),
+    # path('editar_calendario/<int:id>/', editar_calendario, name='editar_calendario'),
     path('calendario_view/', calendario_view, name='calendario_view'),
     path('buscar_calendario/', buscar_calendario, name='buscar_calendario'),
-    path('detalhes_calendario/<int:id>/', detalhes_calendario, name='detalhes_calendario'),
-    path('deletar_calendario/<int:calendario_id>/', deletar_calendario, name='deletar_calendario'),    
+    # path('detalhes_calendario/<int:id>/', detalhes_calendario, name='detalhes_calendario'),
+    # path('deletar_calendario/<int:calendario_id>/', deletar_calendario, name='deletar_calendario'),    
     
     path('inserir_gasto_fixo/', inserir_gasto_fixo, name='inserir_gasto_fixo'),
     path('editar_gasto_fixo/<int:id>/', editar_gasto_fixo, name='editar_gasto_fixo'),

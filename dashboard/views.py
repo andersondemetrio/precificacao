@@ -34,6 +34,7 @@ from django.utils.encoding import smart_str
 import codecs
 from django.db.models import Sum, Count
 from django.db import transaction
+from datetime import datetime
 from datetime import datetime, timedelta
 from django.dispatch import Signal
 from .signals import *
@@ -479,7 +480,7 @@ def calendario_view(request):
     calendario_list = [
         {
             'id': calendario.id,
-            'calendario': f"{calendario.mes}, {calendario.ano}, {calendario.funcionario}, {calendario.dias_uteis}, {calendario. jornada_diaria}, {calendario.horas_produtivas} "
+            'calendario': f"{calendario.ano}, {calendario.mes}, {calendario.descricao}, {calendario.dias_uteis}, {calendario. jornada_diaria}, {calendario.horas_produtivas} "
         }
         for calendario in calendarios
     ]
@@ -490,50 +491,50 @@ def detalhes_calendario(request, id):
     return render(request, 'detalhes_calendario.html', {'calendario':calendario})
 
 def buscar_calendario(request): 
-    q = request.GET.get('search')   
-    calendario = CalendarioMensal.objects.filter(ano__icontains=q).order_by('funcionario__nome', 'ano', 'mes')
+    q = request.GET.get('searchCal')   
+    calendario = CalendarioMensal.objects.filter(ano__icontains=q).order_by('ano', 'mes')
     return render(request, 'pesquisa_calendario.html', {'calendario': calendario})
 
-def editar_calendario(request, id):
-    calendario = CalendarioMensal.objects.get(id=id)
-    if request.method == "POST":
-        mes = int(request.POST['mes'])
-        ano = int(request.POST.get("ano"))
-        jornada_diaria = float(request.POST.get("jornada_diaria"))
-        funcionario_id = int(request.POST.get("funcionario"))
-        horas_produtivas = float(request.POST.get("horas_produtivas"))
-        dias_uteis = int(request.POST.get("dias_uteis"))  # Pegar o valor dos dias úteis
+# def editar_calendario(request, id):
+#     calendario = CalendarioMensal.objects.get(id=id)
+#     if request.method == "POST":
+#         mes = int(request.POST['mes'])
+#         ano = int(request.POST.get("ano"))
+#         jornada_diaria = float(request.POST.get("jornada_diaria"))
+#         funcionario_id = int(request.POST.get("funcionario"))
+#         horas_produtivas = float(request.POST.get("horas_produtivas"))
+#         dias_uteis = int(request.POST.get("dias_uteis"))  # Pegar o valor dos dias úteis
 
-        funcionario = Colaboradores.objects.get(pk=funcionario_id)
+#         funcionario = Colaboradores.objects.get(pk=funcionario_id)
 
-        calendario.mes = mes
-        calendario.ano = ano
-        calendario.jornada_diaria = jornada_diaria
-        calendario.funcionario = funcionario
-        calendario.horas_produtivas = horas_produtivas
-        calendario.dias_uteis = dias_uteis         
-        calendario.save()
-        calcular_media_horas_produtivas(request)
+#         calendario.mes = mes
+#         calendario.ano = ano
+#         calendario.jornada_diaria = jornada_diaria
+#         calendario.funcionario = funcionario
+#         calendario.horas_produtivas = horas_produtivas
+#         calendario.dias_uteis = dias_uteis         
+#         calendario.save()
+#         calcular_media_horas_produtivas(request)
 
-        return redirect("dashboard")  # Redirecionar para uma página de sucesso
+#         return redirect("dashboard")  # Redirecionar para uma página de sucesso
 
-    return render(request, 'dashboard1.html', {'calendario': calendario})
+#     return render(request, 'dashboard1.html', {'calendario': calendario})
 
-def deletar_calendario(request, calendario_id):
-    if request.method == 'POST':
-        try:
-            calendario = CalendarioMensal.objects.get(pk=calendario_id)
-            calendario.delete()
-            calcular_media_horas_produtivas(request)
-            return redirect('dashboard')
-        except CalendarioMensal.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Registro não encontrado"})
-    else:
-        try:
-            calendario = CalendarioMensal.objects.get(pk=calendario_id)
-            return render(request, 'confirm_delete.html')
-        except CalendarioMensal.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Registro não encontrado"})
+# def deletar_calendario(request, calendario_id):
+#     if request.method == 'POST':
+#         try:
+#             calendario = CalendarioMensal.objects.get(pk=calendario_id)
+#             calendario.delete()
+#             calcular_media_horas_produtivas(request)
+#             return redirect('dashboard')
+#         except CalendarioMensal.DoesNotExist:
+#             return JsonResponse({"success": False, "error": "Registro não encontrado"})
+#     else:
+#         try:
+#             calendario = CalendarioMensal.objects.get(pk=calendario_id)
+#             return render(request, 'confirm_delete.html')
+#         except CalendarioMensal.DoesNotExist:
+#             return JsonResponse({"success": False, "error": "Registro não encontrado"})
         
 
 # Funções do CRUD de Despesas Condominio
@@ -927,6 +928,7 @@ def inserir_orcamento(request):
     numero_novo_orcamento = request.GET.get('numeroNovoOrcamento', '')           
     
     descricao_obras = DescricaoObra.objects.filter(orcamento_id__iexact=numero_novo_orcamento)
+    auxiliar_calculo = AuxiliarCalculo.objects.first()
     horas_obras = DescricaoObra.objects.filter(orcamento_id__iexact=numero_novo_orcamento).values_list('horas', flat=True)
     quantidade_linhas = len(horas_obras)        
     primeira_hora_produtiva = DescricaoObra.objects.filter(orcamento_id__iexact=numero_novo_orcamento).first()
@@ -974,6 +976,7 @@ def inserir_orcamento(request):
     # Calcule a soma dos valores
     custo_total = sum(descricao.total_mod for descricao in descricao_obras)
     total_prestadores = sum(descricao.quantidade for descricao in descricao_obras)
+    capacidade_produtiva = auxiliar_calculo.total_prestadores
     custo_condominio = sum(descricao.total_condominio for descricao in descricao_obras)
     
     totalSoma = round(custo_total * 10 / 100, 2)
@@ -1020,7 +1023,7 @@ def inserir_orcamento(request):
 
     return render(request, 'novo_orcamento.html', {'numero_novo_orcamento': numero_novo_orcamento,
                 'custo_total': custo_total, 'custo_condominio': custo_condominio, 'totalSoma': totalSoma,
-                'total_prestadores': total_prestadores})
+                'total_prestadores': total_prestadores, "capacidade_produtiva": capacidade_produtiva})
 
 def buscar_orcamento(request): 
     q = request.GET.get('search')   
@@ -1247,78 +1250,114 @@ def lista_horas_condiminio_view(request):
 
 
 # Função para calcular a média de horas produtivas
-def calcular_media_horas_produtivas(request): 
-    data_atual = datetime.now()
+def calcular_media_horas_produtivas(request):
+    search_query = request.GET.get('search_query')
     
-    resultados = []
-    total_horas_produtivas = 0
-    quantidade_meses = 0
-    quantidade_registros = 0
-    
-    data_inicio = data_atual - timedelta(days=365)
-    
-    auxiliar_calculo, created = AuxiliarCalculo.objects.get_or_create(pk=1)
-    if created:
-        auxiliar_calculo.total_meses_calendario = 0
-        auxiliar_calculo.total_meses_horasprodutivas = 0
-        auxiliar_calculo.save()
+    # Certifique-se de que search_query seja uma string não vazia antes de tentar convertê-la em um inteiro
+    if search_query and search_query.strip():
+        try:
+            ano_consulta = int(search_query)
+        except ValueError:
+            ano_consulta = None
+    else:
+        ano_consulta = None
 
-    # Dicionário para armazenar as horas produtivas de cada mês
-    horas_por_mes = defaultdict(list)
+    if ano_consulta is not None:
+        resultado = CalendarioMensal.objects.filter(ano=ano_consulta).aggregate(
+            Sum('horas_produtivas'), Count('horas_produtivas')
+        )
+        soma_total = resultado['horas_produtivas__sum']
+        quantidade = resultado['horas_produtivas__count']
+        media = soma_total / quantidade if quantidade > 0 else 0.0
+    else:
+        soma_total = 0
+        quantidade = 0
+        media = 0.0
+ 
+    # data_atual = datetime.now()
     
-    # Loop para obter os 12 últimos meses e calcular as horas produtivas médias
-    for i in range(12):
-        # Calcule o mês e o ano para o mês atual
-        mes = (data_inicio.month + i) % 12
-        ano = data_inicio.year + ((data_inicio.month + i) // 12)  # Ajuste do ano
+    # resultados = []
+    # total_horas_produtivas = 0
+    # quantidade_meses = 0
+    # quantidade_registros = 0
+    
+    # data_inicio = data_atual - timedelta(days=365)
+    
+    # auxiliar_calculo, created = AuxiliarCalculo.objects.get_or_create(pk=1)
+    # if created:
+    #     auxiliar_calculo.total_meses_calendario = 0
+    #     auxiliar_calculo.total_meses_horasprodutivas = 0
+    #     auxiliar_calculo.save()
+
+    # # Dicionário para armazenar as horas produtivas de cada mês
+    # horas_por_mes = defaultdict(list)
+    
+    # # Loop para obter os 12 últimos meses e calcular as horas produtivas médias
+    # for i in range(12):
+    #     # Calcule o mês e o ano para o mês atual
+    #     mes = (data_inicio.month + i) % 12
+    #     ano = data_inicio.year + ((data_inicio.month + i) // 12)  # Ajuste do ano
         
-        # Certifique-se de que o mês está dentro do intervalo correto (1 a 12)
-        if mes <= 0:
-            mes += 12
-            ano -= 1
+    #     # Certifique-se de que o mês está dentro do intervalo correto (1 a 12)
+    #     if mes <= 0:
+    #         mes += 12
+    #         ano -= 1
             
-        # Calcule o primeiro dia e o último dia do mês
-        primeiro_dia = datetime(ano, mes, 1)
-        ultimo_dia = primeiro_dia + timedelta(days=31)
+    #     # Calcule o primeiro dia e o último dia do mês
+    #     primeiro_dia = datetime(ano, mes, 1)
+    #     ultimo_dia = primeiro_dia + timedelta(days=31)
         
-        # Consulte o banco de dados para obter os registros do mês atual
-        registros_do_mes = CalendarioMensal.objects.filter(mes=mes, ano=ano)
+    #     # Consulte o banco de dados para obter os registros do mês atual
+    #     registros_do_mes = CalendarioMensal.objects.filter(mes=mes, ano=ano)
         
-        for registro in registros_do_mes:
-            horas_produtivas = registro.horas_produtivas
-            horas_por_mes[(ano, mes)].append(horas_produtivas)
-            quantidade_registros += 1
+    #     for registro in registros_do_mes:
+    #         horas_produtivas = registro.horas_produtivas
+    #         horas_por_mes[(ano, mes)].append(horas_produtivas)
+    #         quantidade_registros += 1
         
-        # Calcule a média de horas produtivas para cada mês
-    for (ano, mes), horas_lista in horas_por_mes.items():
-        total_horas_mes = sum(horas_lista)
-        quantidade_meses += 1
+    #     # Calcule a média de horas produtivas para cada mês
+    # for (ano, mes), horas_lista in horas_por_mes.items():
+    #     total_horas_mes = sum(horas_lista)
+    #     quantidade_meses += 1
 
-        media_mes = total_horas_mes / len(horas_lista) if len(horas_lista) > 0 else 0
+    #     media_mes = total_horas_mes / len(horas_lista) if len(horas_lista) > 0 else 0
         
-        resultados.append({
-            'mes': mes,
-            'ano': ano,
-            'media_horas_produtivas': media_mes
-        })
+    #     resultados.append({
+    #         'mes': mes,
+    #         'ano': ano,
+    #         'media_horas_produtivas': media_mes
+    #     })
         
-    # Calcule a média anual das médias mensais
-    media_anual = sum([resultado['media_horas_produtivas'] for resultado in resultados]) / quantidade_meses if quantidade_meses > 0 else 0
+    # # Calcule a média anual das médias mensais
+    # media_anual = sum([resultado['media_horas_produtivas'] for resultado in resultados]) / quantidade_meses if quantidade_meses > 0 else 0
 
-    auxiliar_calculo.total_meses_calendario = quantidade_meses
-    auxiliar_calculo.total_meses_horasprodutivas = media_anual
-    auxiliar_calculo.save()
+    # auxiliar_calculo.total_meses_calendario = quantidade_meses
+    # auxiliar_calculo.total_meses_horasprodutivas = media_anual
+    # auxiliar_calculo.save()
         
-    # Imprima os resultados no console
-    for resultado in resultados:
-        print(f'Mês: {resultado["mes"]} / Ano: {resultado["ano"]} / Média de Horas Mês: {resultado["media_horas_produtivas"]}')
-    print(f'Quantidade Total de Registros: {quantidade_registros}')
-    print(f'Quantidade Meses com Registros: {quantidade_meses}')
-    print(f'Média Anual de Horas Produtivas: {media_anual}')
+    # # Imprima os resultados no console
+    # for resultado in resultados:
+    #     print(f'Mês: {resultado["mes"]} / Ano: {resultado["ano"]} / Média de Horas Mês: {resultado["media_horas_produtivas"]}')
+    # print(f'Quantidade Total de Registros: {quantidade_registros}')
+    # print(f'Quantidade Meses com Registros: {quantidade_meses}')
+    # print(f'Média Anual de Horas Produtivas: {media_anual}')
+    print(f'Soma Total: {soma_total}')
+    print(f'Quantidade: {quantidade}')
+    print(f'Média: {media}')
     
     response_data = {
-        'resultados': resultados
+        'soma_total': soma_total if soma_total else 0.0,  # Garante que a soma seja 0.0 se for None
+        'quantidade': quantidade,
+        'media': media,
     }
+    
+    ano_corrente = datetime.now().year  # Use datetime.now() corretamente
+    if ano_consulta == ano_corrente:
+        with transaction.atomic():
+            auxiliar_calculo = AuxiliarCalculo.objects.first()  # Suponho que haja apenas um registro
+            auxiliar_calculo.total_meses_horasprodutivas = media
+            auxiliar_calculo.total_meses_calendario = quantidade
+            auxiliar_calculo.save()
 
     return JsonResponse(response_data)
     

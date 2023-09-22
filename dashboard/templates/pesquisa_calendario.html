@@ -17,11 +17,10 @@
     <thead>    
         <tr>
             <th>Id</th>
-            <th>Funcionário</th>
             <th>Ano</th>
             <th>Mês</th>
-            <th>Dias Úteis</th>
             <th>Jornada Diária</th>
+            <th>Dias Úteis</th>
             <th>Horas Produtivas</th>
             <th></th>
         </tr>
@@ -29,18 +28,17 @@
     {% for calendario in calendario %}
         <tr>
             <td>{{ calendario.id }}</td>
-            <td>{{ calendario.funcionario.nome }}</td>
             <td>{{ calendario.ano }}</td>
-            <td>{{ calendario.mes }}</td> 
-            <td>{{ calendario.dias_uteis }}</td> 
+            <td>{{ calendario.descricao }}</td>
             <td>{{ calendario.jornada_diaria }}</td> 
+            <td>{{ calendario.dias_uteis }}</td> 
             <td>{{ calendario.horas_produtivas }}</td> 
             <td>
                 {% comment %} <a href="{% url 'detalhes_calendario' calendario.id %}"> {% endcomment %}
                     {% comment %} <i class="bi bi-pencil-fill"></i> {% endcomment %}
                 {% comment %} </a> {% endcomment %}
-                <a href="{% url 'deletar_calendario' calendario.id %}">
-                    <i class="bi bi-trash-fill delete-icon"></i>
+                {% comment %} <a href="{% url 'deletar_calendario' calendario.id %}">
+                    <i class="bi bi-trash-fill delete-icon"></i> {% endcomment %}
                 </a>
             </td>
         </tr>

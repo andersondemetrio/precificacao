@@ -830,9 +830,9 @@
             <form id="searchFormCalendario" method="get" action="{% url 'buscar_calendario' %}">
                 <div class="">
                     <div class="input-group div-modal-person">
-                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Dias/Horas">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="searchCal" value="{{ search_query }}" placeholder="Buscar por Ano" required>
                         <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCalendario">Cadastrar Dias/Horas</button>
+                        {% comment %} <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCalendario">Cadastrar Dias/Horas</button> {% endcomment %}
                     </div>
                 </div>
             </form>

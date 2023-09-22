@@ -310,77 +310,126 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 //Função para calcular dias úteis na modal do Calendário
-function calcularDiasUteis(ano, mes) {
-    const inicioMes = new Date(ano, mes - 1, 1);
-    const fimMes = new Date(ano, mes, 0);
-    let diasUteis = 0;
+// function calcularDiasUteis(ano, mes) {
+//     const inicioMes = new Date(ano, mes - 1, 1);
+//     const fimMes = new Date(ano, mes, 0);
+//     let diasUteis = 0;
 
-    for (let dia = inicioMes; dia <= fimMes; dia.setDate(dia.getDate() + 1)) {
-        if (dia.getDay() !== 0 && dia.getDay() !== 6) {
-            diasUteis++;
-        }
-    }
-    console.log(diasUteis);
+//     for (let dia = inicioMes; dia <= fimMes; dia.setDate(dia.getDate() + 1)) {
+//         if (dia.getDay() !== 0 && dia.getDay() !== 6) {
+//             diasUteis++;
+//         }
+//     }
+//     console.log(diasUteis);
 
-    // Crie uma cópia de inicioMes para contar os sábados
-    const inicioMesCopia = new Date(ano, mes - 1, 1);
-    let numSabados = 0;
-    while (inicioMesCopia.getMonth() === mes - 1) {
-        if (inicioMesCopia.getDay() === 6) {
-            numSabados++;
-        }
-        inicioMesCopia.setDate(inicioMesCopia.getDate() + 1);
-    }
-    console.log(numSabados);
+//     // Crie uma cópia de inicioMes para contar os sábados
+//     const inicioMesCopia = new Date(ano, mes - 1, 1);
+//     let numSabados = 0;
+//     while (inicioMesCopia.getMonth() === mes - 1) {
+//         if (inicioMesCopia.getDay() === 6) {
+//             numSabados++;
+//         }
+//         inicioMesCopia.setDate(inicioMesCopia.getDate() + 1);
+//     }
+//     console.log(numSabados);
 
-    // Adicione metade de um dia útil para cada sábado
-    diasUteis += numSabados * 0.5;
-    console.log(diasUteis);
+//     // Adicione metade de um dia útil para cada sábado
+//     diasUteis += numSabados * 0.5;
+//     console.log(diasUteis);
 
-    return diasUteis;
-}
+//     return diasUteis;
+// }
 
 
 // função para calcular horas produtivas do funcionario
-document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector("#calendarioForm");
+$(document).ready(function() {
+    console.log('ready');
+    $('#searchFormCalendario').submit(function(event) {
+        event.preventDefault(); // Evita que o formulário seja enviado
 
-    form.addEventListener("submit", function (event) {
-        event.preventDefault();
+        console.log('Formulário de pesquisa enviado');
 
-        const mes = parseInt(document.querySelector("#mes").value);
-        const ano = parseInt(document.querySelector("#ano").value);
-        const jornadaDiariaValue = document.querySelector("#jornada_diaria").value;
-        const funcionario = document.querySelector("#funcionario").value;        
-        const feriadoValue = document.querySelector("#feriados").value;
+        var searchQuery = $('[name="searchCal"]').val().trim(); // Obtém o valor e remove espaços em branco
+        
+        // Salva o valor em uma variável para validação
+        var consultaAno = searchQuery;
 
-        if (isNaN(mes) || isNaN(ano) || jornadaDiariaValue === "" || funcionario === "") {
-            alert("Preencha todos os campos obrigatórios corretamente.");
-            return;
+        console.log('ConsultaAno:', consultaAno);
+
+        if (consultaAno === "") {
+            console.log('A consulta está vazia, não fazendo a solicitação AJAX');
+            return; // Não faz a solicitação AJAX se a consulta estiver vazia
         }
 
-        const jornadaDiaria = parseFloat(jornadaDiariaValue);
-        const feriado = (feriadoValue);
-
-        const diasUteis = calcularDiasUteis(ano, mes);
-        const horasProdutivas = (diasUteis - feriado) * jornadaDiaria;
-
-        // Preencher os valores calculados nos campos de horas_produtivas e dias_uteis
-        document.querySelector("#horas_produtivas").value = horasProdutivas;
-        document.querySelector("#dias_uteis").value = diasUteis;
-
         $.ajax({
-            type: "POST",
-            url: "inserir_calendario/",
-            data: $(form).serialize(), // Use $(form) para serializar o formulário
+            type: 'GET',
+            url: 'calcular_media_horas_produtivas/', // Substitua pela URL da sua view
+            data: {
+                'search_query': searchQuery
+            },
+            dataType: 'json',
             success: function(response) {
-                // Aqui você pode adicionar qualquer ação adicional após o sucesso da requisição
-                form.reset();
-                $("#successMessageCalendario").show();
+                // Exiba os resultados na tabela ou onde desejar
+                $('#soma_total').text(response.soma_total);
+                $('#quantidade').text(response.quantidade);
+                // Verifique se response.media é um número antes de formatá-lo
+                if (!isNaN(response.media)) {
+                    response.media = parseFloat(response.media);
+                    $('#media').text(response.media.toFixed(2)); // Formatando a média com duas casas decimais
+
+                    // Exiba um alerta com a média formatada
+                    alert('Média: ' + response.media.toFixed(2));
+                } else {
+                    $('#media').text('N/A'); // Exiba "N/A" se a média não for um número
+                    alert('A média não é um número válido.');
+                }
+            },
+            error: function(error) {
+                console.log(error);
             }
         });
     });
 });
+
+// document.addEventListener("DOMContentLoaded", function () {
+//     const form = document.querySelector("#calendarioForm");
+
+//     form.addEventListener("submit", function (event) {
+//         event.preventDefault();
+
+//         const mes = parseInt(document.querySelector("#mes").value);
+//         const ano = parseInt(document.querySelector("#ano").value);
+//         const jornadaDiariaValue = document.querySelector("#jornada_diaria").value;
+//         const funcionario = document.querySelector("#funcionario").value;        
+//         const feriadoValue = document.querySelector("#feriados").value;
+
+//         if (isNaN(mes) || isNaN(ano) || jornadaDiariaValue === "" || funcionario === "") {
+//             alert("Preencha todos os campos obrigatórios corretamente.");
+//             return;
+//         }
+
+//         const jornadaDiaria = parseFloat(jornadaDiariaValue);
+//         const feriado = (feriadoValue);
+
+//         const diasUteis = calcularDiasUteis(ano, mes);
+//         const horasProdutivas = (diasUteis - feriado) * jornadaDiaria;
+
+//         // Preencher os valores calculados nos campos de horas_produtivas e dias_uteis
+//         document.querySelector("#horas_produtivas").value = horasProdutivas;
+//         document.querySelector("#dias_uteis").value = diasUteis;
+
+//         $.ajax({
+//             type: "POST",
+//             url: "inserir_calendario/",
+//             data: $(form).serialize(), // Use $(form) para serializar o formulário
+//             success: function(response) {
+//                 // Aqui você pode adicionar qualquer ação adicional após o sucesso da requisição
+//                 form.reset();
+//                 $("#successMessageCalendario").show();
+//             }
+//         });
+//     });
+// });
 
 // Função para abrir modal personalizado Empresa
 const openModalButtonEmpresa = document.getElementById("openModalButtonEmpresa");

@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Busca dinâmica de dados na tabela Benefícios
+// Busca dinâmica de dados na tabela VincularCargos
 document.addEventListener("DOMContentLoaded", function () {
     const searchFormVincularCargos = document.getElementById("searchFormVincularCargos");
     const modal = document.getElementById("myModal");
@@ -238,8 +238,8 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 });
-// lista os encargos 
 
+// lista os encargos 
 document.addEventListener("DOMContentLoaded", function () {
     const searchFormEncargosRelatorios = document.getElementById("searchFormEncargosRelatorios");
 
