@@ -50,10 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const lucro = parseFloat(document.getElementById("orcamentoLucro").value) || 0;
 
         // Calcule o valor total sugerido
-        const totalSugerido = compraMateriais + materiaisDvs + dvsSocios +  parseFloat(custoHora) + beneficios +
-            telefonia + segEquipamento + manutencao + dvsOperacao + bonusResultado + plr + horasExtras +
-            exame + terceirizados + alimentacao + hospedagem + quilometragem + deslocamento + combustivel +
-            estacionamento + comissoes + segObra + insumos + manutencaoECons + distrato + condominio;
+        const totalSugerido = compraMateriais + parseFloat(custoHora) + beneficios + condominio;
         
         // Calcule a soma do tributo e lucro
         const somaTributoLucro = tributos + lucro;
@@ -70,30 +67,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Adicione listeners de evento para os campos relevantes para chamar a função de cálculo quando os valores forem alterados
     document.getElementById("orcamentoCompraMateriais").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoMateriaisDvs").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoDvsSocios").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoMateriaisDvs").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoDvsSocios").addEventListener("input", calcularTotalSugerido);
     document.getElementById("orcamentoCustoHora").addEventListener("input", calcularTotalSugerido);
     document.getElementById("orcamentoBeneficios").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoTelefonia").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoSeguroEquipamentos").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoManutencao").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoDvsOperacao").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoBonus").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoPlr").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoHorasExtras").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoExame").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoTerceirizados").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoAlimentacao").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoHospedagem").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoQuilometragem").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoDeslocamento").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoCombustivel").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoEstacionamento").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoComissoes").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoSeguroObra").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoInsumos").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoManutencaoECons").addEventListener("input", calcularTotalSugerido);
-    document.getElementById("orcamentoDistrato").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoTelefonia").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoSeguroEquipamentos").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoManutencao").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoDvsOperacao").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoBonus").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoPlr").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoHorasExtras").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoExame").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoTerceirizados").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoAlimentacao").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoHospedagem").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoQuilometragem").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoDeslocamento").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoCombustivel").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoEstacionamento").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoComissoes").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoSeguroObra").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoInsumos").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoManutencaoECons").addEventListener("input", calcularTotalSugerido);
+    // document.getElementById("orcamentoDistrato").addEventListener("input", calcularTotalSugerido);
     document.getElementById("orcamentoCondominio").addEventListener("input", calcularTotalSugerido);
     document.getElementById("orcamentoImpostos").addEventListener("input", calcularTotalSugerido);
     document.getElementById("orcamentoLucro").addEventListener("input", calcularTotalSugerido);
@@ -103,3 +100,30 @@ const valorSpan = document.getElementById("totalSugeridoDisplay").textContent;
 
 // Defina o valor no input
 document.getElementById("orcamentoSugerido").value = valorSpan;
+
+
+$(document).ready(function () {
+    $("#addInput").click(function () {
+        console.log("Clicou");
+        $("#inputForm").append(`
+            <div class="form-row d-flex flex-row justify-content-between align-items-center">
+                <div class="form-group col-md-6">
+                    <label for="descricao">Descrição:</label>
+                    <input type="text" class="form-control" id="descricaoOrcNovo" name="descricao[]" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="valor">Valor:</label>
+                    <input type="number" class="form-control" id="valorOrcNovo" name="valor[]" required>
+                </div>
+                <div class="form-group col-md-2">
+                    <button type="button" class="btn btn-danger removeInput div-button-add">Remover -</button>
+                </div>
+            </div>
+        `);
+    });
+
+    // Função para remover um conjunto de campos de entrada
+    $("#inputForm").on("click", ".removeInput", function () {
+        $(this).closest(".form-row").remove();
+    });
+});

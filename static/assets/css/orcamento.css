@@ -124,3 +124,9 @@ h5 {
     background-color: rgb(217, 255, 217);
     font-weight: bolder;
 }
+
+.div-button-add {
+    height: 38px;
+    width: 130px;
+    margin-top: 23px;
+}
