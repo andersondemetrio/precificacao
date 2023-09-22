@@ -86,14 +86,13 @@ class Propostas(models.Model):
 
 # Model criada para atener a demanda de 
 class CalendarioMensal(models.Model):
-    mes = models.PositiveIntegerField()
     ano = models.PositiveIntegerField()
-    funcionario = models.ForeignKey(Colaboradores, on_delete=models.CASCADE)
+    mes = models.PositiveIntegerField()
+    descricao = models.CharField(max_length=100)
     dias_uteis = models.DecimalField(max_digits=5, decimal_places=2)
-    jornada_diaria = models.DecimalField(max_digits=5, decimal_places=2)
+    jornada_diaria = models.PositiveIntegerField()
     feriado = models.DecimalField(max_digits=5, decimal_places=2)
     horas_produtivas = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-
 
 
 class Employee(models.Model):
