@@ -45,10 +45,6 @@ class AuxiliarCalculo(models.Model):
     total_meses_horasprodutivas = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     destinatario_email = models.EmailField()       
 
-class Insumos(models.Model):
-    descricao = models.CharField(max_length=100)
-    valor = models.DecimalField(max_digits=10, decimal_places=2)
-
 class Empresa(models.Model):
     cnpj = models.CharField(max_length=18)
     numero_empresa = models.DecimalField(max_digits=4, decimal_places=0)
@@ -73,7 +69,6 @@ class Beneficios(models.Model):
 
 class GastosVariaveis(models.Model):
     colaborador = models.ForeignKey(Colaboradores, on_delete=models.CASCADE)
-    insumo = models.ForeignKey(Insumos, on_delete=models.CASCADE)
     quantidade = models.DecimalField(max_digits=10, decimal_places=2)
 
 class Propostas(models.Model):
@@ -132,34 +127,18 @@ class DescricaoObra(models.Model):
 
 class Rubrica(models.Model):
     orcamento_id = models.CharField(max_length=20)
+    capacidade_produtiva = models.PositiveIntegerField(default=0)
     quantidade = models.PositiveIntegerField(default=0)
-    compra_materiais=models.DecimalField(max_digits=10, decimal_places=2)
-    materiais_dvs=models.DecimalField(max_digits=10, decimal_places=2)
-    dvs_socio=models.DecimalField(max_digits=10, decimal_places=2)
     custo_hora=models.DecimalField(max_digits=10, decimal_places=2)
     beneficios =models.DecimalField(max_digits=10, decimal_places=2)
-    telefonia_comunicacao=models.DecimalField(max_digits=10, decimal_places=2)
-    seguro_maquinas_equipamentos=models.DecimalField(max_digits=10, decimal_places=2)
-    manutencao=models.DecimalField(max_digits=10, decimal_places=2)
-    dvs_operacao=models.DecimalField(max_digits=10, decimal_places=2)
-    bonus_resultado=models.DecimalField(max_digits=10, decimal_places=2)
-    plr=models.DecimalField(max_digits=10, decimal_places=2)
-    horas_extras=models.DecimalField(max_digits=10, decimal_places=2)
-    exames_adiciona_demissional=models.DecimalField(max_digits=10, decimal_places=2)
-    terceirizados =models.DecimalField(max_digits=10, decimal_places=2)
-    alimentacao=models.DecimalField(max_digits=10, decimal_places=2)
-    hospedagem=models.DecimalField(max_digits=10, decimal_places=2)
-    quilometragem =models.DecimalField(max_digits=10, decimal_places=2)
-    deslocamento =models.DecimalField(max_digits=10, decimal_places=2)
-    combustivel=models.DecimalField(max_digits=10, decimal_places=2)
-    estacionamento_pedagio=models.DecimalField(max_digits=10, decimal_places=2)
-    comissoes=models.DecimalField(max_digits=10, decimal_places=2)
-    seguros_obra_dvs=models.DecimalField(max_digits=10, decimal_places=2)
-    insumos=models.DecimalField(max_digits=10, decimal_places=2)
-    manutencao_conservacao=models.DecimalField(max_digits=10, decimal_places=2)
-    distrato_multas=models.DecimalField(max_digits=10, decimal_places=2)
     condominio =models.DecimalField(max_digits=10, decimal_places=2)
+    outros = models.PositiveIntegerField(default=0)
     tributos = models.PositiveIntegerField(default=0)
     lucros = models.PositiveIntegerField(default=0)
     status = models.CharField(max_length=100)
     valor_sugerido = models.DecimalField(max_digits=10, decimal_places=2)
+    
+class DespesasDinamicas(models.Model):
+    descricao = models.CharField(max_length=100)
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    rubrica= models.ForeignKey(Rubrica, on_delete=models.CASCADE)

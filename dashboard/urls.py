@@ -82,6 +82,7 @@ urlpatterns = [
     path('inserir_horas/', inserir_horas, name='inserir_horas'),      
     path('lista_salarios_view/', lista_salarios_view, name='lista_salarios_view'),
     path('atualizar_dados_banco/', atualizar_dados_banco, name='atualizar_dados_banco'),
+    # path('salvar_input_dinamico/', salvar_input_dinamico, name='salvar_input_dinamico'),
     path('calcular_media_horas_produtivas/', calcular_media_horas_produtivas, name='calcular_media_horas_produtivas'),
     path('calcular_soma_beneficio_funcionario/', calcular_soma_beneficio_funcionario, name='calcular_soma_beneficio_funcionario'),
     path('export_csv/',export_csv, name='export_csv'),
