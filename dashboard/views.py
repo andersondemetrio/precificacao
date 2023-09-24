@@ -18,11 +18,12 @@ from reportlab.pdfgen import canvas
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.http import HttpResponseServerError
+import json
 
 from django.core.mail import send_mail
 from django.conf import settings
 import random
-from .models import GastosFixos, Colaboradores, Cargos, Endereco, Empresa, CalendarioMensal, Employee, Beneficios, DescricaoObra, Rubrica
+from .models import GastosFixos, Colaboradores, Cargos, Endereco, Empresa, CalendarioMensal, Employee, Beneficios, DescricaoObra, Rubrica, DespesasDinamicas
 import csv
 
 from reportlab.lib import colors
@@ -937,42 +938,6 @@ def inserir_orcamento(request):
     soma_horas = 0
     totalGes = 0
 
-    # # Percorra as horas e calcule a soma
-    # for horas in horas_obras:
-    #     soma_horas += horas
-
-    # total_beneficios_gestores = 0
-
-    # for gestor in gestores:
-    #     total_beneficios_gestores += gestor.beneficios
-        
-    # print(f'Total dos benefícios dos gestores: {total_beneficios_gestores}')
-    
-    # if primeira_hora_produtiva:
-    #     valor_primeira_hora = primeira_hora_produtiva.horas_produtivas
-    # else:
-    #     valor_primeira_hora = None
-    # print(f'Valor da primeira hora produtiva: {valor_primeira_hora}')
-    
-    # media_para_gestores = soma_horas / quantidade_linhas
-    # print(f'Média para gestores: {media_para_gestores}')
-    # totalGes += round(total_beneficios_gestores * 1 / valor_primeira_hora * media_para_gestores, 2)
-    # print(f'Total dos benefícios dos gestores: {totalGes}')
-    
-    # total = 0
-    
-    # for descricao_obra in descricao_obras:
-    #     # Consulte a tabela Beneficios para encontrar registros correspondentes
-    #     beneficios = Beneficios.objects.filter(cargo_id=descricao_obra.cargo_id)
-
-    #     # Para cada registro correspondente na tabela Beneficios, calcule o valor e adicione ao total
-    #     for beneficio in beneficios:
-    #         total += round(beneficio.valor * descricao_obra.quantidade / descricao_obra.horas_produtivas * descricao_obra.horas, 2)
-            
-    # totalSoma = round(total + totalGes, 2)
-    # print(totalSoma)
-    
-
     # Calcule a soma dos valores
     custo_total = sum(descricao.total_mod for descricao in descricao_obras)
     total_prestadores = sum(descricao.quantidade for descricao in descricao_obras)
@@ -982,48 +947,38 @@ def inserir_orcamento(request):
     totalSoma = round(custo_total * 10 / 100, 2)
     
     if request.method == 'POST':
-        compra_materiais = request.POST['orcamentoCompraMateriais']
-        materiais_dvs = request.POST['orcamentoMateriaisDvs']
-        dvs_socio = request.POST['orcamentoDvsSocios']
-        telefonia_comunicacao = request.POST['orcamentoTelefonia']
-        seguro_maquinas_equipamentos = request.POST['orcamentoSeguroEquipamentos']
-        manutencao = request.POST['orcamentoManutencao']
-        dvs_operacao = request.POST['orcamentoDvsOperacao']
-        bonus_resultado = request.POST['orcamentoBonus']
-        plr = request.POST['orcamentoPlr']
-        horas_extras = request.POST['orcamentoHorasExtras']
-        exames_adiciona_demissional = request.POST['orcamentoExame']
-        terceirizados = request.POST['orcamentoTerceirizados']
-        alimentacao = request.POST['orcamentoAlimentacao']
-        hospedagem = request.POST['orcamentoHospedagem']
-        quilometragem = request.POST['orcamentoQuilometragem']
-        deslocamento = request.POST['orcamentoDeslocamento']
-        combustivel =  request.POST['orcamentoCombustivel']
-        estacionamento_pedagio = request.POST['orcamentoEstacionamento']
-        comissoes = request.POST['orcamentoComissoes']
-        seguros_obra_dvs = request.POST['orcamentoSeguroObra']
-        insumos = request.POST['orcamentoInsumos']
-        manutencao_conservacao = request.POST['orcamentoManutencaoECons']
-        distrato_multas = request.POST['orcamentoDistrato']
-        # condominio = request.POST['orcamentoCondominio']
+        # Processar outros campos e salvar no modelo Rubrica como você já está fazendo
+
+        outros = request.POST['orcamentoOutros']
         tributos = request.POST['orcamentoImpostos']
         lucros = request.POST['orcamentoLucro']
         valor_sugerido = request.POST.get('totalSugerido', 0)
         
-        Rubrica.objects.create(orcamento_id=numero_novo_orcamento, quantidade=total_prestadores, compra_materiais=compra_materiais, 
-                               materiais_dvs=materiais_dvs, dvs_socio=dvs_socio, custo_hora=custo_total, beneficios=totalSoma, 
-                               telefonia_comunicacao=telefonia_comunicacao, seguro_maquinas_equipamentos=seguro_maquinas_equipamentos, 
-                               manutencao=manutencao, dvs_operacao=dvs_operacao, bonus_resultado=bonus_resultado, plr=plr, 
-                               horas_extras=horas_extras, exames_adiciona_demissional=exames_adiciona_demissional, 
-                               terceirizados=terceirizados, alimentacao=alimentacao, hospedagem=hospedagem, quilometragem=quilometragem, 
-                               deslocamento=deslocamento, combustivel=combustivel, estacionamento_pedagio=estacionamento_pedagio, 
-                               comissoes=comissoes, seguros_obra_dvs=seguros_obra_dvs, insumos=insumos, manutencao_conservacao=manutencao_conservacao, 
-                               distrato_multas=distrato_multas, condominio=custo_condominio, tributos=tributos, lucros=lucros, status='Aberto', valor_sugerido=valor_sugerido)
-        return redirect('dashboard')
+        # Salvar a rubrica no banco de dados
+        rubrica = Rubrica.objects.create(orcamento_id=numero_novo_orcamento, capacidade_produtiva=capacidade_produtiva, quantidade=total_prestadores, custo_hora=custo_total, beneficios=totalSoma, 
+                               condominio=custo_condominio, outros=outros, tributos=tributos, lucros=lucros, status='Aberto', valor_sugerido=valor_sugerido)
+
+        # Processar os dados dos inputs e vincular às despesas à rubrica
+        descricoes = request.POST.getlist('descricao[]')
+        valores = request.POST.getlist('valor[]')
+
+        # Certifique-se de que a lista de descrições e valores tenha o mesmo comprimento
+        if len(descricoes) == len(valores):
+            for i in range(len(descricoes)):
+                descricao = descricoes[i]
+                valor = valores[i]
+
+                # Crie um objeto DespesasDinamicas e salve-o no banco de dados, vinculando à rubrica
+                despesa = DespesasDinamicas(descricao=descricao, valor=valor, rubrica=rubrica)
+                despesa.save()
+
+        # Redirecione para uma página de sucesso ou faça o que for necessário
+        return redirect('dashboard')  # Altere 'pagina_de_sucesso' para a URL desejada
 
     return render(request, 'novo_orcamento.html', {'numero_novo_orcamento': numero_novo_orcamento,
                 'custo_total': custo_total, 'custo_condominio': custo_condominio, 'totalSoma': totalSoma,
                 'total_prestadores': total_prestadores, "capacidade_produtiva": capacidade_produtiva})
+   
 
 def buscar_orcamento(request): 
     q = request.GET.get('search')   

@@ -21,11 +21,6 @@ class CargosForm(forms.ModelForm):
         model = Cargos
         fields = "__all__"
 
-class InsumosForm(forms.ModelForm):
-    class Meta:
-        model = Insumos
-        fields = "__all__"
-
 class EnderecoForm(forms.ModelForm):
     class Meta:
         model = Endereco

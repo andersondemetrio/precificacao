@@ -16,7 +16,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
       const cargosUrl = "{% url 'cargos_vieww' %}";
-      const enderecoUrl = "{% url 'endereco_view' %}";
+      {% comment %} const despesasDinamicasUrl = "{% url 'salvar_input_dinamico' %}"; {% endcomment %}
     </script>
     <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script defer src="{% static 'assets/js/script_orcamento.js' %}"></script>
@@ -60,35 +60,41 @@
                           <label for="orcamentoCondominio" class="form-label label-orcamento"><b>Condomínio (Fixo)</b></label>
                           <input type="text" class="form-control input-orcamento" id="orcamentoCondominio" name="orcamentoCondominio" value="{{ custo_condominio }}" required disabled>
                         </div>
-                        <div class="mb-3 d-flex flex-row">
-                          <label for="orcamentoImpostos" class="form-label label-orcamento"><b>Impostos ( % )</b></label>
-                          <input type="number" class="form-control input-orcamento" id="orcamentoImpostos" name="orcamentoImpostos" value="" min="1" max="100" required step="0.01">
-                        </div>
-                        <div class="mb-3 d-flex flex-row">
-                          <label for="orcamentoLucro" class="form-label label-orcamento"><b>Lucro ( % )</b></label>
-                          <input type="number" class="form-control input-orcamento" id="orcamentoLucro" name="orcamentoLucro" value="" min="1" max="100" required step="0.01">
-                        </div>
-                        <div class="mb-3 d-flex flex-row">
-                          <label for="orcamentoCompraMateriais" class="form-label label-orcamento"><b>Compra Materiais</b></label>
-                          <input type="number" class="form-control input-orcamento" id="orcamentoCompraMateriais" name="orcamentoCompraMateriais" value="" required step="0.01">
-                        </div>
                         <div class="container mt-5">
+                          <div class="d-flex flex-row justify-content-between"> 
                           <h2>Adicionar Despesas</h2>
+                          <div class="form-group col-md-2">
+                            <button type="button" class="btn btn-primary div-button-add" id="addInput">Adicionar +</button>
+                          </div>
+                          </div>
                           <div id="inputForm">
-                              <div class="form-row d-flex flex-row justify-content-between align-items-center">
+                              <div class="form-row d-flex flex-row justify-content-between align-items-start" style="gap: 10px">
                                   <div class="form-group col-md-6">
                                       <label for="descricao">Descrição:</label>
                                       <input type="text" class="form-control" id="descricaoOrcNovo" name="descricao[]" required>
                                   </div>
                                   <div class="form-group col-md-4">
                                       <label for="valor">Valor:</label>
-                                      <input type="number" class="form-control" id="valorOrcNovo" name="valor[]" required>
+                                      <input type="number" class="form-control valorOrcNovo" id="valorOrcNovo" name="valor[]" required>
                                   </div>
                                   <div class="form-group col-md-2">
-                                      <button type="button" class="btn btn-primary div-button-add" id="addInput">Adicionar +</button>
+                                    <button type="button" class="btn btn-primary div-button-add" id="addInput" hidden>Adicionar +</button>
                                   </div>
                               </div>
                           </div>
+                          <div class="total"><span id="total" style="display: none;">0.00</span></div>
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoOutros" class="form-label label-orcamento"><b>Outros ( % )</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoOutros" name="orcamentoOutros" value="" min="0" max="100" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoImpostos" class="form-label label-orcamento"><b>Impostos ( % )</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoImpostos" name="orcamentoImpostos" value="" min="0" max="100" required step="0.01">
+                        </div>
+                        <div class="mb-3 d-flex flex-row">
+                          <label for="orcamentoLucro" class="form-label label-orcamento"><b>Lucro ( % )</b></label>
+                          <input type="number" class="form-control input-orcamento" id="orcamentoLucro" name="orcamentoLucro" value="" min="0" max="100" required step="0.01">
                         </div>
                         <div class="mb-3 d-flex flex-row">
                           <label for="orcamentoSugerido" class="form-label label-orcamento"><b>Valor total Sugerido</b></label>
