@@ -42,7 +42,7 @@ class AuxiliarCalculo(models.Model):
     total_meses_condominio = models.PositiveIntegerField(default=0)
     total_gastos_condominio = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total_meses_calendario = models.PositiveIntegerField(default=0)    
-    total_meses_horasprodutivas = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total_meses_horasprodutivas = models.DecimalField(max_digits=10, decimal_places=6, default=0)
     destinatario_email = models.EmailField()       
 
 class Empresa(models.Model):

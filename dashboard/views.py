@@ -823,7 +823,6 @@ def deletar_beneficio(request, beneficio_id):
 
 
 #Funções do CRUD de Vincular Cargos
-
 def inserir_vinculo(request):
     if request.method == 'POST':
         horas_str = request.POST['horas']
@@ -840,9 +839,12 @@ def inserir_vinculo(request):
         
         
         auxiliar_calculo = AuxiliarCalculo.objects.first()
-        horas_produtivas = auxiliar_calculo.total_meses_horasprodutivas
-        horas_condominio = round(auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_horasprodutivas / auxiliar_calculo.total_prestadores, 6)
-        horas_condominio = (float(horas_condominio))
+        horas_produtivas = round(auxiliar_calculo.total_meses_horasprodutivas, 6)
+        print(horas_produtivas)
+        tot_condominio = round(auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_condominio, 6)
+        mes_condominio = round(tot_condominio / horas_produtivas, 6) 
+        dia_condominio = round(mes_condominio / auxiliar_calculo.total_prestadores, 6)
+        horas_condominio = float(dia_condominio)
         
         # Calcular a soma do custo_mes para todos os funcionários com o mesmo cargo
         total_custo_mes = Employee.objects.filter(cargo=cargo).aggregate(Sum('custo_mes'))['custo_mes__sum']
@@ -852,16 +854,19 @@ def inserir_vinculo(request):
 
         # Calcular o custo médio por funcionário
         custo_medio_por_funcionario = round(total_custo_mes / num_funcionarios, 6)
+        print(custo_medio_por_funcionario)
         
         if custo_medio_por_funcionario is None:
             custo_medio_por_funcionario = 0
             
         if horas_produtivas != 0:
             resultado_custo_mod = round(custo_medio_por_funcionario / horas_produtivas, 6)
+            print(resultado_custo_mod)
         else:
             resultado_custo_mod = 0
         
         resultado_custo_mod = float(resultado_custo_mod)
+        print(resultado_custo_mod)
                 
         if custo_medio_por_funcionario is None:
             custo_medio_por_funcionario = 0
@@ -875,8 +880,8 @@ def inserir_vinculo(request):
             horas=horas,
             quantidade=quantidade,
             orcamento_id=orcamento_id,
-            custo_mod=resultado_custo_mod,
-            custo_hora_con=horas_condominio,
+            custo_mod=round(resultado_custo_mod,6),
+            custo_hora_con=round(horas_condominio, 6),
             custo_total=round(horas_condominio+resultado_custo_mod, 2),
             horas_produtivas=horas_produtivas,
             total_mod=total_mod,
@@ -886,7 +891,8 @@ def inserir_vinculo(request):
         )
         vinculo.save()
         # calcular_soma_beneficio_funcionario(request)
-        
+        print(resultado_custo_mod)
+          
         return redirect('dashboard')
     return render(request, 'dashboard1.html')
 
@@ -1204,7 +1210,7 @@ def calcular_media_horas_produtivas(request):
         )
         soma_total = resultado['horas_produtivas__sum']
         quantidade = resultado['horas_produtivas__count']
-        media = soma_total / quantidade if quantidade > 0 else 0.0
+        media = round(soma_total / quantidade, 6) if quantidade > 0 else 0.0
     else:
         soma_total = 0
         quantidade = 0
