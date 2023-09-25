@@ -16,6 +16,17 @@ table {
     overflow: hidden;
 }
 
+.tab-emp-enc {
+    width: 500px;
+    max-width: 500px;
+    min-width: 500px;
+    margin: 40px auto;
+    border-collapse: collapse;
+    text-align: center;
+    border-radius: 10px 10px 0 0;
+    overflow: auto;
+}
+
 thead>tr {
     background-color: rgb(37, 31, 77);
     color: white;
