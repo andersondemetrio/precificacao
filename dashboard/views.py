@@ -555,7 +555,7 @@ def inserir_gasto_fixo(request):
             
         gasto_fixo = GastosFixos(descricao=descricao, valor=valor, mes=mes, ano=ano, tipo=tipo)
         gasto_fixo.save()
-        calcular_gastos_ultimos_12_meses(request)
+        calcular_gastos_ano_corrente(request)
 
         
         return redirect('dashboard')
@@ -597,7 +597,7 @@ def editar_gasto_fixo(request, id):
         gastosfixos.valor = valor
         gastosfixos.tipo = escolha   
         gastosfixos.save()
-        calcular_gastos_ultimos_12_meses(request)
+        calcular_gastos_ano_corrente(request)
 
         return redirect("dashboard")  # Redirecionar para uma página de sucesso
 
@@ -608,7 +608,7 @@ def deletar_gasto_fixo(request, gasto_fixo_id):
         try:
             gastosfixos = GastosFixos.objects.get(pk=gasto_fixo_id)
             gastosfixos.delete()
-            calcular_gastos_ultimos_12_meses(request)
+            calcular_gastos_ano_corrente(request)
             return redirect('dashboard')
         except GastosFixos.DoesNotExist:
             return JsonResponse({"success": False, "error": "Registro não encontrado"})
@@ -1124,84 +1124,65 @@ def list_employee(request):
 
 
 # Função para calcular gastos com condominio
-def calcular_gastos_ultimos_12_meses(request):
+def calcular_gastos_ano_corrente(request):
     data_atual = datetime.now()
-    
-    resultados = []
-    total_gastos_12_meses = 0
-    quantidadeMeses = 0
-    
-    data_inicio = data_atual - timedelta(days=365)
+    ano_corrente = data_atual.year
     
     auxiliar_calculo, created = AuxiliarCalculo.objects.get_or_create(pk=1)
     if created:
         auxiliar_calculo.total_meses_condominio = 0
         auxiliar_calculo.total_gastos_condominio = 0
         auxiliar_calculo.save()
-
-
-    # Loop para obter os 12 últimos meses e calcular os gastos totais
-    for i in range(12):
-        # Calcule o mês e o ano para o mês atual
-        mes = (data_inicio.month + i) % 12
-        ano = data_inicio.year + ((data_inicio.month + i) // 12)  # Ajuste do ano
         
-        # Certifique-se de que o mês está dentro do intervalo correto (1 a 12)
-        if mes <= 0:
-            mes += 12
-            ano -= 1
-        
-        # Calcule o primeiro dia e o último dia do mês
-        primeiro_dia = datetime(ano, mes, 1)
-        ultimo_dia = primeiro_dia + timedelta(days=31)
-        
-        # Consulte o banco de dados para obter os gastos fixos do mês atual e some os valores
-        gastos_mensais = GastosFixos.objects.filter(mes=mes, ano=ano).aggregate(Sum('valor'))['valor__sum']
-        
-        # Adicione os resultados à lista
-        resultados.append({
-            'mes': mes,
-            'ano': ano,
-            'total_gastos': gastos_mensais or 0  # Se não houver gastos, defina como zero
-        })
-        
-        total_gastos_12_meses += gastos_mensais or 0
-        
-        if gastos_mensais and gastos_mensais != 0:
-            quantidadeMeses += 1
+    # Consulte o banco de dados para obter os gastos fixos do ano corrente e some os valores
+    gastos_ano_corrente = GastosFixos.objects.filter(ano=ano_corrente).aggregate(Sum('valor'))['valor__sum']
+    
+    # Verifique a quantidade de entradas encontradas no ano corrente
+    quantidade_entradas_ano_corrente = GastosFixos.objects.filter(ano=ano_corrente).count()
+    
+    if gastos_ano_corrente is None or quantidade_entradas_ano_corrente is None:
+        gastos_ano_corrente = 0
+        quantidade_entradas_ano_corrente = 0         
             
-            
-        auxiliar_calculo.total_meses_condominio = quantidadeMeses
-        auxiliar_calculo.total_gastos_condominio = total_gastos_12_meses
-        auxiliar_calculo.save()
+    auxiliar_calculo.total_meses_condominio = quantidade_entradas_ano_corrente
+    auxiliar_calculo.total_gastos_condominio = gastos_ano_corrente
+    auxiliar_calculo.save()
         
     # Imprima os resultados no console
-    for resultado in resultados:
-        print(f'Mês: {resultado["mes"]} / Ano: {resultado["ano"]} / Total de Gastos: {resultado["total_gastos"]}')
-    print(f'Soma Total de Gastos: {total_gastos_12_meses}')
-    print(f'Quantidade de Meses com Gastos: {quantidadeMeses}')
+    print(f'Soma Total de Gastos: {gastos_ano_corrente}')
+    print(f'Quantidade de Meses com Gastos: {quantidade_entradas_ano_corrente}')
     
     response_data = {
-        'total_gastos_12_meses': total_gastos_12_meses
+        'total_gastos_ano_corrente': gastos_ano_corrente or 0,  # Defina como zero se não houver gastos
+        'quantidade_entradas_ano_corrente': quantidade_entradas_ano_corrente
     }
 
     return JsonResponse(response_data)
 
 # Função para listar as horas condomínios
 def lista_horas_condiminio_view(request):
-    auxiliar_calculo = AuxiliarCalculo.objects.first() 
+    auxiliar_calculo = AuxiliarCalculo.objects.first()
+    
+    if auxiliar_calculo.total_meses_condominio > 0:
+        custo_condominio = auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_condominio
+    else:
+        custo_condominio = 0  # Ou qualquer valor padrão que você desejar
+        
+    if custo_condominio != custo_condominio:
+        custo_condominio = 0  # Ou qualquer outro valor padrão desejado
     
     if auxiliar_calculo.total_meses_horasprodutivas != 0:
-        custo_hora_condominio = auxiliar_calculo.total_gastos_condominio / auxiliar_calculo.total_meses_horasprodutivas
+        custo_hora_condominio = custo_condominio / auxiliar_calculo.total_meses_horasprodutivas
     else:
         custo_hora_condominio = None
         
     if auxiliar_calculo.total_prestadores != 0:
         custo_hora_percapta = custo_hora_condominio / auxiliar_calculo.total_prestadores
     else:
-        custo_hora_percapta = None
+        custo_hora_percapta = None       
+
         
-    return render(request, 'lista_condominio.html', {'auxiliar_calculo': auxiliar_calculo, 'custo_hora_condominio': custo_hora_condominio, 'custo_hora_percapta': custo_hora_percapta})
+    return render(request, 'lista_condominio.html', {'auxiliar_calculo': auxiliar_calculo, 'custo_hora_condominio': custo_hora_condominio, 'custo_hora_percapta': custo_hora_percapta, 'custo_condominio': custo_condominio})
 
 
 # Função para calcular a média de horas produtivas
