@@ -181,3 +181,13 @@
 .placeholder {
   color: black;
 }
+
+#modalEncargosRelatorios .modal-dialog {
+  max-width: 95%;
+}
+
+#modalEncargosRelatorios .modal-body {
+  width: 100%;
+  max-height: 70vh;
+  overflow-y: auto;
+}

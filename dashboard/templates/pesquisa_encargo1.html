@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/relatorio.css' %}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>
     <script defer src="{% static 'assets/js/format_valor.js' %}"></script>
     <script>
         function imprimirTabela() {
@@ -27,8 +28,9 @@
     </script>
 </head>
 <body >
-    
+    <div class="table-container">    
     <table class="table table-striped">
+        <tbody style="width: 500px;">
         <thead>
             <tr>
                 <th>Id</th>
@@ -67,7 +69,9 @@
             <td class="text-monospace">R$ {{ encargo.custo_mes|floatformat:2 }}</td>
         </tr>
         {% endfor %}
+    </tbody>
     </table>
+    </div>
     <div class="d-flex justify-content-center mt-3 div-button">
         <a href="{% url 'export_csv' %}" class="btn btn-success btn-sm mr-2">Gerar CSV</a>
         <a href="{% url 'export_pdf' %}" class="btn btn-danger btn-sm">Gerar PDF</a>
