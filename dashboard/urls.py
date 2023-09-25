@@ -54,7 +54,7 @@ urlpatterns = [
     path('detalhes_gasto_fixo/<int:id>/', detalhes_gasto_fixo, name='detalhes_gasto_fixo'),
     path('deletar_gasto_fixo/<int:gasto_fixo_id>/', deletar_gasto_fixo, name='deletar_gasto_fixo'),      
     path('lista_horas_condiminio_view/', lista_horas_condiminio_view, name='lista_horas_condiminio_view'),
-    path('calcular_gastos_ultimos_12_meses/', calcular_gastos_ultimos_12_meses, name='calcular_gastos_ultimos_12_meses'),
+    path('calcular_gastos_ano_corrente/', calcular_gastos_ano_corrente, name='calcular_gastos_ano_corrente'),
      
     path('inserir_encargo/', inserir_encargo, name='inserir_encargo'),  
     path('buscar_encargo/', buscar_encargo, name='buscar_encargo'),
