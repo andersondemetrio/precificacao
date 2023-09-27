@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.text())
             .then(data => {
                 const searchResultsTableColaboradores = document.getElementById("searchResultsTableColaboradores");
-                searchResultsTableColaboradores.innerHTML = data; // Atualiza a tabela de resultados
+                searchResultsTableColaboradores.innerHTML = data;
             })
             .catch(error => {
                 console.error('Erro na busca:', error);
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.text())
             .then(data => {
                 const searchResultsTable = document.getElementById("searchResultsTable");
-                searchResultsTable.innerHTML = data; // Atualiza a tabela de resultados
+                searchResultsTable.innerHTML = data; 
             })
             .catch(error => {
                 console.error('Erro na busca:', error);
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.text())
             .then(data => {
                 const searchResultsTableEndereco = document.getElementById("searchResultsTableEndereco");
-                searchResultsTableEndereco.innerHTML = data; // Atualiza a tabela de resultados
+                searchResultsTableEndereco.innerHTML = data; 
             })
             .catch(error => {
                 console.error('Erro na busca:', error);
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.text())
             .then(data => {
                 const searchResultsTableEmpresa = document.getElementById("searchResultsTableEmpresa");
-                searchResultsTableEmpresa.innerHTML = data; // Atualiza a tabela de resultados
+                searchResultsTableEmpresa.innerHTML = data; 
             })
             .catch(error => {
                 console.error('Erro na busca:', error);
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.text())
             .then(data => {
                 const searchResultsTableCalendario = document.getElementById("searchResultsTableCalendario");
-                searchResultsTableCalendario.innerHTML = data; // Atualiza a tabela de resultados
+                searchResultsTableCalendario.innerHTML = data;
             })
             .catch(error => {
                 console.error('Erro na busca:', error);
@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.text())
             .then(data => {
                 const searchResultsTableCondominio = document.getElementById("searchResultsTableCondominio");
-                searchResultsTableCondominio.innerHTML = data; // Atualiza a tabela de resultados
+                searchResultsTableCondominio.innerHTML = data;
             })
             .catch(error => {
                 console.error('Erro na busca:', error);
@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.text())
             .then(data => {
                 const searchResultsTableEncargos = document.getElementById("searchResultsTableEncargos");
-                searchResultsTableEncargos.innerHTML = data; // Atualiza a tabela de resultados
+                searchResultsTableEncargos.innerHTML = data;
             })
             .catch(error => {
                 console.error('Erro na busca:', error);
@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.text())
             .then(data => {
                 const searchResultsTableBeneficios = document.getElementById("searchResultsTableBeneficios");
-                searchResultsTableBeneficios.innerHTML = data; // Atualiza a tabela de resultados
+                searchResultsTableBeneficios.innerHTML = data; 
             })
             .catch(error => {
                 console.error('Erro na busca:', error);
@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.text())
             .then(data => {
                 const searchResultsTableVincularCargos = document.getElementById("searchResultsTableVincularCargos");
-                searchResultsTableVincularCargos.innerHTML = data; // Atualiza a tabela de resultados
+                searchResultsTableVincularCargos.innerHTML = data;
                 console.log(data);
             })
             .catch(error => {
@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.text())
             .then(data => {
                 const searchResultsTableOrcamento = document.getElementById("searchResultsTableOrcamento");
-                searchResultsTableOrcamento.innerHTML = data; // Atualiza a tabela de resultados
+                searchResultsTableOrcamento.innerHTML = data;
             })
             .catch(error => {
                 console.error('Erro na busca:', error);
@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.text())
         .then(data => {
             const searchResultsTableEncargosRelatorios = document.getElementById("searchResultsTableEncargosRelatorios");
-            searchResultsTableEncargosRelatorios.innerHTML = data; // Atualiza a tabela de resultados
+            searchResultsTableEncargosRelatorios.innerHTML = data; 
         })
         .catch(error => {
             console.error('Erro na busca:', error);
@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.text())
         .then(data => {
             const searchResultsTableEncargosRelatorios = document.getElementById("searchResultsTableEncargosRelatorios");
-            searchResultsTableEncargosRelatorios.innerHTML = data; // Atualiza a tabela de resultados
+            searchResultsTableEncargosRelatorios.innerHTML = data; 
         })
         .catch(error => {
             console.error('Erro na busca:', error);

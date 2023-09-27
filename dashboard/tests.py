@@ -3,13 +3,8 @@ from workalendar.america import Brazil
 
 cal = Brazil()
 
-# Definindo o ano para o qual você deseja calcular os dias úteis
 ano = 2023
-
-# Obtendo a lista de feriados
 feriados = cal.holidays(ano)
-
-# Definindo a data inicial e final do ano
 data_inicial = datetime.date(ano, 1, 1)
 data_final = datetime.date(ano, 12, 31)
 

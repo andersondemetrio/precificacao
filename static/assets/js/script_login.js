@@ -1,23 +1,16 @@
-// criar_funcao_aqui.js
-
 function validarFormulario() {
-    // Obter os valores dos campos de usuário e senha
     var usuario = document.getElementById("usuario").value;
     var senha = document.getElementById("senha").value;
 
-    // Validar se os campos estão preenchidos
     if (usuario === "" || senha === "") {
         alert("Por favor, preencha todos os campos!");
-        return false; // Impede o envio do formulário
+        return false;
     }
 
-    // Adicione aqui suas regras de validação personalizadas, se necessário
-
-    // Se chegou até aqui, os campos estão preenchidos corretamente
-    return true; // Permite o envio do formulário
+    return true; 
 }
 
-// função para esconder ou revelar senha da tela de login
+// Esconder ou revelar senha da tela de login
 
 document.addEventListener("DOMContentLoaded", function () {
     var togglePassword = document.getElementById("toggle-password");
@@ -36,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// função para verificar erros na redefinição de senhas
+// Verificar erros na redefinição de senhas
 document.addEventListener('DOMContentLoaded', function() {
     const password1Input = document.querySelector('#id_new_password1');
     const password2Input = document.querySelector('#id_new_password2');
@@ -52,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (!/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
                 password1Error.textContent = 'A senha deve conter letras e números.';
             } else {
-                password1Error.textContent = ''; // Remover a mensagem de erro
+                password1Error.textContent = '';
             }
         });
     }
@@ -62,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (password2Input.value !== password1Input.value) {
                 password2Error.textContent = 'As senhas não coincidem.';
             } else {
-                password2Error.textContent = ''; // Remover a mensagem de erro
+                password2Error.textContent = '';
             }
         });
     }

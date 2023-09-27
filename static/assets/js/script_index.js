@@ -1,16 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Recarrega a página ao clicar no botão Home
+    // Recarrega a página clicando no fechar
     document.getElementById("botaoHome").addEventListener("click", function(event) {
-        event.preventDefault(); // Impede o comportamento padrão do link
-        location.reload(); // Recarrega a página
+        event.preventDefault();
+        location.reload(); 
       });  
-    
-    // Recarrega a página ao clicar no botão Home
+
     var closeButtons = document.getElementsByClassName("close");
     for (var i = 0; i < closeButtons.length; i++) {
         closeButtons[i].addEventListener("click", function(event) {
-            event.preventDefault(); // Impede o comportamento padrão do link
-            location.reload(); // Recarrega a página
+            event.preventDefault(); 
+            location.reload(); 
         });
     } 
 
@@ -104,26 +103,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-
-    // scritp para adicionar mais campos de mão de obra
-    // document.getElementById('maisMaoDeObra').addEventListener('click', function () {
-    //     const maoDeObraContainer = document.querySelector('.mao-de-obra-container');
-    //     const clone = maoDeObraContainer.cloneNode(true);
-    //     const matriculaInput = clone.querySelector('input[name="matricula"]');
-    //     const nomeInput = clone.querySelector('input[name="nome"]');
-    //     const cpfInput = clone.querySelector('input[name="cpf"]');
-    //     const salarioInput = clone.querySelector('input[name="salario"]');
-    //     const beneficiosInput = clone.querySelector('input[name="beneficios"]');
-    //     const encargosInput = clone.querySelector('input[name="encargos"]');
-    //     matriculaInput.value = '';
-    //     nomeInput.value = '';
-    //     cpfInput.value = '';
-    //     salarioInput.value = '';
-    //     beneficiosInput.value = '';
-    //     encargosInput.value = '';
-    //     maoDeObraContainer.parentNode.insertBefore(clone, maoDeObraContainer.nextSibling);
-    // });
-
     // Alerta da empresas cadastrada, ainda não funcionando
     const urlParams = new URLSearchParams(window.location.search);
     const success = urlParams.get('success');
@@ -145,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Ative todos os checkboxes de switch na página
+    // Ativando checkboxes de switch na página
     document.addEventListener('DOMContentLoaded', function () {
         var switchCheckboxes = document.querySelectorAll('.form-switch input[type="checkbox"]');
         switchCheckboxes.forEach(function (checkbox) {
@@ -163,14 +142,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Função para buscar e preencher os campos do endereço a partir do CEP
+// Buscar e preencher os campos do endereço a partir do CEP
 $(document).ready(function () {
     $("#btnBuscarCEP").click(function () {
         var cep = $("#cepInput").val();
 
         var url = "https://viacep.com.br/ws/" + cep + "/json/";
 
-        // Fazendo a requisição AJAX para a API ViaCEP
         $.get(url, function (data) {
             $("#logradouro").val(data.logradouro);
             $("#endereco").val(data.endereco);
@@ -186,7 +164,6 @@ function popularSelectFuncionarioPorClasse(classeSelect) {
     const selects = document.querySelectorAll('.' + classeSelect);
 
     selects.forEach(funcionarioSelect => {
-        // Adicione a primeira opção "Selecione um Funcionário..."
         const firstOption = document.createElement('option');
         firstOption.value = '';
         firstOption.textContent = 'Selecione um Funcionário...';
@@ -195,24 +172,21 @@ function popularSelectFuncionarioPorClasse(classeSelect) {
         fetch(colaboradoresUrl)
             .then(response => response.json())
             .then(data => {
-                const options = []; // Array para armazenar as opções de funcionários
+                const options = []; 
 
                 data.colaboradores.forEach(colaborador => {
                     const option = document.createElement('option');
                     option.value = colaborador.id;
                     option.textContent = colaborador.nome;
-                    options.push(option); // Adicione a opção ao array
+                    options.push(option); 
                 });
 
-                // Remova todas as opções existentes no select
                 while (funcionarioSelect.options.length > 1) {
                     funcionarioSelect.remove(1);
                 }
 
-                // Ordene as opções em ordem alfabética com base no texto
                 options.sort((a, b) => a.textContent.localeCompare(b.textContent));
 
-                // Adicione as opções ordenadas de volta ao select
                 options.forEach(option => {
                     funcionarioSelect.appendChild(option);
                 });
@@ -235,24 +209,21 @@ function popularSelectFuncionarioPorClasseC(classeSelect) {
         fetch(colaboradoresUrlFilter)
             .then(response => response.json())
             .then(data => {
-                const options = []; // Array para armazenar as opções de funcionários
+                const options = []; 
 
                 data.colaboradores.forEach(colaborador => {
                     const option = document.createElement('option');
                     option.value = colaborador.id;
                     option.textContent = colaborador.nome;
-                    options.push(option); // Adicione a opção ao array
+                    options.push(option);
                 });
 
-                // Remova todas as opções existentes no select
                 while (funcionariosSelect.options.length > 0) {
                     funcionariosSelect.remove(0);
                 }
 
-                // Ordene as opções em ordem alfabética com base no texto
                 options.sort((a, b) => a.textContent.localeCompare(b.textContent));
 
-                // Adicione as opções ordenadas de volta ao select
                 options.forEach(option => {
                     funcionariosSelect.appendChild(option);
                 });
@@ -270,7 +241,6 @@ function popularSelectCargoPorClasse(classeSelect) {
     const selects = document.querySelectorAll('.' + classeSelect);
 
     selects.forEach(cargoSelect => {
-        // Adicione a primeira opção "Selecione um Cargo..."
         const firstOption = document.createElement('option');
         firstOption.value = '';
         firstOption.textContent = 'Selecione um Cargo...';
@@ -279,24 +249,21 @@ function popularSelectCargoPorClasse(classeSelect) {
         fetch(cargosUrl)
             .then(response => response.json())
             .then(data => {
-                const options = []; // Array para armazenar as opções de cargos
+                const options = [];
 
                 data.cargos.forEach(cargo => {
                     const option = document.createElement('option');
                     option.value = cargo.id;
                     option.textContent = cargo.nome_cargo;
-                    options.push(option); // Adicione a opção ao array
+                    options.push(option);
                 });
 
-                // Remova todas as opções existentes no select
                 while (cargoSelect.options.length > 1) {
                     cargoSelect.remove(1);
                 }
 
-                // Ordene as opções em ordem alfabética com base no texto
                 options.sort((a, b) => a.textContent.localeCompare(b.textContent));
 
-                // Adicione as opções ordenadas de volta ao select
                 options.forEach(option => {
                     cargoSelect.appendChild(option);
                 });
@@ -345,42 +312,38 @@ document.addEventListener('DOMContentLoaded', function () {
 $(document).ready(function() {
     console.log('ready');
     $('#searchFormCalendario').submit(function(event) {
-        event.preventDefault(); // Evita que o formulário seja enviado
+        event.preventDefault();
 
         console.log('Formulário de pesquisa enviado');
 
-        var searchQuery = $('[name="searchCal"]').val().trim(); // Obtém o valor e remove espaços em branco
+        var searchQuery = $('[name="searchCal"]').val().trim();
         
-        // Salva o valor em uma variável para validação
         var consultaAno = searchQuery;
 
         console.log('ConsultaAno:', consultaAno);
 
         if (consultaAno === "") {
             console.log('A consulta está vazia, não fazendo a solicitação AJAX');
-            return; // Não faz a solicitação AJAX se a consulta estiver vazia
+            return;
         }
 
         $.ajax({
             type: 'GET',
-            url: 'calcular_media_horas_produtivas/', // Substitua pela URL da sua view
+            url: 'calcular_media_horas_produtivas/',
             data: {
                 'search_query': searchQuery
             },
             dataType: 'json',
             success: function(response) {
-                // Exiba os resultados na tabela ou onde desejar
                 $('#soma_total').text(response.soma_total);
                 $('#quantidade').text(response.quantidade);
-                // Verifique se response.media é um número antes de formatá-lo
                 if (!isNaN(response.media)) {
                     response.media = parseFloat(response.media);
-                    $('#media').text(response.media.toFixed(2)); // Formatando a média com duas casas decimais
+                    $('#media').text(response.media.toFixed(2));
 
-                    // Exiba um alerta com a média formatada
                     alert('Média: ' + response.media.toFixed(2));
                 } else {
-                    $('#media').text('N/A'); // Exiba "N/A" se a média não for um número
+                    $('#media').text('N/A');
                     alert('A média não é um número válido.');
                 }
             },
@@ -617,7 +580,6 @@ document.addEventListener('DOMContentLoaded', function () {
     $(document).ready(function() {
         $("#formDespesasLista").submit(function(event) {
             event.preventDefault();
-            // Fazer uma requisição AJAX para enviar os dados do formulário
             $.ajax({
                 type: "POST",
                 url: "inserir_gasto_fixo/",
@@ -634,7 +596,6 @@ document.addEventListener('DOMContentLoaded', function () {
     $(document).ready(function() {
         $("#formDespesasTotal").submit(function(event) {
             event.preventDefault();
-            // Fazer uma requisição AJAX para enviar os dados do formulário
             $.ajax({
                 type: "POST",
                 url: "inserir_gasto_fixo/",
@@ -651,7 +612,6 @@ document.addEventListener('DOMContentLoaded', function () {
     $(document).ready(function() {
         $("#formBeneficio").submit(function(event) {
             event.preventDefault();
-            // Fazer uma requisição AJAX para enviar os dados do formulário
             $.ajax({
                 type: "POST",
                 url: "inserir_beneficio/",
@@ -668,7 +628,6 @@ document.addEventListener('DOMContentLoaded', function () {
     $(document).ready(function() {
         $("#formCargo").submit(function(event) {
             event.preventDefault();
-            // Fazer uma requisição AJAX para enviar os dados do formulário
             $.ajax({
                 type: "POST",
                 url: "inserir_cargo/",
@@ -685,7 +644,6 @@ document.addEventListener('DOMContentLoaded', function () {
     $(document).ready(function() {
         $("#FormVincularCargos").submit(function(event) {
             event.preventDefault();
-            // Fazer uma requisição AJAX para enviar os dados do formulário
             $.ajax({
                 type: "POST",
                 url: "inserir_vinculo/",
@@ -702,13 +660,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Cadastro Encargo (msg em tela e não fecha modal)
     $(document).ready(function() {
         $("#formEncargo").submit(function(event) {
-            // event.preventDefault();
-            // Obtenha os valores dos campos do formulário
             const colaboradorId = $("#funcionario").val();
             const cargoId = $("#cargos").val();
             const setor = $("#setor").val();
-    
-            // Fazer uma requisição AJAX para verificar se o encargo já existe no banco
+
             $.ajax({
                 type: "GET",
                 url: "encargo_view/",
@@ -722,22 +677,18 @@ document.addEventListener('DOMContentLoaded', function () {
                         window.location.href = "/encargo_duplicado.html";
                         console.log(window.location.href)
                     } else {
-                        // Continuar com a submissão do formulário se não existir
                         $.ajax({
                             type: "POST",
                             url: "inserir_encargo/",
                             data: $("#formEncargo").serialize(),
                             success: function(response) {
-                                // Limpar os campos do formulário após o envio bem-sucedido
                                 $("#formEncargo input[type=text], #formEncargo input[type=number]").val("");
                                 $(".inputCargoS").val("");
                                 $(".funcionarioInputS").val("");
                                 
-                                // Exibir a mensagem de sucesso
                                 $("#successMessageEncargo").show();
     
-                                // Fechar o modal manualmente (substitua "#seuModal" pelo seletor correto)
-                                $("#seuModal").modal("hide");
+                                $("#teste").modal("hide");
                             },
                             error: function(xhr, status, error) {
                                 alert("Erro ao enviar o formulário. Por favor, tente novamente mais tarde.");
@@ -761,10 +712,8 @@ document.addEventListener('DOMContentLoaded', function () {
         $(".nav-sub").on("click", function(e) {
             e.preventDefault();
     
-            // Recupera a URL da view a partir do atributo de dados
             var url = $(this).data("url");
             
-            // Realiza uma requisição AJAX para a URL da view que executa a função
             $.ajax({
                 type: "GET",
                 url: url,
