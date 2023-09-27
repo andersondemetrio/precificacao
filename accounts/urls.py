@@ -19,6 +19,4 @@ urlpatterns = [
     path('cadastro_usuario/',cadastro, name='cadastro_usuario'),
     path('cadastro_usuario_sucesso/', cadastro_usuario_sucesso, name='cadastro_usuario_sucesso'),
     # path('email_recuperado/', email_recuperado, name='email_recuperado'),
-    # outras rotas do seu aplicativo aqui
-    #teste
 ]

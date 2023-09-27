@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 
 
 def recalcula_encargos(sender, instance, **kwargs):
-    # Acesse as informações relevantes do cargo
     salario_nominal = float(instance.salario)
     
     if instance.setor == "Gestores":
@@ -24,7 +23,7 @@ def recalcula_encargos(sender, instance, **kwargs):
     fgts_decimo_terceiro = decimo_terceiro * 0.08
     multa_rescisoria = (fgts + fgts_ferias + fgts_decimo_terceiro) * 0.4
 
-    # Atualize os encargos para os colaboradores associados a este cargo
+    # Atualiza os encargos
     for employee in Employee.objects.filter(cargo=instance):
         employee.periculosidade = periculosidade
         employee.fgts = fgts
@@ -56,13 +55,11 @@ def atualizar_dados_banco():
   
       
     if custo_prestadores is not None and custo_prestadores >= 0 and custo_gestores is not None:
-        # Calcular a porcentagem de cada prestador
         with transaction.atomic():
             employees = Employee.objects.all()
             for employee in employees:
                 porcentagem = (employee.custo_salario * 100) / custo_prestadores
 
-                # Calcular o rateio com base na porcentagem e no custo dos gestores
                 if employee.setor == "Gestores":
                     rateio = 0
                 else:
@@ -74,17 +71,13 @@ def atualizar_dados_banco():
 
                 auxiliar_calculo.save()
 
-                # Atualizar o valor da coluna rateio do prestador
                 employee.rateio = rateio
                 employee.custo_mes = employee.custo_salario + rateio
                 employee.save()
                 
-    # print(f'Prestadores Count: {prestadores_count}')
     print(f'Custo Prestadores: {custo_prestadores}')
     print(f'Custo Gestores: {custo_gestores}')
 
-    # Você pode retornar os valores calculados ou fazer o que for necessário com eles
-    # Por exemplo, retornar um dicionário de valores ou registrá-los em um arquivo de log
     return {
         # 'prestadores_count': prestadores_count,
         'custo_prestadores': custo_prestadores,

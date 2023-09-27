@@ -162,20 +162,20 @@ th {
 }
 
 .table-container {
-  width: 50%; /* Defina a largura do container de acordo com suas preferências */
+  width: 50%; 
   max-width: 50%;
-  max-height: 400px; /* Defina a altura máxima do container de acordo com suas preferências */
-  overflow: auto; /* Adiciona uma barra de rolagem quando a tabela for maior que o container */
+  max-height: 400px; 
+  overflow: auto; 
 }
 
 .table-responsive {
-  white-space: nowrap; /* Evita que o conteúdo da tabela quebre em várias linhas */
+  white-space: nowrap; 
 }
 
 .table-responsive th {
-  position: sticky; /* Cabeçalho permanece fixo ao rolar horizontalmente */
+  position: sticky; 
   top: 0;
-  background-color: #f8f9fa; /* Cor de fundo para destacar o cabeçalho */
+  background-color: #f8f9fa;
 }
 
 tbody {
@@ -185,14 +185,12 @@ tbody {
 
 @media print {
   .table-container table {
-      width: 100%; /* Defina a largura da tabela durante a impressão */
+      width: 100%; 
   }
   
   .table-container table td,
   .table-container table th {
-      font-size: 12px; /* Tamanho da fonte durante a impressão */
-      text-align: center; /* Alinhamento de texto durante a impressão */
+      font-size: 12px;
+      text-align: center; 
   }
-  
-  /* Adicione outros estilos específicos, se necessário */
 }

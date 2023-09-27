@@ -20,9 +20,6 @@ class Usuarios(models.Model):
 class Cargos(models.Model):
     nome_cargo = models.CharField(max_length=100)
     salario = models.DecimalField(max_digits=10, decimal_places=2)
-    
-    # def __str__(self):
-    #     return self.nome
 
 class HorasProdutivas(models.Model):
     data = models.DateField()
@@ -76,10 +73,6 @@ class Propostas(models.Model):
     data_proposta = models.DateField()
     aprovada = models.BooleanField()
 
-# Necessário criação de uma nova classe no banco para realizar o valor das horas do colaborador
-
-
-# Model criada para atener a demanda de 
 class CalendarioMensal(models.Model):
     ano = models.PositiveIntegerField()
     mes = models.PositiveIntegerField()
@@ -88,7 +81,6 @@ class CalendarioMensal(models.Model):
     jornada_diaria = models.PositiveIntegerField()
     feriado = models.DecimalField(max_digits=5, decimal_places=2)
     horas_produtivas = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-
 
 class Employee(models.Model):
     SETOR_CHOICES = (

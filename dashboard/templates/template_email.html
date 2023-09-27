@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}" />
     <link rel="stylesheet" href="{% static 'assets/css/relatorio.css' %}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="{% static 'assets/css/index.css' %}"> <!-- Adicione esta linha -->
+    <link rel="stylesheet" href="{% static 'assets/css/index.css' %}">
     <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script defer src="{% static 'assets/js/format_valor.js' %}"></script>
 </head>
@@ -25,9 +25,7 @@
         <p>Total Gastos Condomínio: R$ {{ auxiliar_calculo.total_gastos_condominio }}</p>
         <p>Total Meses Calendário: {{ auxiliar_calculo.total_meses_calendario }}</p>
         <p>Total Meses Horas Produtivas: {{ auxiliar_calculo.total_meses_horasprodutivas }}</p>
-        <p>Hora Condominio: R$ {{ hora_condominio|floatformat:2 }}</p>
-        
-        <!-- Adicione outros elementos personalizados aqui -->
+        <p>Hora Condominio: R$ {{ hora_condominio|floatformat:2 }}</p>        
     </div>
 </body>
 </html>

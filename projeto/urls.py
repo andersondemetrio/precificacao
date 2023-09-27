@@ -10,4 +10,4 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)   #serve para verificar em tempo de desenvolvimento alterações nos arquivos estáticos refletidos no navegador
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -22,7 +22,6 @@ from django.core.mail import send_mail
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-# Definir o formato de registro
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
 # Criar um manipulador de registro para registrar no arquivo
@@ -51,16 +50,16 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('login')  # Redireciona para a página de login após o logout
+    return redirect('login')
 
 def primeiro_acesso(request):
-    return render(request, 'primeiro_acesso.html') # Redireciona para a página de primeiro acesso
+    return render(request, 'primeiro_acesso.html')
 
 def recuperar_senha(request):
-    return render(request, 'recuperar_senha.html') # Redireciona para a página de recuperar senha
+    return render(request, 'recuperar_senha.html')
+
 
 # Primeiro acesso e inclusão da configuração de envio de e-mail
-
 logger = logging.getLogger(__name__)
 
 def enviar_email_cadastro(request):
@@ -130,16 +129,13 @@ def gerar_e_cadastrar_senha(colaborador, cpf_or_matricula, user_email):
     return senha_aleatoria
 
 def gerar_senha_aleatoria():
-    # Definir todos os caracteres que serão usados para gerar a senha
     caracteres = string.ascii_letters + string.digits
-    # Definir o tamanho da senha
     tamanho = random.randint(8, 16)
-    # Gerar a senha
     senha = ''.join(random.choice(caracteres) for _ in range(tamanho))
     return senha
 
-# Redefinições de senha
 
+# Redefinições de senha
 def redefinir_senha(request):
     return render(request, 'redefinir_senha.html')
     
@@ -149,9 +145,9 @@ def recuperar_senha(request):
         user = validar_email(email)
         if user:
             PasswordResetView.as_view(
-                template_name='registration/password_reset_form.html',  # Seu template de redefinição de senha
-                email_template_name='registration/password_reset_email.html',  # Seu template de email
-                success_url='email_recuperado'  # Nome da URL ou path para a página de confirmação
+                template_name='registration/password_reset_form.html',  
+                email_template_name='registration/password_reset_email.html',  
+                success_url='email_recuperado'
             )(request)
         else:
             messages.error(request, 'O E-mail não foi encontrado.')
@@ -171,8 +167,8 @@ def redirect_to_custom_login(request):
         return redirect(f'/login/?next={next_url}')
     return redirect('/login/')
 
-# Cadastro dos usuários no django
 
+# Cadastro do usuário admin da empresa
 def cadastro(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -183,8 +179,8 @@ def cadastro(request):
         try:
             user = User.objects.create_superuser(username=username, password=password, first_name=first_name, last_name=last_name)
             user.save()
-            return redirect('cadastro_usuario_sucesso')  # Redirecionar para a página de sucesso
-        except IntegrityError:  # Handle the case when a user with the same username already exists
+            return redirect('cadastro_usuario_sucesso')  
+        except IntegrityError:  
             return render(request, 'cadastro_usuario.html', {'error_message': 'Usuário já existe'})
 
     return render(request, 'cadastro_usuario.html')

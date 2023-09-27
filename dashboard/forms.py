@@ -41,18 +41,3 @@ class EmailForm(forms.ModelForm):
         model = AuxiliarCalculo
         fields = ['destinatario_email']
 
-
-# class EmployeeForm(forms.Form):
-#     colaborador = forms.ModelChoiceField(queryset=Colaboradores.objects.all(), label='Colaborador')
-#     setor = forms.ChoiceField(choices=Employee.SETOR_CHOICES)
-#     cargo = forms.ChoiceField(choices=Employee.CARGO_CHOICES)
-#     cargo_secundario = forms.CharField(max_length=50)
-#     periculosidade = forms.DecimalField(max_digits=10, decimal_places=2)
-#     fgts = forms.DecimalField(max_digits=10, decimal_places=2)
-#     um_terco_ferias = forms.DecimalField(max_digits=10, decimal_places=2)
-#     fgts_ferias = forms.DecimalField(max_digits=10, decimal_places=2)
-#     decimo_terceiro = forms.DecimalField(max_digits=10, decimal_places=2)
-#     fgts_decimo_terceiro = forms.DecimalField(max_digits=10, decimal_places=2)
-#     multa_rescisoria = forms.DecimalField(max_digits=10, decimal_places=2)
-#     rateio = forms.DecimalField(max_digits=10, decimal_places=2)
-#     custo_mes = forms.DecimalField(max_digits=10, decimal_places=2)

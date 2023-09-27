@@ -28,7 +28,6 @@ function getCookie(name) {
 document.addEventListener("DOMContentLoaded", function () {
     // Função para calcular o valor total sugerido
     function calcularTotalSugerido() {
-        // Obtenha os valores dos campos relevantes
         const custoHora = parseFloat(document.getElementById("orcamentoCustoHora").value.replace(',', '.')) || 0;
         const beneficios = parseFloat(document.getElementById("orcamentoBeneficios").value.replace(',', '.')) || 0;
         const condominio = parseFloat(document.getElementById("orcamentoCondominio").value.replace(',', '.')) || 0;
@@ -36,35 +35,24 @@ document.addEventListener("DOMContentLoaded", function () {
         const tributos = parseFloat(document.getElementById("orcamentoImpostos").value) || 0;
         const lucro = parseFloat(document.getElementById("orcamentoLucro").value) || 0;
 
-        // Calcule o valor total sugerido
         const totalSugerido = parseFloat(custoHora) + beneficios + condominio;
         
-        // Calcule a soma do tributo e lucro
         const somaTributoLucro = outros + tributos + lucro;
 
-        // Obtenha todos os elementos com a classe 'valorOrcNovo'
         const elementosValorOrcNovo = document.getElementsByClassName("valorOrcNovo");
 
-        // Calcule o valor total dos campos dinâmicos
         let totalCamposDinamicos = 0;
         for (const elemento of elementosValorOrcNovo) {
             totalCamposDinamicos += parseFloat(elemento.value) || 0;
         }
 
-        // Adicione o valor dos campos dinâmicos ao total sugerido
         const totalFinal = totalSugerido + totalCamposDinamicos;
+        const valorFinal = totalFinal / (1 - somaTributoLucro / 100); 
 
-         // Calcule o valor final dividindo o total sugerido pela diferença entre 1 e a soma do tributo e lucro
-        const valorFinal = totalFinal / (1 - somaTributoLucro / 100); // Atribuí 100 pois os valores do tributo e lucro estão em porcentagem (%)
-
-        // Exiba o valor total sugerido no elemento span
         document.getElementById("totalSugeridoDisplay").textContent = valorFinal.toFixed(2);
-
-        // Atualize o campo de entrada "orcamentoSugerido" com o valor calculado
         document.getElementById("orcamentoSugerido").value = valorFinal.toFixed(2);
     }
 
-    // Adicione listeners de evento para os campos relevantes para chamar a função de cálculo quando os valores forem alterados
     document.getElementById("orcamentoCustoHora").addEventListener("input", calcularTotalSugerido);
     document.getElementById("orcamentoBeneficios").addEventListener("input", calcularTotalSugerido);;
     document.getElementById("orcamentoCondominio").addEventListener("input", calcularTotalSugerido);
@@ -96,18 +84,15 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
         inputForm.appendChild(div);
 
-         // Adicione um ouvinte de evento "input" ao novo campo dinâmico
          const novoCampoDinamico = div.querySelector(".valorOrcNovo");
          novoCampoDinamico.addEventListener("input", calcularTotalSugerido);
  
-         // Adicione um ouvinte de evento ao botão "Remover Campo" para remover o campo
          const botaoRemoverCampo = div.querySelector(".removerCampo");
          botaoRemoverCampo.addEventListener("click", function () {
-             inputForm.removeChild(div); // Remove o campo
-             calcularTotalSugerido(); // Recalcula o total
+             inputForm.removeChild(div); 
+             calcularTotalSugerido(); 
          });
 
-        // Recalcule o total quando um novo campo é adicionado
         calcularTotalSugerido();
     });
 
@@ -115,6 +100,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
 const valorSpan = document.getElementById("totalSugeridoDisplay").textContent;
 
-// Defina o valor no input
 document.getElementById("orcamentoSugerido").value = valorSpan;
 
