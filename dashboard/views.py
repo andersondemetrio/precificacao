@@ -929,17 +929,26 @@ def buscar_orcamento(request):
     orcamento = Rubrica.objects.filter(orcamento_id__icontains=q).order_by('orcamento_id')
     return render(request, 'pesquisa_orcamento.html', {'orcamento': orcamento})
 
+from django.db.models import F, Sum
 
 def orcamento_view(request):
-    orcamento = Rubrica.objects.all()
-    orcamento_list = [
-        {
-            'id': orcamento.id,
-            'orcamento': f"{orcamento.id}"
-        }
-        for orcamento in orcamento
-    ]
-    return JsonResponse({'orcamento': orcamento_list})
+    orcamento = Rubrica.objects.annotate(
+        descricao_despesa=F('despesasdinamicas__descricao'),
+        valor_despesa=F('despesasdinamicas__valor')
+    ).values(
+        'id',
+        'tributos',
+        'lucros',
+        'valor_sugerido',
+        'custo_hora',
+        'status',
+        'descricao_despesa',
+        'valor_despesa'
+    )
+
+    orcamento_list = list(orcamento)
+
+    return JsonResponse({'orcamento': orcamento_list}, safe=False)
 
 
 def inserir_capacidade_produtiva(request):
@@ -1494,8 +1503,28 @@ def imprimir_tabela(request):
 
 #  Começo DRE relatório
 
-def dre_report(request):
-   q = request.GET.get('search')   
-   orcamento = Rubrica.objects.filter(orcamento_id__icontains=q).order_by('orcamento_id')
-   return render(request, 'dre_template.html', {'orcamento': orcamento})
+# def dre_report(request):
+#    q = request.GET.get('search')   
+#    orcamento = Rubrica.objects.filter(orcamento_id__icontains=q).order_by('orcamento_id')
+#    return render(request, 'dre_template.html', {'orcamento': orcamento})
 
+def dre_report(request):
+    q = request.GET.get('search')   
+    orcamento = Rubrica.objects.filter(orcamento_id__icontains=q).order_by('orcamento_id')
+    
+    # Adicione um "annotate" para incluir os valores da tabela DespesasDinamicas
+    orcamento = orcamento.annotate(
+        descricao_despesa=F('despesasdinamicas__descricao'),
+        valor_despesa=F('despesasdinamicas__valor')
+    ).values(
+        'id',
+        'tributos',
+        'lucros',
+        'valor_sugerido',
+        'custo_hora',
+        'status',
+        'descricao_despesa',
+        'valor_despesa'
+    )
+    
+    return render(request, 'dre_template.html', {'orcamento': orcamento})
