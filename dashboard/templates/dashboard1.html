@@ -320,8 +320,10 @@
                             </div>
                             <div class="mb-3">
                                 <label for="cpf" class="form-label">CPF</label>
-                                <input type="text" class="form-control" id="cpfInput" name="cpf" required>
+                                <input type="text" class="form-control" id="cpfInput" name="cpf" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" required>
+                                <small id="cpfHelp" class="form-text text-muted">Informe um CPF no formato 999.999.999-99.</small>
                             </div>
+                            
                         </div>
                         <button type="submit" class="btn btn-primary" id="submitBtn">Cadastrar</button>
                         <p id="successMessage" class="text-success" style="display: none;">Mão de obra cadastrada com sucesso!</p>
