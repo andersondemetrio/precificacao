@@ -113,17 +113,24 @@ def inserir_mao_de_obra(request):
         nome = request.POST['nome']
         cpf = request.POST['cpf']
 
-        if not Colaboradores.objects.filter(cpf=cpf.replace('.', '').replace('-', '')):
-        
-            mao_de_obra = Colaboradores(
-                matricula=matricula,
-                nome=nome,
-                cpf=cpf.replace('.', '').replace('-', ''),
-            )
-            mao_de_obra.save()
-            return redirect('dashboard')
+        # Remove pontos e traços do CPF
+        cpf = cpf.replace('.', '').replace('-', '')
+
+        # Verifica se o CPF possui exatamente 11 caracteres
+        if len(cpf) == 11:
+            if not Colaboradores.objects.filter(cpf=cpf):
+                mao_de_obra = Colaboradores(
+                    matricula=matricula,
+                    nome=nome,
+                    cpf=cpf,
+                )
+                mao_de_obra.save()
+                return redirect('dashboard')
+            else:
+                error_message = "Já existe um registro com o mesmo CPF."
+                return render(request, 'dashboard1.html', {'error_message': error_message})
         else:
-            error_message = "Já existe um registro com o mesmo CPF."
+            error_message = "CPF inválido. Deve conter exatamente 11 caracteres."
             return render(request, 'dashboard1.html', {'error_message': error_message})
     
     return render(request, 'dashboard1.html')
