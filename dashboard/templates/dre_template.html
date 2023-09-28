@@ -13,113 +13,99 @@
     <script defer src="{% static 'assets/js/delete.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        #myChart {
-            max-width: 50%; 
-            margin: auto; 
-            justify-content: center;
-            align-items: center;
-            height: 300px;
+        .centered-chart {
+            display: block; /* Certifique-se de que o elemento seja exibido como bloco */
+            margin: 0 auto; /* Isso centralizará horizontalmente o elemento */
+            max-width: 100%; /* Defina a largura máxima desejada */
         }
         .centered-text {
             text-align: center;
-          }
+            color: red; /* Cor de destaque (você pode substituir "red" pela cor desejada) */
+            font-size: 24px; /* Tamanho da fonte aumentado (você pode ajustar o valor conforme necessário) */
+        }
+        
+        
     </style>
 </head>
 <body>
-    <div class="container"> 
-    <p class="centered-text">Orçamento</p>
+    <div class="container">
+        <p class="centered-text">Orçamento</p>
     </div>
     <div class="container">
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Identificador</th>
-                    <th>Prestadores</th>
                     <th>Impostos</th>
                     <th>Lucro</th>
                     <th>Valor Sugerido</th>
-                    <th>custo hora</th>
+                    <th>Custo Hora</th>
                     <th>Status</th>
-                    <th></th>
+                    <th>Descrição Despesa Adicional</th>
+                    <th>Valor Despesa Adicional</th>
                 </tr>
             </thead>
             <tbody>
-                {% for orcamento in orcamento %}
+                {% for orcamento_item in orcamento %}
                     <tr>
-                        <td>{{ orcamento.id }}</td>
-                        <td>{{ orcamento.orcamento_id }}</td>
-                        <td>{{ orcamento.quantidade }}</td>
-                        <td>{{ orcamento.tributos }}%</td>
-                        <td>{{ orcamento.lucros }}%</td>
-                        <td>{{ orcamento.valor_sugerido }}</td>
-                        <td>{{ orcamento.custo_hora }}</td>
-                        <td>{{ orcamento.status }}</td>
-                        <td></td>
+                        <td>{{ orcamento_item.tributos }}%</td>
+                        <td>{{ orcamento_item.lucros }}%</td>
+                        <td>{{ orcamento_item.valor_sugerido }}</td>
+                        <td>{{ orcamento_item.custo_hora }}</td>
+                        <td>{{ orcamento_item.status }}</td>
+                        <td>{{ orcamento_item.descricao_despesa }}</td>
+                        <td>{{ orcamento_item.valor_despesa }}</td>                        
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-        
-        <div>
-            <canvas id="myChart"></canvas>
+    </div>
+
+    <div class="container">
+        <div class="centered-chart" style="width: 400px; height: 400px;">
+            <canvas id="myPieChart"></canvas>
         </div>
     </div>
-    
     <script>
-        var valoresPrecoSugerido = [{% for orcamento in orcamento %}{{ orcamento.valor_sugerido }},{% endfor %}];
-        var valoresTributos = [{% for orcamento in orcamento %}{{ orcamento.tributos }},{% endfor %}];
-        var rotulos = [{% for orcamento in orcamento %}"{{ orcamento.orcamento_id }}",{% endfor %}];
-
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'scatter',
-            data: {
-                datasets: [{
-                    label: 'Preço Sugerido vs. Tributos',
-                    data: [],
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1,
-                    pointRadius: 3, 
-                    pointHoverRadius: 5, 
-                }]
-            },
+        var ctx = document.getElementById('myPieChart').getContext('2d');
+    
+        var data = {
+            labels: ['Impostos', 'Lucro'],
+            datasets: [{
+                data: [
+                    {% for orcamento_item in orcamento %}{{ orcamento_item.tributos }}, {% endfor %}, // Valores de Impostos
+                    {% for orcamento_item in orcamento %}{{ orcamento_item.lucros }}, {% endfor %}    // Valores de Lucro
+                ],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.6)', // Cor para Impostos
+                    'rgba(75, 192, 192, 0.6)' // Cor para Lucro
+                ]
+            }]
+        };
+    
+        // Defina cores personalizadas para cada fatia do gráfico
+        for (var i = 0; i < data.datasets[0].data.length; i++) {
+            if (i === 0) {
+                data.datasets[0].backgroundColor[i] = 'rgba(255, 99, 132, 0.6)'; // Cor para Impostos
+            } else {
+                data.datasets[0].backgroundColor[i] = 'rgba(75, 192, 192, 0.6)'; // Cor para Lucro
+            }
+        }
+    
+        var myPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: data,
             options: {
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Preço Sugerido'
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Tributos'
-                        }
-                    }
-                },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                var label = rotulos[context.dataIndex];
-                                return label + ': (' + context.parsed.x + ', ' + context.parsed.y + ')';
-                            }
-                        }
-                    }
+                responsive: true,
+                maintainAspectRatio: false,
+                title: {
+                    display: true,
+                    text: 'Impostos vs. Lucro'
                 }
             }
         });
-
-        for (var i = 0; i < valoresPrecoSugerido.length; i++) {
-            myChart.data.datasets[0].data.push({ x: valoresPrecoSugerido[i], y: valoresTributos[i] });
-        }
-
-        myChart.update(); 
     </script>
+    
+    
+
 </body>
 </html>
