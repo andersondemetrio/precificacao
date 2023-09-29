@@ -128,6 +128,7 @@ class Rubrica(models.Model):
     tributos = models.PositiveIntegerField(default=0)
     lucros = models.PositiveIntegerField(default=0)
     status = models.CharField(max_length=100)
+    cliente = models.CharField(max_length=100)
     valor_sugerido = models.DecimalField(max_digits=10, decimal_places=2)
     
 class DespesasDinamicas(models.Model):

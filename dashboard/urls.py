@@ -75,6 +75,12 @@ urlpatterns = [
     path('inserir_orcamento/', inserir_orcamento, name='inserir_orcamento'),
     path('buscar_orcamento/', buscar_orcamento, name='buscar_orcamento'),
     path('orcamento_view/', orcamento_view, name='orcamento_view'),  
+    path('deletar_orcamento/<int:orcamento_id>/', deletar_orcamento, name='deletar_orcamento'),
+    path('editar_orcamento/<int:id>/', editar_orcamento, name='editar_orcamento'),
+    path('detalhes_orcamento/<int:id>/', detalhes_orcamento, name='detalhes_orcamento'),
+    path('cancelar_orcamento/<int:id>/', cancelar_orcamento, name='cancelar_orcamento'),
+    path('finalizar_orcamento/<int:id>/', finalizar_orcamento, name='finalizar_orcamento'),
+
     
     path('inserir_data/', inserir_data, name='inserir_data'),
     path('inserir_capacidade_produtiva/', inserir_capacidade_produtiva, name='inserir_capacidade_produtiva'),

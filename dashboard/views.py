@@ -62,6 +62,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.db import connection
 from django.http import HttpResponseServerError
+from django.db.models import F, Sum
 
 @login_required
 def dashboard_view(request):
@@ -898,11 +899,12 @@ def inserir_orcamento(request):
     
     if request.method == 'POST':
         outros = request.POST['orcamentoOutros']
+        cliente = request.POST['orcamentoCliente']
         tributos = request.POST['orcamentoImpostos']
         lucros = request.POST['orcamentoLucro']
         valor_sugerido = request.POST.get('totalSugerido', 0)
         
-        rubrica = Rubrica.objects.create(orcamento_id=numero_novo_orcamento, capacidade_produtiva=capacidade_produtiva, quantidade=total_prestadores, custo_hora=custo_total, beneficios=totalSoma, 
+        rubrica = Rubrica.objects.create(orcamento_id=numero_novo_orcamento, capacidade_produtiva=capacidade_produtiva, cliente=cliente, quantidade=total_prestadores, custo_hora=custo_total, beneficios=totalSoma, 
                                condominio=custo_condominio, outros=outros, tributos=tributos, lucros=lucros, status='Aberto', valor_sugerido=valor_sugerido)
 
         descricoes = request.POST.getlist('descricao[]')
@@ -920,16 +922,52 @@ def inserir_orcamento(request):
 
     return render(request, 'novo_orcamento.html', {'numero_novo_orcamento': numero_novo_orcamento,
                 'custo_total': custo_total, 'custo_condominio': custo_condominio, 'totalSoma': totalSoma,
-                'total_prestadores': total_prestadores, "capacidade_produtiva": capacidade_produtiva})
-   
+                'total_prestadores': total_prestadores, "capacidade_produtiva": capacidade_produtiva})   
+
+
+def cancelar_orcamento(request, id):
+    rubrica = Rubrica.objects.get(id=id)
+    rubrica.status = "Cancelado"
+    rubrica.save()
+
+    return redirect('dashboard')
+
+
+def finalizar_orcamento(request, id):
+    rubrica = Rubrica.objects.get(id=id)
+    rubrica.status = "Finalizado"
+    rubrica.save()
+
+    return redirect('dashboard')
+ 
+    
+def editar_orcamento(request, id):
+    orcamento = DespesasDinamicas.objects.get(id=id)
+
+    return render(request, 'dashboard1.html', {'orcamento': orcamento})
+
+
+def deletar_orcamento(request):
+    return render(request, 'dashboard1.html', {'gastosfixos': gastosfixos})
+
+
+def detalhes_orcamento(request, id):
+    rubrica = Rubrica.objects.get(id=id)
+    despesas_dinamicas = DespesasDinamicas.objects.filter(rubrica_id=rubrica)
+
+    context = {
+        'rubrica': rubrica,
+        'despesas_dinamicas': despesas_dinamicas,
+    }
+
+    return render(request, 'detalhes_orcamento.html', context)
 
 
 def buscar_orcamento(request): 
     q = request.GET.get('search')   
-    orcamento = Rubrica.objects.filter(orcamento_id__icontains=q).order_by('orcamento_id')
+    orcamento = Rubrica.objects.filter(orcamento_id__icontains=q).order_by('orcamento_id')    
     return render(request, 'pesquisa_orcamento.html', {'orcamento': orcamento})
 
-from django.db.models import F, Sum
 
 def orcamento_view(request):
     orcamento = Rubrica.objects.annotate(
