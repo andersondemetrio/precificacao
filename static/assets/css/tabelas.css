@@ -76,6 +76,20 @@ tbody>tr:last-of-type {
     font-weight: bolder;
 }
 
+.bi-x-circle-fill {
+    font-size: 20px;
+    color: rgb(161, 0, 0);
+    font-weight: bolder;
+    margin-right: 8px;
+}
+
+.bi-check-circle-fill {
+    font-size: 20px;
+    color: #0B5ED7;
+    font-weight: bolder;
+    margin-right: 8px;
+}
+
 a {
     text-decoration: none;
 }
