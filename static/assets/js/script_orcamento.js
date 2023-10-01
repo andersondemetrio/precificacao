@@ -102,3 +102,53 @@ const valorSpan = document.getElementById("totalSugeridoDisplay").textContent;
 
 document.getElementById("orcamentoSugerido").value = valorSpan;
 
+
+function formatarNumeroComVirgula(numero) {
+    return numero.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+}
+
+// Adicione um ouvinte de evento para formatar campos na carga da página
+var camposValor = document.querySelectorAll('[name^="valor_"]');
+camposValor.forEach(function(valorInput) {
+    valorInput.value = formatarNumeroComVirgula(valorInput.value);
+});
+
+
+// Função para calcular o orçamento editado
+function calcularValorSugerido() {
+    var valores = document.querySelectorAll('[name^="valor_"]');
+    var camposAdicionais = document.querySelectorAll('.calcular');
+
+    var totalValorSugerido = 0;
+
+    // Calcule a soma dos valores dos campos de valor
+    valores.forEach(function(valorInput) {
+        var valor = parseFloat(valorInput.value.replace(',', '.')) || 0; // Substitua vírgula por ponto
+        totalValorSugerido += valor;
+    });
+
+    // Recupere os valores dos campos adicionais
+    var camposAdicionais = document.querySelectorAll('.calcular');
+    camposAdicionais.forEach(function(campoAdicional) {
+        var valorCampo = parseFloat(campoAdicional.value.replace(',', '.')) || 0; // Substitua vírgula por ponto
+        totalValorSugerido += valorCampo;
+    });
+
+    // Atualize o campo de valor sugerido
+    document.getElementById('orcamentoSugerido').value = totalValorSugerido.toFixed(2);
+}
+
+// Adicione um ouvinte de evento para os campos de valor
+var camposValor = document.querySelectorAll('[name^="valor_"]');
+camposValor.forEach(function(valorInput) {
+    valorInput.addEventListener('input', calcularValorSugerido);
+});
+
+// Adicione um ouvinte de evento para os campos adicionais
+var camposAdicionais = document.querySelectorAll('.calcular');
+camposAdicionais.forEach(function(campoAdicional) {
+    campoAdicional.addEventListener('input', calcularValorSugerido);
+});
+
+// Chame a função inicialmente para calcular o valor sugerido com base nos valores iniciais
+calcularValorSugerido();

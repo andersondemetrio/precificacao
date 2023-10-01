@@ -14,6 +14,8 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="{% static 'assets/js/script_orcamento.js' %}"></script>
 </head>
     <body class="fundo">
         <div class="container pl-0 pr-0">
@@ -23,8 +25,8 @@
                 <div class="d-flex flex-column align-items-center div-right-int">
                 <div class="div-logo"></div>
                 <div class="div-orcamento">
+                <form method="post" action="{% url 'editar_orcamento' rubrica.id %}" id="editar-form-orcamento">
                 {% csrf_token %}
-                <div class="d-flex flex-column align-items-center">
                 <div class="mb-3 d-flex flex-row">
                   <label for="orcamento_id" class="form-label label-orcamento"><b>Identificador</b></label>
                   <input type="text" class="form-control input-orcamento" id="orcamento_id" name="orcamento_id" value="{{ rubrica.orcamento_id }}" required disabled>
@@ -43,33 +45,49 @@
                 </div>
                 <div class="mb-3 d-flex flex-row">
                   <label for="orcamentoCustoHora" class="form-label label-orcamento"><b>Custo Hora</b></label>
-                  <input type="text" class="form-control input-orcamento" id="orcamentoCustoHora" name="orcamentoCustoHora" value="{{ rubrica.custo_hora }}" required disabled>
+                  <input type="text" class="form-control input-orcamento calcular" id="orcamentoCustoHora" name="orcamentoCustoHora" value="{{ rubrica.custo_hora }}" required disabled>
                 </div>
                 <div class="mb-3 d-flex flex-row">
                   <label for="orcamentoBeneficios" class="form-label label-orcamento"><b>Benefícios</b></label>
-                  <input type="text" class="form-control input-orcamento" id="orcamentoBeneficios" name="orcamentoBeneficios" value="{{ rubrica.beneficios }}" required disabled>
+                  <input type="text" class="form-control input-orcamento calcular" id="orcamentoBeneficios" name="orcamentoBeneficios" value="{{ rubrica.beneficios }}" required disabled>
                 </div>
                 <div class="mb-3 d-flex flex-row">
                   <label for="orcamentoCondominio" class="form-label label-orcamento"><b>Condomínio (Fixo)</b></label>
-                  <input type="text" class="form-control input-orcamento" id="orcamentoCondominio" name="orcamentoCondominio" value="{{ rubrica.condominio }}" required disabled>
-                </div>
+                  <input type="text" class="form-control input-orcamento calcular" id="orcamentoCondominio" name="orcamentoCondominio" value="{{ rubrica.condominio }}" required disabled>
                 </div>
                 {% for despesa in despesas_dinamicas %}
                 {% if despesa.id %} 
                 <div class="orcamento-container">          
-                  <form method="post" action="{% url 'editar_orcamento' despesa.id %}" id="editar-form-orcamento">
-                    <div class="d-flex flex-row justify-content-center align-items-center">
+                  <div class="d-flex flex-row justify-content-center align-items-center">
                       <div class="mb-3">
                           <label for="descricao{{ despesa.id }}" class="form-label">Descrição</label>
-                          <input type="text" class="form-control" name="descricao{{ despesa.id }}" value="{{ despesa.descricao }}" required>
+                          <input type="text" class="form-control" name="descricao_{{ despesa.id }}" value="{{ despesa.descricao }}" required>
                       </div>
                       <div class="mb-3">
                           <label for="valor{{ despesa.id }}" class="form-label">Valor</label>
-                          <input type="text" class="form-control" name="valor{{ despesa.id }}" value="{{ despesa.valor }}" required>
+                          <input type="text" class="form-control" name="valor_{{ despesa.id }}" value="{{ despesa.valor }}" required>
                       </div>
-                    </div>
+                  </div>
+                </div>
                       {% endif %}
                       {% endfor %}
+                      <div class="mb-3 d-flex flex-row">
+                        <label for="orcamentoOutros" class="form-label label-orcamento"><b>Outros ( % )</b></label>
+                        <input type="number" class="form-control input-orcamento" id="orcamentoOutros" name="orcamentoOutros" value="" min="0" max="100" required step="0.01">
+                      </div>
+                      <div class="mb-3 d-flex flex-row">
+                        <label for="orcamentoImpostos" class="form-label label-orcamento"><b>Impostos ( % )</b></label>
+                        <input type="number" class="form-control input-orcamento" id="orcamentoImpostos" name="orcamentoImpostos" value="" min="0" max="100" required step="0.01">
+                      </div>
+                      <div class="mb-3 d-flex flex-row">
+                        <label for="orcamentoLucro" class="form-label label-orcamento"><b>Lucro ( % )</b></label>
+                        <input type="number" class="form-control input-orcamento" id="orcamentoLucro" name="orcamentoLucro" value="" min="0" max="100" required step="0.01">
+                      </div>
+                      <div class="mb-3 d-flex flex-row">
+                        <label for="orcamentoSugerido" class="form-label label-orcamento"><b>Valor total Sugerido</b></label>
+                        <span id="totalSugeridoDisplay" style="display: none;"></span>
+                        <input type="number" class="form-control input-orcamento campo-verde" id="orcamentoSugerido" name="totalSugerido" value="" required step="0.01" >
+                      </div>
               
                       <div class="d-flex flex-row justify-content-center div-button">
                         <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar para o Dashboard</a>
