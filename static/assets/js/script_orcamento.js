@@ -35,6 +35,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const tributos = parseFloat(document.getElementById("orcamentoImpostos").value) || 0;
         const lucro = parseFloat(document.getElementById("orcamentoLucro").value) || 0;
 
+        var valores = document.querySelectorAll('[name^="valor_"]');
+        var valoresAdicionais = 0;  // Inicializa com 0
+
+        // Itera pelos elementos e soma seus valores convertidos para float
+        valores.forEach(function(elemento) {
+            valoresAdicionais += parseFloat(elemento.value) || 0;
+        });
+
         const totalSugerido = parseFloat(custoHora) + beneficios + condominio;
         
         const somaTributoLucro = outros + tributos + lucro;
@@ -46,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
             totalCamposDinamicos += parseFloat(elemento.value) || 0;
         }
 
-        const totalFinal = totalSugerido + totalCamposDinamicos;
+        const totalFinal = totalSugerido + totalCamposDinamicos + valoresAdicionais;
         const valorFinal = totalFinal / (1 - somaTributoLucro / 100); 
 
         document.getElementById("totalSugeridoDisplay").textContent = valorFinal.toFixed(2);
@@ -107,7 +115,6 @@ function formatarNumeroComVirgula(numero) {
     return numero.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 }
 
-// Adicione um ouvinte de evento para formatar campos na carga da página
 var camposValor = document.querySelectorAll('[name^="valor_"]');
 camposValor.forEach(function(valorInput) {
     valorInput.value = formatarNumeroComVirgula(valorInput.value);
@@ -121,34 +128,28 @@ function calcularValorSugerido() {
 
     var totalValorSugerido = 0;
 
-    // Calcule a soma dos valores dos campos de valor
     valores.forEach(function(valorInput) {
-        var valor = parseFloat(valorInput.value.replace(',', '.')) || 0; // Substitua vírgula por ponto
+        var valor = parseFloat(valorInput.value.replace(',', '.')) || 0;
         totalValorSugerido += valor;
     });
 
-    // Recupere os valores dos campos adicionais
     var camposAdicionais = document.querySelectorAll('.calcular');
     camposAdicionais.forEach(function(campoAdicional) {
-        var valorCampo = parseFloat(campoAdicional.value.replace(',', '.')) || 0; // Substitua vírgula por ponto
+        var valorCampo = parseFloat(campoAdicional.value.replace(',', '.')) || 0;
         totalValorSugerido += valorCampo;
     });
 
-    // Atualize o campo de valor sugerido
     document.getElementById('orcamentoSugerido').value = totalValorSugerido.toFixed(2);
 }
 
-// Adicione um ouvinte de evento para os campos de valor
 var camposValor = document.querySelectorAll('[name^="valor_"]');
 camposValor.forEach(function(valorInput) {
     valorInput.addEventListener('input', calcularValorSugerido);
 });
 
-// Adicione um ouvinte de evento para os campos adicionais
 var camposAdicionais = document.querySelectorAll('.calcular');
 camposAdicionais.forEach(function(campoAdicional) {
     campoAdicional.addEventListener('input', calcularValorSugerido);
 });
 
-// Chame a função inicialmente para calcular o valor sugerido com base nos valores iniciais
 calcularValorSugerido();
