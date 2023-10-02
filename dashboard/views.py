@@ -942,9 +942,46 @@ def finalizar_orcamento(request, id):
  
     
 def editar_orcamento(request, id):
-    orcamento = DespesasDinamicas.objects.get(id=id)
+    rubrica = get_object_or_404(Rubrica, id=id)
+    
+    if request.method == 'POST':
+        cliente = request.POST['orcamentoCliente']
+        outros = request.POST['orcamentoOutros'].replace(',', '.')
+        tributos = request.POST['orcamentoImpostos'].replace(',', '.')
+        lucros = request.POST['orcamentoLucro'].replace(',', '.')
+        valor_sugerido = request.POST.get('totalSugerido', 0)
+        
+        rubrica.status = 'Cancelado'
+        rubrica.save()
 
-    return render(request, 'dashboard1.html', {'orcamento': orcamento})
+        novo_rubrica = Rubrica.objects.create(
+            orcamento_id=f'{rubrica.orcamento_id}-V2',
+            capacidade_produtiva=rubrica.capacidade_produtiva,
+            quantidade=rubrica.quantidade,
+            custo_hora=rubrica.custo_hora,
+            beneficios=rubrica.beneficios,
+            condominio=rubrica.condominio,
+            outros=outros.replace(',', '.'),
+            tributos=tributos.replace(',', '.'),
+            lucros=lucros.replace(',', '.'),
+            status='Finalizado',
+            cliente=cliente,
+            valor_sugerido=valor_sugerido
+        )
+
+        for despesa in rubrica.despesasdinamicas_set.all():
+            descricao_key = f'descricao_{despesa.id}'
+            valor_key = f'valor_{despesa.id}'
+            descricao = request.POST.get(descricao_key)
+            valor = request.POST.get(valor_key)
+
+            nova_despesa = DespesasDinamicas(
+                rubrica=novo_rubrica, 
+                descricao=descricao.replace(',', '.'),
+                valor=valor.replace(',', '.')
+            )
+            nova_despesa.save()
+    return redirect('dashboard')   
 
 
 def deletar_orcamento(request):
