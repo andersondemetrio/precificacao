@@ -544,6 +544,21 @@ for (const closeButtonOrc of closeButtonsOrcamento) {
     });
 }
 
+// Função para abrir modal personalizado Orçamento
+const openModalButtonMemorias = document.getElementById("openModalButtonMemorias");
+const modalMemorias = document.getElementById("myModalMemorias");
+const closeButtonsMemorias = document.getElementsByClassName("close");
+
+openModalButtonMemorias.addEventListener("click", () => {
+    modalMemorias.style.display = "block";
+});
+
+for (const closeButtonMem of closeButtonsMemorias) {
+    closeButtonMem.addEventListener("click", () => {
+        modalMemorias.style.display = "none";
+    });
+}
+
 // Cadastro OK Mão de obra (msg em tela e não fecha modal) 
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('maoDeObraForm');

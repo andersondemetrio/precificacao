@@ -142,7 +142,7 @@
                                 <ul class="ul-item">
                                     <li class="li-pad"><a class="nav-sub" id="openModalButtonVincularCargos">Vincular Cargos</a></li>
                                     <li class="li-pad"><a class="nav-sub" id="openModalButtonOrcamento">Cadastrar Orçamento</a></li>
-                                    <li class="li-pad"><a class="nav-sub" href="#">Memórias de Cálculos</a></li>
+                                    <li class="li-pad"><a class="nav-sub" id="openModalButtonMemorias">Memórias de Cálculos</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -1024,6 +1024,34 @@
         </div>
     </div>       
     <!-- Fim Modal / CRIAR ORÇAMENTO -->
+
+    <!--Início modal Personalizado / MEMORIAS CALCULOS -->
+    <div id="myModalMemorias" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Orçamentos</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormMemoria" method="get" action="{% url 'buscar_orcamento' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Orçamento">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                    </div>
+                </div>
+            </form>
+            <table id="searchResultsTableMemoria">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim modal Personalizado / MEMORIAS CALCULOS -->
 
 
     <!-- Começo Modal / RELATÓRIO ENCARGO -->
