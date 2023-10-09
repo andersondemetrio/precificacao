@@ -7,6 +7,12 @@ document.getElementById("orcamentoImpostos").addEventListener("input", function 
     }
 });
 
+document.getElementById("imprimirDetalhes").addEventListener("click", function () {
+    // Código para remover os botões aqui
+    window.print();
+});
+
+
 document.getElementById("orcamentoLucro").addEventListener("input", function () {
     const value = parseInt(this.value);
     if (isNaN(value) || value < 1 || value > 100) {
@@ -153,3 +159,22 @@ camposAdicionais.forEach(function(campoAdicional) {
 });
 
 calcularValorSugerido();
+
+document.addEventListener("DOMContentLoaded", function () {
+    function hideElementsOnPrint() {
+        const elementsToHide = document.querySelectorAll(".hide-on-print");
+        elementsToHide.forEach(function (element) {
+            element.style.display = "none";
+        });
+    }
+
+   
+    window.addEventListener("beforeprint", hideElementsOnPrint);
+
+     window.addEventListener("afterprint", function () {
+        const elementsToHide = document.querySelectorAll(".hide-on-print");
+        elementsToHide.forEach(function (element) {
+            element.style.display = "";
+        });
+    });
+});
