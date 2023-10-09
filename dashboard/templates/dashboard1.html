@@ -1033,21 +1033,12 @@
             <span class="close">&times;</span>
           </div>
           <div class="modal-body">
-            <form id="searchFormMemoria" method="get" action="{% url 'buscar_orcamento' %}">
-                <div class="">
-                    <div class="input-group div-modal-person">
-                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Orçamento">
-                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
-                    </div>
+            <form id="searchFormDRE_report" method="get" action="{% url 'dre_report' %}">
+                <div class="input-group div-modal-person">
+                    <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Encargos">
+                    <button type="submit" id="searchFormDRE_report" class="btn btn-outline-primary">Buscar</button>
                 </div>
             </form>
-            <table id="searchResultsTableMemoria">
-                <tbody>
-
-                </tbody>
-            </table>
-            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
-          </div>
         </div>
       </div>
     </div>

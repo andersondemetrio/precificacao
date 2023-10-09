@@ -137,3 +137,10 @@ h5 {
     width: 130px;
     margin-top: 23px;
 }
+@media print {
+
+    .btn-print {
+        display: none;
+    }
+}
+

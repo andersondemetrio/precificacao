@@ -11,11 +11,16 @@
     <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}" />
     <link rel="stylesheet" href="{% static 'assets/css/orcamento.css' %}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
     <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script defer src="{% static 'assets/js/script_orcamento.js' %}"></script>
+
+
 </head>
     <body class="fundo">
         <div class="container pl-0 pr-0">
@@ -90,10 +95,13 @@
                       </div>
               
                       <div class="d-flex flex-row justify-content-center div-button">
-                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar para o Dashboard</a>
-                          <button type="submit" class="btn btn-success" id="alterar-btnca">Salvar Novo</button>
-                          <button type="button" class="btn btn-danger"><a href="{% url 'cancelar_orcamento' rubrica.id %}">Cancelar</a></button>
-                          <button type="button" class="btn btn-primary" id=""><a href="{% url 'finalizar_orcamento' rubrica.id %}">Finalizar</button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary hide-on-print">Voltar para o Dashboard</a>
+                        <button type="submit" class="btn btn-success hide-on-print" id="alterar-btnca">Salvar Novo</button>
+                        <button type="button" class="btn btn-danger hide-on-print"><a href="{% url 'cancelar_orcamento' rubrica.id %}">Cancelar</a></button>
+                        <button type="button" class="btn btn-primary hide-on-print"><a href="{% url 'finalizar_orcamento' rubrica.id %}">Finalizar</button>
+                          <a href="#" class="btn btn-primary hide-on-print " id="imprimirDetalhes">
+                            <i class="bi bi-printer"></i>
+                        </a>    
                       </div>
                   </div>
               </form>
