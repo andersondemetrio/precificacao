@@ -161,7 +161,6 @@ camposAdicionais.forEach(function(campoAdicional) {
 calcularValorSugerido();
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Função para ocultar elementos com a classe hide-on-print durante a impressão
     function hideElementsOnPrint() {
         const elementsToHide = document.querySelectorAll(".hide-on-print");
         elementsToHide.forEach(function (element) {
@@ -169,14 +168,13 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Adicionar um ouvinte de eventos para quando a página for impressa
+   
     window.addEventListener("beforeprint", hideElementsOnPrint);
 
-    // Adicionar um ouvinte de eventos para quando a impressão for cancelada
-    window.addEventListener("afterprint", function () {
+     window.addEventListener("afterprint", function () {
         const elementsToHide = document.querySelectorAll(".hide-on-print");
         elementsToHide.forEach(function (element) {
-            element.style.display = ""; // Reverter a exibição após a impressão
+            element.style.display = "";
         });
     });
 });
