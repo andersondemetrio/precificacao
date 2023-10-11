@@ -66,6 +66,28 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("totalSugeridoDisplay").textContent = valorFinal.toFixed(2);
         document.getElementById("orcamentoSugerido").value = valorFinal.toFixed(2);
     }
+    function hideElementsOnPrint() {
+        const elementsToHide = document.querySelectorAll(".hide-on-print");
+        elementsToHide.forEach(function (element) {
+            element.style.display = "none";
+        });
+    }
+
+    function setInitialSuggestedValue() {
+        calcularTotalSugerido();
+    }
+
+    setInitialSuggestedValue(); // Chame a função para definir o valor inicial
+
+    window.addEventListener("beforeprint", hideElementsOnPrint);
+
+    window.addEventListener("afterprint", function () {
+        const elementsToHide = document.querySelectorAll(".hide-on-print");
+        elementsToHide.forEach(function (element) {
+            element.style.display = "";
+        });
+    });
+
 
     document.getElementById("orcamentoCustoHora").addEventListener("input", calcularTotalSugerido);
     document.getElementById("orcamentoBeneficios").addEventListener("input", calcularTotalSugerido);;
@@ -73,6 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("orcamentoOutros").addEventListener("input", calcularTotalSugerido);
     document.getElementById("orcamentoImpostos").addEventListener("input", calcularTotalSugerido);
     document.getElementById("orcamentoLucro").addEventListener("input", calcularTotalSugerido);
+
     const elementosValorOrcNovo = document.getElementsByClassName("valorOrcNovo");
     for (const elemento of elementosValorOrcNovo) {
         elemento.addEventListener("input", calcularTotalSugerido);
@@ -115,6 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
 const valorSpan = document.getElementById("totalSugeridoDisplay").textContent;
 
 document.getElementById("orcamentoSugerido").value = valorSpan;
+
 
 
 function formatarNumeroComVirgula(numero) {
@@ -177,4 +201,105 @@ document.addEventListener("DOMContentLoaded", function () {
             element.style.display = "";
         });
     });
+});
+
+function calcularOutros() {
+    var lucroPercentStr = document.getElementById('orcamentoLucro').value;
+    var impostosPercentStr = document.getElementById('orcamentoImpostos').value;
+    var outrosPercentStr = document.getElementById('orcamentoOutros').value;
+
+    if (lucroPercentStr === '' || impostosPercentStr === '' || outrosPercentStr === '') {
+        return;
+    }
+
+    var lucroPercent = parseFloat(lucroPercentStr) / 100;
+    var impostosPercent = parseFloat(impostosPercentStr) / 100;
+    var outrosPercent = parseFloat(outrosPercentStr) / 100;
+
+    if (isNaN(lucroPercent) || isNaN(impostosPercent) || isNaN(outrosPercent)) {
+        return;
+    }
+
+    var totalSugeridoStr = document.getElementById('valorSugeridoNumero').value;
+    var totalSugerido = parseFloat(totalSugeridoStr);
+
+    if (lucroPercent !== 0 && impostosPercent !== 0 && outrosPercent !== 0) {
+        var valLucro = totalSugerido * (1 - lucroPercent);
+        var valImpostos = valLucro * (1 - impostosPercent);
+        var valorOutros = valImpostos * outrosPercent;
+
+        document.getElementById('valorOutros').value = valorOutros.toFixed(2);
+    }
+}
+
+document.getElementById('orcamentoLucro').addEventListener('input', calcularOutros);
+document.getElementById('orcamentoImpostos').addEventListener('input', calcularOutros);
+document.getElementById('orcamentoOutros').addEventListener('input', calcularOutros);
+
+
+function calcularImpostos() {
+    var lucroPercentStr = document.getElementById('orcamentoLucro').value;
+    var impostosPercentStr = document.getElementById('orcamentoImpostos').value;
+    if (lucroPercentStr === '' || impostosPercentStr === '') {
+        return;
+    }
+
+    var lucroPercent = parseFloat(lucroPercentStr) / 100;
+    var impostosPercent = parseFloat(impostosPercentStr) / 100;
+    if (isNaN(lucroPercent) || isNaN(impostosPercent)) {
+        return;
+    }
+
+    var totalSugeridoStr = document.getElementById('valorSugeridoNumero').value;
+    var totalSugerido = parseFloat(totalSugeridoStr);
+
+    if (lucroPercent !== 0 && impostosPercent !== 0) {
+        var valLucro = totalSugerido * (1 - lucroPercent);
+        var valImpostos = valLucro * impostosPercent;
+        console.log(valImpostos);
+
+        document.getElementById('valorImpostos').value = valImpostos.toFixed(2);
+    }
+}
+
+
+document.getElementById('orcamentoLucro').addEventListener('input', calcularImpostos);
+document.getElementById('orcamentoImpostos').addEventListener('input', calcularImpostos);
+document.getElementById('orcamentoOutros').addEventListener('input', calcularImpostos);
+
+
+function calcularLucro() {
+    var lucroPercentStr = document.getElementById('orcamentoLucro').value;
+
+    if (lucroPercentStr === '') {
+        return;
+    }
+
+    var lucroPercent = parseFloat(lucroPercentStr) / 100;
+
+    if (isNaN(lucroPercent)) {
+        return;
+    }
+
+    var totalSugeridoStr = document.getElementById('valorSugeridoNumero').value;
+    var totalSugerido = parseFloat(totalSugeridoStr);
+
+    if (lucroPercent !== 0) {
+        var valLucro = totalSugerido * lucroPercent;
+        document.getElementById('valorLucro').value = valLucro.toFixed(2);
+    }
+}
+
+document.getElementById('orcamentoLucro').addEventListener('input', calcularLucro);
+document.getElementById('orcamentoImpostos').addEventListener('input', calcularLucro);
+document.getElementById('orcamentoOutros').addEventListener('input', calcularLucro);
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    calcularOutros();
+    calcularImpostos();
+    calcularLucro();
+ 
+    // const valorSpan = document.getElementById("totalSugeridoDisplay").textContent;
+    // document.getElementById("orcamentoSugerido").value = valorSpan;
 });

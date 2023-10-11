@@ -18,6 +18,7 @@
         <tr>
             <th>Id</th>
             <th>Identificador</th>
+            <th>Cliente</th>
             <th>Prestadores</th>
             <th>Impostos</th>
             <th>Lucro</th>
@@ -30,6 +31,7 @@
         <tr>
             <td>{{ orcamento.id }}</td>
             <td>{{ orcamento.orcamento_id }}</td>
+            <td>{{ orcamento.cliente }}</td>
             <td>{{ orcamento.quantidade }}</td>
             <td>{{ orcamento.tributos }}%</td>
             <td>{{ orcamento.lucros }}%</td> 
@@ -37,9 +39,11 @@
             <td>{{ orcamento.status }}</td> 
             <td>
                 {% if orcamento.status == "Finalizado" %}
+                <a href="{% url 'detalhes_orcamento' orcamento.id %}">
                     <i class="bi bi-check-circle-fill"></i>
                 </a>
             {% elif orcamento.status == "Cancelado" %}
+                <a href="{% url 'detalhes_orcamento' orcamento.id %}">
                     <i class="bi bi-x-circle-fill"></i>
                 </a>
             {% else %}

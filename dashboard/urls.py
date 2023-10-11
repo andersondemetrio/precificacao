@@ -97,5 +97,6 @@ urlpatterns = [
     path('export_csv_condominio/', export_csv_condominio, name='export_csv_condominio'),
     path('enviar_email_personalizado/<int:auxiliar_calculo_id>/', enviar_email_personalizado, name='enviar_email_personalizado'),
     path('dre_report/', dre_report, name='dre_report'),
+    path('get_valor_sugerido/<int:rubrica_id>/', get_valor_sugerido, name='get_valor_sugerido'),
 
 ]

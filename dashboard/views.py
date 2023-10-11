@@ -943,6 +943,7 @@ def finalizar_orcamento(request, id):
     
 def editar_orcamento(request, id):
     rubrica = get_object_or_404(Rubrica, id=id)
+    status = rubrica.status 
     
     if request.method == 'POST':
         cliente = request.POST['orcamentoCliente']
@@ -981,11 +982,18 @@ def editar_orcamento(request, id):
                 valor=valor.replace(',', '.')
             )
             nova_despesa.save()
-    return redirect('dashboard')   
+            
+            context = {
+                'rubrica': rubrica,
+                'status': status,
+            }
+            
+        return redirect('dashboard')   
+    return render(request, 'seu_template.html', {'rubrica': rubrica, 'status': status})
 
 
 def deletar_orcamento(request):
-    return render(request, 'dashboard1.html', {'gastosfixos': gastosfixos})
+    return render(request, 'dashboard1.html')
 
 
 def detalhes_orcamento(request, id):
@@ -995,6 +1003,7 @@ def detalhes_orcamento(request, id):
     context = {
         'rubrica': rubrica,
         'despesas_dinamicas': despesas_dinamicas,
+        'status': rubrica.status
     }
 
     return render(request, 'detalhes_orcamento.html', context)
@@ -1042,6 +1051,17 @@ def inserir_capacidade_produtiva(request):
         return redirect('dashboard')
     
     return render(request, 'dashboard1.html', context={})
+
+
+def get_valor_sugerido(request, rubrica_id):
+    try:
+        rubrica = Rubrica.objects.get(pk=rubrica_id)
+        valor_sugerido = rubrica.valor_sugerido
+        return JsonResponse({'valor_sugerido': float(valor_sugerido)})
+    except Rubrica.DoesNotExist:
+        return JsonResponse({'error': 'Rubrica não encontrada'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 def inserir_data(request):
