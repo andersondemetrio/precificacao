@@ -982,20 +982,19 @@ def editar_orcamento(request, id):
                 valor=valor.replace(',', '.')
             )
             nova_despesa.save()
+            
+        descricoes = request.POST.getlist('descricaoAd[]')
+        valores = request.POST.getlist('valorAd[]')
         
-        for despesa in rubrica.despesasdinamicas_set.all():
-            descricao_key = f'descricaoOrcNovo_{despesa.id}'
-            valor_key = f'valorOrcNovo_{despesa.id}'
-            descricao = request.POST.get(descricao_key)
-            valor = request.POST.get(valor_key)
+        if len(descricoes) == len(valores):
+            for i in range(len(descricoes)):
+                descricao = descricoes[i]
+                valor = valores[i]
 
-            if descricao and valor:
-                nova_despesa = DespesasDinamicas(
-                    rubrica=novo_rubrica, 
-                    descricao=descricao,
-                    valor=valor
-                )
-                nova_despesa.save()
+                despesa = DespesasDinamicas(descricao=descricao, valor=valor, rubrica=novo_rubrica)
+                despesa.save()
+
+            return redirect('dashboard')
             
             context = {
                 'rubrica': rubrica,

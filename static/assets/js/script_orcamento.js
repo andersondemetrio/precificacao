@@ -68,11 +68,11 @@ document.addEventListener("DOMContentLoaded", function () {
         novaDespesa.innerHTML = `
             <div class="form-group col-md-6">
                 <label for="descricao">Descrição:</label>
-                <input type="text" class="form-control" name="descricao[]" required>
+                <input type="text" class="form-control" name="descricaoAd[]" required>
             </div>
             <div class="form-group col-md-4">
                 <label for="valor">Valor:</label>
-                <input type="number" class="form-control valorOrcNovo" name="valor[]" required>
+                <input type="number" class="form-control valorOrcNovo" name="valorAd[]" required>
             </div>
             <div class="form-group col-md-2">
                 <button type="button" class="btn btn-danger removerDespesa" style="margin-top: 20px;">Remover</button>
