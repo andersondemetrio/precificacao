@@ -7,12 +7,6 @@ document.getElementById("orcamentoImpostos").addEventListener("input", function 
     }
 });
 
-document.getElementById("imprimirDetalhes").addEventListener("click", function () {
-    // Código para remover os botões aqui
-    window.print();
-});
-
-
 document.getElementById("orcamentoLucro").addEventListener("input", function () {
     const value = parseInt(this.value);
     if (isNaN(value) || value < 1 || value > 100) {
@@ -66,6 +60,41 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("totalSugeridoDisplay").textContent = valorFinal.toFixed(2);
         document.getElementById("orcamentoSugerido").value = valorFinal.toFixed(2);
     }
+    function adicionarDespesa() {
+        const despesasAdicionais = document.getElementById("despesasAdicionais");
+        const novaDespesa = document.createElement("div");
+        novaDespesa.classList.add("form-row", "d-flex", "flex-row", "justify-content-between", "align-items-center");
+        novaDespesa.style.gap = "10px";
+        novaDespesa.innerHTML = `
+            <div class="form-group col-md-6">
+                <label for="descricao">Descrição:</label>
+                <input type="text" class="form-control" name="descricao[]" required>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="valor">Valor:</label>
+                <input type="number" class="form-control valorOrcNovo" name="valor[]" required>
+            </div>
+            <div class="form-group col-md-2">
+                <button type="button" class="btn btn-danger removerDespesa" style="margin-top: 20px;">Remover</button>
+            </div>
+        `;
+        despesasAdicionais.appendChild(novaDespesa);
+
+        const novoCampoDinamico = novaDespesa.querySelector(".valorOrcNovo");
+        novoCampoDinamico.addEventListener("input", calcularTotalSugerido);
+
+        const botaoRemoverDespesa = novaDespesa.querySelector(".removerDespesa");
+        botaoRemoverDespesa.addEventListener("click", function () {
+            despesasAdicionais.removeChild(novaDespesa);
+            calcularTotalSugerido();
+        });
+
+        calcularTotalSugerido();
+    }
+
+    document.getElementById("addDespesa").addEventListener("click", adicionarDespesa);
+
+
     function hideElementsOnPrint() {
         const elementsToHide = document.querySelectorAll(".hide-on-print");
         elementsToHide.forEach(function (element) {
@@ -299,7 +328,9 @@ document.addEventListener('DOMContentLoaded', function() {
     calcularOutros();
     calcularImpostos();
     calcularLucro();
- 
-    // const valorSpan = document.getElementById("totalSugeridoDisplay").textContent;
-    // document.getElementById("orcamentoSugerido").value = valorSpan;
+});
+
+document.getElementById("imprimirDetalhes").addEventListener("click", function () {
+    // Código para remover os botões aqui
+    window.print();
 });

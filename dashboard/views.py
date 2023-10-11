@@ -982,6 +982,20 @@ def editar_orcamento(request, id):
                 valor=valor.replace(',', '.')
             )
             nova_despesa.save()
+        
+        for despesa in rubrica.despesasdinamicas_set.all():
+            descricao_key = f'descricaoOrcNovo_{despesa.id}'
+            valor_key = f'valorOrcNovo_{despesa.id}'
+            descricao = request.POST.get(descricao_key)
+            valor = request.POST.get(valor_key)
+
+            if descricao and valor:
+                nova_despesa = DespesasDinamicas(
+                    rubrica=novo_rubrica, 
+                    descricao=descricao,
+                    valor=valor
+                )
+                nova_despesa.save()
             
             context = {
                 'rubrica': rubrica,

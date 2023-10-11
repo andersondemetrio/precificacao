@@ -93,16 +93,24 @@
                       </div>
                   </div>
                   {% endif %}
+                  {% if status == 'Aberto' %}
                 </div>
+                <button type="button" id="addDespesa" class="btn btn-primary">Adicionar Despesa</button>
+                <div class="d-flex flex-row justify-content-center align-items-center">
+                  <div id="despesasAdicionais">
+                    <!-- Despesas adicionais serão inseridas aqui -->
+                </div>             
+                </div>
+                {% endif %}
                       {% endif %}
                       {% endfor %}
                       {% if status != 'Aberto' %}
-                      <div class="mb-3 d-flex flex-row">
+                      <div class="mb-3 d-flex flex-row" style="margin-top: 5px;">
                         <label for="orcamentoOutros" class="form-label label-orcamento"><b>Outros ( % )</b></label>
                         <input type="number" class="form-control input-orcamento" id="orcamentoOutros" name="orcamentoOutros"  value="{{ rubrica.outros }}" min="0" max="100" required step="0.01" disabled>
                       </div>
                       {% else %}
-                      <div class="mb-3 d-flex flex-row">
+                      <div class="mb-3 d-flex flex-row" style="margin-top: 5px;">
                         <label for="orcamentoOutros" class="form-label label-orcamento"><b>Outros ( % )</b></label>
                         <input type="number" class="form-control input-orcamento" id="orcamentoOutros" name="orcamentoOutros" value="" min="0" max="100" required step="0.01">
                       </div>
