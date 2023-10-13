@@ -886,7 +886,7 @@ def inserir_orcamento(request):
     quantidade_linhas = len(horas_obras)        
     primeira_hora_produtiva = DescricaoObra.objects.filter(orcamento_id__iexact=numero_novo_orcamento).first()
     gestores = Employee.objects.filter(setor='Gestores')
-    
+   
     soma_horas = 0
     totalGes = 0
 
@@ -903,9 +903,27 @@ def inserir_orcamento(request):
         tributos = request.POST['orcamentoImpostos']
         lucros = request.POST['orcamentoLucro']
         valor_sugerido = request.POST.get('totalSugerido', 0)
+        valor_outros = request.POST.get('valorOutros', 0)
+        valor_tributos = request.POST.get('valorImpostos', 0)
+        valor_lucro = request.POST.get('valorLucro', 0)
+        
+        if not valor_outros:
+            valor_outros = 0
+        else:
+            valor_outros = valor_outros.replace(',', '.')
+
+        if not valor_tributos:
+            valor_tributos = 0
+        else:
+            valor_tributos = valor_tributos.replace(',', '.')
+
+        if not valor_lucro:
+            valor_lucro = 0
+        else:
+            valor_lucro = valor_lucro.replace(',', '.')
         
         rubrica = Rubrica.objects.create(orcamento_id=numero_novo_orcamento, capacidade_produtiva=capacidade_produtiva, cliente=cliente, quantidade=total_prestadores, custo_hora=custo_total, beneficios=totalSoma, 
-                               condominio=custo_condominio, outros=outros, tributos=tributos, lucros=lucros, status='Aberto', valor_sugerido=valor_sugerido)
+                               condominio=custo_condominio, outros=outros, tributos=tributos, lucros=lucros, status='Aberto', valor_sugerido=valor_sugerido, valor_outros=valor_outros, valor_tributos=valor_tributos, valor_lucro=valor_lucro)
 
         descricoes = request.POST.getlist('descricao[]')
         valores = request.POST.getlist('valor[]')
@@ -943,6 +961,8 @@ def finalizar_orcamento(request, id):
     
 def editar_orcamento(request, id):
     rubrica = get_object_or_404(Rubrica, id=id)
+    status = rubrica.status 
+    calcular_valores(request, id)
     
     if request.method == 'POST':
         cliente = request.POST['orcamentoCliente']
@@ -950,9 +970,28 @@ def editar_orcamento(request, id):
         tributos = request.POST['orcamentoImpostos'].replace(',', '.')
         lucros = request.POST['orcamentoLucro'].replace(',', '.')
         valor_sugerido = request.POST.get('totalSugerido', 0)
+        # valor_outros = request.POST['valorOutros']
+        # valor_tributos = request.POST['valorImpostos']
+        # valor_lucro = request.POST['valorLucro']
+        
+        # # Trate as strings vazias como zero
+        # if not valor_outros:
+        #     valor_outros = 0
+
+        # if not valor_tributos:
+        #     valor_tributos = 0
+
+        # if not valor_lucro:
+        #     valor_lucro = 0
+            
+        # valor_outros = float(valor_outros)
+        # valor_tributos = float(valor_tributos)
+        # valor_lucro = float(valor_lucro)    
         
         rubrica.status = 'Cancelado'
         rubrica.save()
+        
+        calcular_valores(request, id)
 
         novo_rubrica = Rubrica.objects.create(
             orcamento_id=f'{rubrica.orcamento_id}-V2',
@@ -966,7 +1005,7 @@ def editar_orcamento(request, id):
             lucros=lucros.replace(',', '.'),
             status='Finalizado',
             cliente=cliente,
-            valor_sugerido=valor_sugerido
+            valor_sugerido=valor_sugerido,
         )
 
         for despesa in rubrica.despesasdinamicas_set.all():
@@ -981,11 +1020,33 @@ def editar_orcamento(request, id):
                 valor=valor.replace(',', '.')
             )
             nova_despesa.save()
-    return redirect('dashboard')   
+            
+        descricoes = request.POST.getlist('descricaoAd[]')
+        valores = request.POST.getlist('valorAd[]')
+        
+        if len(descricoes) == len(valores):
+            for i in range(len(descricoes)):
+                descricao = descricoes[i]
+                valor = valores[i]
+
+                despesa = DespesasDinamicas(descricao=descricao, valor=valor, rubrica=novo_rubrica)
+                despesa.save()
+
+            return redirect('dashboard')
+            
+            context = {
+                'rubrica': rubrica,
+                'status': status,
+            }
+        return redirect('dashboard')
+    
+    calcular_valores(request,id)
+    
+    return render(request, 'seu_template.html', {'rubrica': rubrica, 'status': status})
 
 
 def deletar_orcamento(request):
-    return render(request, 'dashboard1.html', {'gastosfixos': gastosfixos})
+    return render(request, 'dashboard1.html')
 
 
 def detalhes_orcamento(request, id):
@@ -995,6 +1056,7 @@ def detalhes_orcamento(request, id):
     context = {
         'rubrica': rubrica,
         'despesas_dinamicas': despesas_dinamicas,
+        'status': rubrica.status
     }
 
     return render(request, 'detalhes_orcamento.html', context)
@@ -1026,6 +1088,28 @@ def orcamento_view(request):
     return JsonResponse({'orcamento': orcamento_list}, safe=False)
 
 
+def calcular_valores(request, id):   
+    rubricas = Rubrica.objects.all()
+    
+    for rubrica in rubricas:
+        valor_sugerido = rubrica.valor_sugerido
+        aliquota_outros = Decimal(rubrica.outros) / 100
+        aliquota_tributos = Decimal(rubrica.tributos) / 100
+        aliquota_lucros = Decimal(rubrica.lucros) / 100
+
+        valor_lucro = valor_sugerido * aliquota_lucros
+        valor_tributos = (valor_sugerido - valor_lucro) * aliquota_tributos
+        valor_outros = (valor_sugerido -valor_lucro - valor_tributos) * aliquota_outros
+
+        rubrica.valor_outros = valor_outros
+        rubrica.valor_tributos = valor_tributos
+        rubrica.valor_lucro = valor_lucro
+        rubrica.save()
+        print("Calculou valores")
+        
+    return redirect('detalhes_orcamento', id)
+    
+
 def inserir_capacidade_produtiva(request):
     auxiliar_calculo, created = AuxiliarCalculo.objects.get_or_create(pk=1)
     
@@ -1042,6 +1126,17 @@ def inserir_capacidade_produtiva(request):
         return redirect('dashboard')
     
     return render(request, 'dashboard1.html', context={})
+
+
+def get_valor_sugerido(request, rubrica_id):
+    try:
+        rubrica = Rubrica.objects.get(pk=rubrica_id)
+        valor_sugerido = rubrica.valor_sugerido
+        return JsonResponse({'valor_sugerido': float(valor_sugerido)})
+    except Rubrica.DoesNotExist:
+        return JsonResponse({'error': 'Rubrica não encontrada'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 def inserir_data(request):

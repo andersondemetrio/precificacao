@@ -130,6 +130,10 @@ class Rubrica(models.Model):
     status = models.CharField(max_length=100)
     cliente = models.CharField(max_length=100)
     valor_sugerido = models.DecimalField(max_digits=10, decimal_places=2)
+    valor_outros = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    valor_tributos = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    valor_lucro = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+                
     
 class DespesasDinamicas(models.Model):
     descricao = models.CharField(max_length=100)
