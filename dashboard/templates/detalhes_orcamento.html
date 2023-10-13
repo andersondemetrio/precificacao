@@ -80,7 +80,7 @@
                         <label for="valor{{ despesa.id }}" class="form-label">Valor</label>
                         <input type="text" class="form-control" name="valor_{{ despesa.id }}" value="{{ despesa.valor }}" required disabled>
                     </div>
-                </div>
+                  </div>
                   {% else %}       
                   <div class="d-flex flex-row justify-content-center align-items-center">
                       <div class="mb-3">
@@ -92,18 +92,18 @@
                           <input type="text" class="form-control" name="valor_{{ despesa.id }}" value="{{ despesa.valor }}" required>
                       </div>
                   </div>
-                  {% endif %}
-                  {% if status == 'Aberto' %}
-                </div>
+                <div>
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+                {% if status == 'Aberto' %}
                 <button type="button" id="addDespesa" class="btn btn-primary">Adicionar Despesa</button>
                 <div class="d-flex flex-row justify-content-center align-items-center">
                   <div id="despesasAdicionais">
                     <!-- Despesas adicionais serão inseridas aqui -->
-                </div>             
+                  </div>             
                 </div>
                 {% endif %}
-                      {% endif %}
-                      {% endfor %}
                       {% if status != 'Aberto' %}
                       <div class="mb-3 d-flex flex-row" style="margin-top: 5px;">
                         <label for="orcamentoOutros" class="form-label label-orcamento"><b>Outros ( % )</b></label>
@@ -157,15 +157,15 @@
                       
                       <div class="mb-3 d-flex flex-row">
                         <label for="valorOutros" class="form-label label-orcamento"><b>Outros</b></label>
-                        <input type="number" class="form-control input-orcamento" id="valorOutros" name="valorOutros" value="" min="0" max="100" required step="0.01" disabled>
+                        <input type="text" class="form-control input-orcamento" id="valorOutros" name="valorOutros" value="{{ rubrica.valor_outros }}" required step="0.01" disabled>
                       </div>
                       <div class="mb-3 d-flex flex-row">
                         <label for="valorImpostos" class="form-label label-orcamento"><b>Impostos</b></label>
-                        <input type="number" class="form-control input-orcamento" id="valorImpostos" name="valorImpostos" value="" min="0" max="100" required step="0.01" disabled>
+                        <input type="text" class="form-control input-orcamento" id="valorImpostos" name="valorImpostos" value="{{ rubrica.valor_tributos }}" required step="0.01" disabled>
                       </div>
                       <div class="mb-3 d-flex flex-row">
                         <label for="valorLucro" class="form-label label-orcamento"><b>Lucro</b></label>
-                        <input type="number" class="form-control input-orcamento" id="valorLucro" name="valorLucro" value="" min="0" max="100" required step="0.01" disabled>
+                        <input type="text" class="form-control input-orcamento" id="valorLucro" name="valorLucro" value="{{ rubrica.valor_lucro }}" required step="0.01" disabled>
                       </div>
                       </div> 
                       {% endif %}
@@ -177,9 +177,11 @@
                         <button type="button" class="btn btn-danger hide-on-print"><a href="{% url 'cancelar_orcamento' rubrica.id %}">Cancelar</a></button>
                         <button type="button" class="btn btn-primary hide-on-print"><a href="{% url 'finalizar_orcamento' rubrica.id %}">Finalizar</button>
                         {% endif %}
+                        {% if status != 'Aberto' %}
                           <a href="#" class="btn btn-primary hide-on-print " id="imprimirDetalhes">
                             <i class="bi bi-printer"></i>
-                        </a>    
+                          </a>
+                        {% endif %}    
                       </div>
                   </div>
               </form>

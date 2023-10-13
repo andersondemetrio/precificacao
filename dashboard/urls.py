@@ -91,6 +91,7 @@ urlpatterns = [
     # path('salvar_input_dinamico/', salvar_input_dinamico, name='salvar_input_dinamico'),
     path('calcular_media_horas_produtivas/', calcular_media_horas_produtivas, name='calcular_media_horas_produtivas'),
     path('calcular_soma_beneficio_funcionario/', calcular_soma_beneficio_funcionario, name='calcular_soma_beneficio_funcionario'),
+    path('calcular_valores/<int:id>/', calcular_valores, name='calcular_valores'),
     path('export_csv/',export_csv, name='export_csv'),
     path('export_pdf/', export_pdf, name='export_pdf'),
     path('export_pdf_condominio/', export_pdf_condominio, name='export_pdf_condominio'),

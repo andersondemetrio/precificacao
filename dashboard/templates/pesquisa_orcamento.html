@@ -38,16 +38,16 @@
             <td>{{ orcamento.valor_sugerido }}</td> 
             <td>{{ orcamento.status }}</td> 
             <td>
-                {% if orcamento.status == "Finalizado" %}
-                <a href="{% url 'detalhes_orcamento' orcamento.id %}">
+            {% if orcamento.status == "Finalizado" %}
+                <a href="{% url 'calcular_valores' orcamento.id %}">
                     <i class="bi bi-check-circle-fill"></i>
                 </a>
             {% elif orcamento.status == "Cancelado" %}
-                <a href="{% url 'detalhes_orcamento' orcamento.id %}">
+                <a href="{% url 'calcular_valores' orcamento.id %}">
                     <i class="bi bi-x-circle-fill"></i>
                 </a>
             {% else %}
-                <a href="{% url 'detalhes_orcamento' orcamento.id %}">
+                <a href="{% url 'calcular_valores' orcamento.id %}">
                     <i class="bi bi-pencil-fill"></i>
                 </a>
             {% endif %}
