@@ -178,9 +178,14 @@
                         <button type="button" class="btn btn-primary hide-on-print"><a href="{% url 'finalizar_orcamento' rubrica.id %}">Finalizar</button>
                         {% endif %}
                         {% if status != 'Aberto' %}
-                          <a href="#" class="btn btn-primary hide-on-print " id="imprimirDetalhes">
-                            <i class="bi bi-printer"></i>
+                        <a href="{% url 'export_orcamento_pdf' rubrica.id %}" class="btn btn-danger">
+                          <i class="bi bi-file-pdf" style="color: withe;"></i> 
+                        </a>
+                          <a href="{% url 'export_orcamento' rubrica.id %}" class="btn btn-success">
+                            <i class="bi bi-file-earmark-excel-fill" style="color: withe;"></i>
                           </a>
+
+
                         {% endif %}    
                       </div>
                   </div>

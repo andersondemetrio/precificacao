@@ -28,7 +28,7 @@ import csv
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
 import io
 from reportlab.lib.pagesizes import landscape, A3
 from django.utils.encoding import smart_str
@@ -63,6 +63,7 @@ from django.utils.html import strip_tags
 from django.db import connection
 from django.http import HttpResponseServerError
 from django.db.models import F, Sum
+import xlsxwriter
 
 @login_required
 def dashboard_view(request):
@@ -114,10 +115,8 @@ def inserir_mao_de_obra(request):
         nome = request.POST['nome']
         cpf = request.POST['cpf']
 
-        # Remove pontos e traços do CPF
         cpf = cpf.replace('.', '').replace('-', '')
 
-        # Verifica se o CPF possui exatamente 11 caracteres
         if len(cpf) == 11:
             if not Colaboradores.objects.filter(cpf=cpf):
                 mao_de_obra = Colaboradores(
@@ -1093,13 +1092,21 @@ def calcular_valores(request, id):
     
     for rubrica in rubricas:
         valor_sugerido = rubrica.valor_sugerido
-        aliquota_outros = Decimal(rubrica.outros) / 100
-        aliquota_tributos = Decimal(rubrica.tributos) / 100
-        aliquota_lucros = Decimal(rubrica.lucros) / 100
+        aliquota_outros = Decimal(rubrica.outros) 
+        aliquota_tributos = Decimal(rubrica.tributos) 
+        aliquota_lucros = Decimal(rubrica.lucros) 
+        
+        total_aliquota = aliquota_outros + aliquota_tributos + aliquota_lucros
+        aliquota = (100 - total_aliquota) / 100  
+        total = valor_sugerido * aliquota 
+        print(aliquota) 
+        print(total)
+        totalDiminuido = valor_sugerido - total
+        print(totalDiminuido)
 
-        valor_lucro = valor_sugerido * aliquota_lucros
-        valor_tributos = (valor_sugerido - valor_lucro) * aliquota_tributos
-        valor_outros = (valor_sugerido -valor_lucro - valor_tributos) * aliquota_outros
+        valor_lucro = (((aliquota_lucros * 100 ) / total_aliquota) / 100) * totalDiminuido  
+        valor_tributos = (((aliquota_tributos * 100 ) / total_aliquota) / 100) * totalDiminuido  
+        valor_outros = (((aliquota_outros * 100 ) / total_aliquota) / 100) * totalDiminuido  
 
         rubrica.valor_outros = valor_outros
         rubrica.valor_tributos = valor_tributos
@@ -1698,3 +1705,223 @@ def dre_report(request):
     )
     
     return render(request, 'dre_template.html', {'orcamento': orcamento})
+
+
+def export_orcamento(request, rubrica_id):
+    rubrica = Rubrica.objects.get(id=rubrica_id)
+    despesas_dinamicas = rubrica.despesasdinamicas_set.all()
+
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = f'attachment; filename="rubrica_{rubrica_id}.xlsx'
+
+    workbook = xlsxwriter.Workbook(response, {'in_memory': True})
+    worksheet = workbook.add_worksheet()
+
+    cell_format = workbook.add_format()
+    cell_format.set_border(1) 
+    cell_format.set_align('center')
+    cell_format.set_align('vcenter')
+    
+    header_format = workbook.add_format()
+    header_format.set_border(1)
+    header_format.set_align('center')
+    header_format.set_align('vcenter')
+    header_format.set_bg_color('#333333')
+    header_format.set_font_color('white')
+    header_format.set_bold()
+    
+    data = [
+        ['Descrição', 'Valor'],
+        ['Orçamento Id', rubrica.orcamento_id],
+        ['Cliente', rubrica.cliente],
+        ['Capacidade Produtiva', rubrica.capacidade_produtiva],
+        ['Qtd Funcionários', rubrica.quantidade],
+        ['Total Custo HR/Func.', rubrica.custo_hora],
+        ['Total Benefícios', rubrica.beneficios],
+        ['Total Condomínio', rubrica.condominio],
+        ['Descrição', 'Aliquotas'],
+        ['Outros', str(rubrica.outros) + '%'],
+        ['Impostos', str(rubrica.tributos) + '%'],
+        ['Lucro', str(rubrica.lucros) + '%'],
+        ['Descrição', 'Valor'],
+        ['Outros R$', rubrica.valor_outros],
+        ['Impostos R$', rubrica.valor_tributos],
+        ['Lucro R$', rubrica. valor_lucro],
+    ]
+  
+    worksheet.set_column('A:A', 50)
+    worksheet.set_column('B:B', 30)
+
+    for row, (col1, col2) in enumerate(data):
+        if col1 == 'Descrição': 
+            worksheet.write(row, 0, col1, header_format)
+            worksheet.write(row, 1, col2, header_format)
+        else:
+            worksheet.write(row, 0, col1, cell_format)
+            worksheet.write(row, 1, col2, cell_format)
+
+    row += 1
+
+    header = ['Despesas Adicionadas', 'Valor']
+    for col, col_name in enumerate(header):
+        worksheet.write(row, col, col_name, header_format)
+
+    row += 1
+
+    for despesa in despesas_dinamicas:
+        worksheet.write(row, 0, despesa.descricao, cell_format)
+        worksheet.write(row, 1, despesa.valor, cell_format)
+        row += 1
+        
+    extended_header_format = workbook.add_format()
+    extended_header_format.set_border(1)
+    extended_header_format.set_align('center')
+    extended_header_format.set_align('vcenter')
+    extended_header_format.set_bg_color('#333333')  
+    extended_header_format.set_font_color('white') 
+    extended_header_format.set_bold()
+        
+    data.extend([
+        ['Valor Sugerido', rubrica.valor_sugerido],
+    ])
+    
+    for col1, col2 in data[-1:]:
+        worksheet.write(row, 0, col1, extended_header_format)
+        worksheet.write(row, 1, col2, extended_header_format)
+        row += 1
+
+    workbook.close()
+
+    return response
+
+
+def export_orcamento_pdf(request, rubrica_id):
+    rubrica = Rubrica.objects.get(id=rubrica_id)
+    despesas_dinamicas = rubrica.despesasdinamicas_set.all()
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="rubrica_{rubrica_id}.pdf"'
+
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
+
+    data1 = [
+        ['Descrição', 'Valor'],
+        ['Orçamento Id', rubrica.orcamento_id],
+        ['Cliente', rubrica.cliente],
+        ['Capacidade Produtiva', rubrica.capacidade_produtiva],
+        ['Qtd Funcionários', rubrica.quantidade],
+        ['Total Custo HR/Func.', rubrica.custo_hora],
+        ['Total Benefícios', rubrica.beneficios],
+        ['Total Condomínio', rubrica.condominio],
+    ]
+
+    data2 = [
+        ['Descrição', 'Aliquotas'],
+        ['Outros', str(rubrica.outros) + '%'],
+        ['Impostos', str(rubrica.tributos) + '%'],
+        ['Lucro', str(rubrica.lucros) + '%'],
+    ]
+
+    data3 = [
+        ['Descrição', 'Valor'],
+        ['Outros R$', rubrica.valor_outros],
+        ['Impostos R$', rubrica.valor_tributos],
+        ['Lucro R$', rubrica.valor_lucro],
+    ]
+
+    table_data1 = []
+    for col1, col2 in data1:
+        table_data1.append([col1, col2])
+
+    t1 = Table(table_data1, colWidths=[230, 130])
+    t1.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#333333')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]))
+
+    elements.append(t1)
+
+    elements.append(Spacer(1, 12))
+
+    table_data2 = []
+    for col1, col2 in data2:
+        table_data2.append([col1, col2])
+
+    t2 = Table(table_data2, colWidths=[230, 130])
+    t2.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#333333')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]))
+
+    elements.append(t2)
+
+    elements.append(Spacer(1, 12))
+
+    table_data3 = []
+    for col1, col2 in data3:
+        table_data3.append([col1, col2])
+
+    t3 = Table(table_data3, colWidths=[230, 130])
+    t3.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#333333')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]))
+
+    elements.append(t3)
+
+    elements.append(Spacer(1, 12))
+
+    header = ['Despesas Adicionadas', 'Valor']
+    table_data = [header]
+    for despesa in despesas_dinamicas:
+        table_data.append([despesa.descricao, despesa.valor])
+
+    t = Table(table_data, colWidths=[230, 130])
+    t.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#333333')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]))
+
+    elements.append(t)
+
+    elements.append(Spacer(1, 12))
+    
+    extended_header = ['Valor Sugerido', rubrica.valor_sugerido]
+    table_data = [extended_header]
+    t = Table(table_data, colWidths=[230, 130])
+    t.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#333333')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]))
+
+    elements.append(t)
+
+    doc.build(elements)
+
+    return response
