@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/tabelas.css' %}" />
     <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <script>
         const cargosUrl = "{% url 'cargos_vieww' %}";
         const enderecoUrl = "{% url 'endereco_view' %}";
@@ -142,7 +143,7 @@
                                 <ul class="ul-item">
                                     <li class="li-pad"><a class="nav-sub" id="openModalButtonVincularCargos">Vincular Cargos</a></li>
                                     <li class="li-pad"><a class="nav-sub" id="openModalButtonOrcamento">Cadastrar Orçamento</a></li>
-                                    <li class="li-pad"><a class="nav-sub" id="openModalButtonMemorias">Memórias de Cálculos</a></li>
+                                    {% comment %} <li class="li-pad"><a class="nav-sub" id="openModalButtonMemorias">Memórias de Cálculos</a></li> {% endcomment %}
                                 </ul>
                             </div>
                         </li>
@@ -547,6 +548,12 @@
                 </tbody>
             </table>
             <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+            <a href="{% url 'exportar_beneficios_pdf' %}" class="btn btn-danger">
+                <i class="bi bi-file-pdf" style="color: withe;"></i> 
+            </a>
+            <a href="{% url 'exportar_beneficios_xlsx' %}" class="btn btn-success">
+                <i class="bi bi-file-earmark-excel-fill" style="color: withe;"></i>
+            </a>   
           </div>
         </div>
       </div>
@@ -1025,7 +1032,7 @@
     </div>       
     <!-- Fim Modal / CRIAR ORÇAMENTO -->
 
-    <!--Início modal Personalizado / MEMORIAS CALCULOS -->
+    {% comment %} <!--Início modal Personalizado / MEMORIAS CALCULOS -->
     <div id="myModalMemorias" class="modal">
         <div class="modal-personalizado">
           <div class="modal-header">
@@ -1042,7 +1049,7 @@
         </div>
       </div>
     </div>
-    <!--Fim modal Personalizado / MEMORIAS CALCULOS -->
+    <!--Fim modal Personalizado / MEMORIAS CALCULOS --> {% endcomment %}
 
 
     <!-- Começo Modal / RELATÓRIO ENCARGO -->
@@ -1158,7 +1165,7 @@
                     </div>
                 </form>
             </div>
-            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>    
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button> 
         </div>
     </div>
     <!-- Fim Modal / DRE -->
