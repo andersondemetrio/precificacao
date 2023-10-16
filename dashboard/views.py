@@ -64,6 +64,8 @@ from django.db import connection
 from django.http import HttpResponseServerError
 from django.db.models import F, Sum
 import xlsxwriter
+import io
+from django.http import FileResponse
 
 @login_required
 def dashboard_view(request):
@@ -1680,31 +1682,24 @@ def imprimir_tabela(request):
 
 #  Começo DRE relatório
 
-# def dre_report(request):
-#    q = request.GET.get('search')   
-#    orcamento = Rubrica.objects.filter(orcamento_id__icontains=q).order_by('orcamento_id')
-#    return render(request, 'dre_template.html', {'orcamento': orcamento})
-
 def dre_report(request):
     q = request.GET.get('search')   
-    orcamento = Rubrica.objects.filter(orcamento_id__icontains=q).order_by('orcamento_id')
+    orcamento = Rubrica.objects.filter(orcamento_id__icontains=q, status='Finalizado').order_by('orcamento_id')
     
-    # Adicione um "annotate" para incluir os valores da tabela DespesasDinamicas
-    orcamento = orcamento.annotate(
-        descricao_despesa=F('despesasdinamicas__descricao'),
-        valor_despesa=F('despesasdinamicas__valor')
-    ).values(
-        'id',
-        'tributos',
-        'lucros',
-        'valor_sugerido',
-        'custo_hora',
-        'status',
-        'descricao_despesa',
-        'valor_despesa'
-    )
+    # orcamento = orcamento.values(
+    #     'id',
+    #     'orcamento_id',
+    #     'valor_tributos',
+    #     'valor_lucro',
+    #     'valor_sugerido',
+    #     'custo_hora',
+    #     'status'
+    # )
+        
+    tot_tributos = orcamento.aggregate(Sum('valor_tributos'))['valor_tributos__sum'] or 0
+    tot_lucros = orcamento.aggregate(Sum('valor_lucro'))['valor_lucro__sum'] or 0
     
-    return render(request, 'dre_template.html', {'orcamento': orcamento})
+    return render(request, 'dre_template.html', {'orcamento': orcamento, 'tot_tributos': tot_tributos, 'tot_lucros': tot_lucros})
 
 
 def export_orcamento(request, rubrica_id):
@@ -1924,4 +1919,82 @@ def export_orcamento_pdf(request, rubrica_id):
 
     doc.build(elements)
 
+    return response
+
+
+def exportar_beneficios_xlsx(request): 
+    beneficios = Beneficios.objects.all()
+
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=beneficios.xlsx'
+
+    workbook = xlsxwriter.Workbook(response, {'in_memory': True})
+    worksheet = workbook.add_worksheet()
+
+    cell_format = workbook.add_format()
+    cell_format.set_border(1)
+    cell_format.set_align('center')
+    cell_format.set_align('vcenter')
+
+    header_format = workbook.add_format()
+    header_format.set_border(1)
+    header_format.set_align('center')
+    header_format.set_align('vcenter')
+    header_format.set_bg_color('#333333')
+    header_format.set_font_color('white')
+    header_format.set_bold()
+
+    data = [
+        ['Cargo', 'Descrição', 'Valor'],
+    ]
+
+    for beneficio in beneficios:
+        data.append([beneficio.cargo.nome_cargo, beneficio.descricao, beneficio.valor])
+
+    worksheet.set_column('A:A', 30)
+    worksheet.set_column('B:B', 20)
+    worksheet.set_column('C:C', 20)
+
+    for row, row_data in enumerate(data):
+        for col, col_data in enumerate(row_data):
+            if row == 0:
+                worksheet.write(row, col, col_data, header_format)
+            else:
+                worksheet.write(row, col, col_data, cell_format)
+
+    workbook.close()
+
+    return response
+
+def exportar_beneficios_pdf(request):
+    beneficios = Beneficios.objects.all()
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=beneficios.pdf'
+
+    doc = SimpleDocTemplate(response, pagesize=landscape(letter))
+    elements = []
+
+    data = [
+        ['Cargo', 'Descrição', 'Valor'],
+    ]
+
+    for beneficio in beneficios:
+        data.append([beneficio.cargo.nome_cargo, beneficio.descricao, beneficio.valor])
+
+    table = Table(data)
+    style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ])
+    table.setStyle(style)
+
+    elements.append(table)
+
+    doc.build(elements)
     return response

@@ -9,8 +9,9 @@
     <link rel="stylesheet" href="{% static 'assets/css/tabelas.css' %}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script defer src="{% static 'assets/js/script_tabelas.js' %}"></script>
+    {% comment %} <script defer src="{% static 'assets/js/script_tabelas.js' %}"></script> {% endcomment %}
     <script defer src="{% static 'assets/js/delete.js' %}"></script>
+    <script defer src="{% static 'assets/js/dre.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
@@ -42,26 +43,24 @@
         <table class="table table-striped">
             <thead>
                 <tr>
+                    <th>Identificador</th>
                     <th>Impostos</th>
                     <th>Lucro</th>
                     <th>Valor Sugerido</th>
                     <th>Custo Hora</th>
                     <th>Status</th>
-                    <th>Descrição Despesa Adicional</th>
-                    <th>Valor Despesa Adicional</th>
                     <th class="noprint"></th>
                 </tr>
             </thead>
             <tbody>
                 {% for orcamento_item in orcamento %}
                     <tr>
-                        <td>{{ orcamento_item.tributos }}%</td>
-                        <td>{{ orcamento_item.lucros }}%</td>
+                        <td>{{ orcamento_item.orcamento_id }}</td>
+                        <td>{{ orcamento_item.valor_tributos }}</td>
+                        <td>{{ orcamento_item.valor_lucro }}</td>
                         <td>{{ orcamento_item.valor_sugerido }}</td>
                         <td>{{ orcamento_item.custo_hora }}</td>
                         <td>{{ orcamento_item.status }}</td>
-                        <td>{{ orcamento_item.descricao_despesa }}</td>
-                        <td>{{ orcamento_item.valor_despesa }}</td>
                         <td class="noprint">
                             <button class="btn btn-primary" onclick="window.print();return false;">
                                 <i class="bi bi-printer"></i>
@@ -85,12 +84,12 @@
             labels: ['Impostos', 'Lucro'],
             datasets: [{
                 data: [
-                    {% for orcamento_item in orcamento %}{{ orcamento_item.tributos }}, {% endfor %}, // Valores de Impostos
-                    {% for orcamento_item in orcamento %}{{ orcamento_item.lucros }}, {% endfor %}    // Valores de Lucro
+                    {% for orcamento_item in orcamento %}{{ orcamento_item.valor_tributos }}, {% endfor %}, // Valores de Impostos
+                    {% for orcamento_item in orcamento %}{{ orcamento_item.valor_lucro }}, {% endfor %}    // Valores de Lucro
                 ],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.6)', // Cor para Impostos
-                    'rgba(75, 192, 192, 0.6)' // Cor para Lucro
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(75, 192, 192, 0.6)' 
                 ]
             }]
         };
@@ -98,9 +97,9 @@
         // Defina cores personalizadas para cada fatia do gráfico
         for (var i = 0; i < data.datasets[0].data.length; i++) {
             if (i === 0) {
-                data.datasets[0].backgroundColor[i] = 'rgba(255, 99, 132, 0.6)'; // Cor para Impostos
+                data.datasets[0].backgroundColor[i] = 'rgba(255, 99, 132, 0.6)'; 
             } else {
-                data.datasets[0].backgroundColor[i] = 'rgba(75, 192, 192, 0.6)'; // Cor para Lucro
+                data.datasets[0].backgroundColor[i] = 'rgba(75, 192, 192, 0.6)';
             }
         }
 
