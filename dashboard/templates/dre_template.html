@@ -77,16 +77,23 @@
             <canvas id="myPieChart"></canvas>
         </div>
     </div>
+
     <script>
         var ctx = document.getElementById('myPieChart').getContext('2d');
+
+        // Calcular o somatório de impostos e lucro
+        var totalImpostos = 0;
+        var totalLucro = 0;
+
+        {% for orcamento_item in orcamento %}
+            totalImpostos += {{ orcamento_item.valor_tributos }};
+            totalLucro += {{ orcamento_item.valor_lucro }};
+        {% endfor %}
 
         var data = {
             labels: ['Impostos', 'Lucro'],
             datasets: [{
-                data: [
-                    {% for orcamento_item in orcamento %}{{ orcamento_item.valor_tributos }}, {% endfor %}, // Valores de Impostos
-                    {% for orcamento_item in orcamento %}{{ orcamento_item.valor_lucro }}, {% endfor %}    // Valores de Lucro
-                ],
+                data: [totalImpostos, totalLucro],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.6)',
                     'rgba(75, 192, 192, 0.6)' 
