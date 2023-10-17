@@ -33,10 +33,6 @@
     <script defer src="{% static 'assets/js/Simple-Slider.js' %}"></script>
     <script defer src="{% static 'assets/js/jquery.mask.js' %}"></script>
     <script defer src="{% static 'assets/js/jquery.mask.min.js' %}"></script>
-    {% comment %} <script defer src="{% static 'assets/js/mascaras_cnpj.js' %}"></script>
-    <script defer src="{% static 'assets/js/mascaras_email.js' %}"></script>
-    <script defer src="{% static 'assets/js/mascaras_telefone.js' %}"></script> {% endcomment %}
-    <!--script defer src="{% static 'assets/js/mascaras_cpf.js' %}"></script-->
     <script defer src="{% static 'assets/js/document_mask.js' %}"></script>
     <script defer src="{% static 'assets/js/validacao_numero.js' %}"></script>
     <script defer src="{% static 'assets/js/validacao_matricula.js' %}"></script>
@@ -95,14 +91,17 @@
                             </svg>Cadastros</a>
                         <div id="cadastrosCollapse" class="collapse">
                             <ul class="ul-item">
+                                {% if user.is_superuser %}
                                 <li class="li-pad"><a class="nav-sub" id="openModalButtonEndereco">Endereço</a></li> 
                                 <li class="li-pad"><a class="nav-sub" id="openModalButtonEmpresa">Empresa</a></li>
                                 <li class="li-pad"><a class="nav-sub" id="openModalButtonColaboradores">Colaborador</a></li>
+                                {% endif %}
                                 <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalSenha">Alterar Senha</a></li>
                             </ul>
                         </div>
                         </div>                        
                     </li>
+                    {% if user.is_superuser %}
                     <li class="nav-item">
                         <a class="a-titulo" data-bs-toggle="collapse" role="button" aria-expanded="false" href="#maoDeObraCollapse" aria-controls="maoDeObraCollapse">
                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-tools me-2">
@@ -136,6 +135,7 @@
                             </ul>
                         </div>
                     </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="a-titulo" href="#precificacaoCollapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="precificacaoCollapse">
                             <i class="fa fa-clipboard"></i>Orçamento</a>
@@ -147,6 +147,7 @@
                                 </ul>
                             </div>
                         </li>
+                        {% if user.is_superuser %}
                         <li class="nav-item">
                             <a class="a-titulo" href="#relatorioCollapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="relatorioCollapse">
                                 <i class="fa fa-print"></i>Relatórios</a>
@@ -157,7 +158,8 @@
                                         <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalHoraslista">Valor Hora Fixa</a></li>                                     
                                     </ul>
                                 </div>
-                        </li>                                    
+                        </li>      
+                        {% endif %}                              
                     <li class="nav-item">
                         <a class="a-titulo" href="{% url 'logout' %}">
                             <i class="fa fa-sign-in me-2"></i>Sair</a>
@@ -1169,6 +1171,16 @@
         </div>
     </div>
     <!-- Fim Modal / DRE -->
+
+    {% if user.is_superuser %}
+    <script>
+        var isSuperUser = true;
+    </script>
+    {% else %}
+    <script>
+        var isSuperUser = false;
+    </script>
+    {% endif %}
     
 </body>
 </html>

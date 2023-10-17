@@ -1,17 +1,17 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Recarrega a página clicando no fechar
-    document.getElementById("botaoHome").addEventListener("click", function(event) {
+    document.getElementById("botaoHome").addEventListener("click", function (event) {
         event.preventDefault();
-        location.reload(); 
-      });  
+        location.reload();
+    });
 
     var closeButtons = document.getElementsByClassName("close");
     for (var i = 0; i < closeButtons.length; i++) {
-        closeButtons[i].addEventListener("click", function(event) {
-            event.preventDefault(); 
-            location.reload(); 
+        closeButtons[i].addEventListener("click", function (event) {
+            event.preventDefault();
+            location.reload();
         });
-    } 
+    }
 
     // Requisição Fetch para endereços
     fetch(enderecoUrl)
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     selectElement.appendChild(option);
                 });
             });
-        });  
+        });
 
     // Requisição Fetch para Calendário
     fetch(calendarioUrl)
@@ -172,13 +172,13 @@ function popularSelectFuncionarioPorClasse(classeSelect) {
         fetch(colaboradoresUrl)
             .then(response => response.json())
             .then(data => {
-                const options = []; 
+                const options = [];
 
                 data.colaboradores.forEach(colaborador => {
                     const option = document.createElement('option');
                     option.value = colaborador.id;
                     option.textContent = colaborador.nome;
-                    options.push(option); 
+                    options.push(option);
                 });
 
                 while (funcionarioSelect.options.length > 1) {
@@ -209,7 +209,7 @@ function popularSelectFuncionarioPorClasseC(classeSelect) {
         fetch(colaboradoresUrlFilter)
             .then(response => response.json())
             .then(data => {
-                const options = []; 
+                const options = [];
 
                 data.colaboradores.forEach(colaborador => {
                     const option = document.createElement('option');
@@ -271,7 +271,7 @@ function popularSelectCargoPorClasse(classeSelect) {
     });
 }
 
-    
+
 document.addEventListener('DOMContentLoaded', function () {
     popularSelectCargoPorClasse('inputCargoS');
 });
@@ -309,15 +309,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 // função para calcular horas produtivas do funcionario
-$(document).ready(function() {
+$(document).ready(function () {
     console.log('ready');
-    $('#searchFormCalendario').submit(function(event) {
+    $('#searchFormCalendario').submit(function (event) {
         event.preventDefault();
 
         console.log('Formulário de pesquisa enviado');
 
         var searchQuery = $('[name="searchCal"]').val().trim();
-        
+
         var consultaAno = searchQuery;
 
         console.log('ConsultaAno:', consultaAno);
@@ -334,7 +334,7 @@ $(document).ready(function() {
                 'search_query': searchQuery
             },
             dataType: 'json',
-            success: function(response) {
+            success: function (response) {
                 $('#soma_total').text(response.soma_total);
                 $('#quantidade').text(response.quantidade);
                 if (!isNaN(response.media)) {
@@ -347,7 +347,7 @@ $(document).ready(function() {
                     alert('A média não é um número válido.');
                 }
             },
-            error: function(error) {
+            error: function (error) {
                 console.log(error);
             }
         });
@@ -395,81 +395,92 @@ $(document).ready(function() {
 // });
 
 // Função para abrir modal personalizado Empresa
-const openModalButtonEmpresa = document.getElementById("openModalButtonEmpresa");
-const modalEmpresa = document.getElementById("myModalEmpresa");
-const closeButtonsEmpresa = document.getElementsByClassName("close");
+if (isSuperUser) {
+    const openModalButtonEmpresa = document.getElementById("openModalButtonEmpresa");
+    const modalEmpresa = document.getElementById("myModalEmpresa");
+    const closeButtonsEmpresa = document.getElementsByClassName("close");
 
-openModalButtonEmpresa.addEventListener("click", () => {
-    modalEmpresa.style.display = "block";
-});
-
-for (const closeButtonsEmp of closeButtonsEmpresa) {
-    closeButtonsEmp.addEventListener("click", () => {
-        modalEmpresa.style.display = "none";
+    openModalButtonEmpresa.addEventListener("click", () => {
+        modalEmpresa.style.display = "block";
     });
+
+    for (const closeButtonsEmp of closeButtonsEmpresa) {
+        closeButtonsEmp.addEventListener("click", () => {
+            modalEmpresa.style.display = "none";
+        });
+    }
 }
 
 // Função para abrir modal personalizado Colaboradores
-const openModalButtonColaboradores = document.getElementById("openModalButtonColaboradores");
-const modalColaboradores = document.getElementById("myModalColaboradores");
-const closeButtonsColaboradores = document.getElementsByClassName("close");
+if (isSuperUser) {
+    const openModalButtonColaboradores = document.getElementById("openModalButtonColaboradores");
+    const modalColaboradores = document.getElementById("myModalColaboradores");
+    const closeButtonsColaboradores = document.getElementsByClassName("close");
 
-openModalButtonColaboradores.addEventListener("click", () => {
-    modalColaboradores.style.display = "block";
-});
-
-for (const closeButtonsCol of closeButtonsColaboradores) {
-    closeButtonsCol.addEventListener("click", () => {
-        modalColaboradores.style.display = "none";
+    openModalButtonColaboradores.addEventListener("click", () => {
+        modalColaboradores.style.display = "block";
     });
+
+    for (const closeButtonsCol of closeButtonsColaboradores) {
+        closeButtonsCol.addEventListener("click", () => {
+            modalColaboradores.style.display = "none";
+        });
+    }
 }
 
 // Função para abrir modal personalizado Endereço
-const openModalButtonEndereco = document.getElementById("openModalButtonEndereco");
-const modalEndereco = document.getElementById("myModalEndereco");
-const closeButtonsEndereco = document.getElementsByClassName("close");
+if (isSuperUser) {
+    const openModalButtonEndereco = document.getElementById("openModalButtonEndereco");
+    const modalEndereco = document.getElementById("myModalEndereco");
+    const closeButtonsEndereco = document.getElementsByClassName("close");
 
-openModalButtonEndereco.addEventListener("click", () => {
-    modalEndereco.style.display = "block";
-});
-
-for (const closeButtonsEnd of closeButtonsEndereco) {
-    closeButtonsEnd.addEventListener("click", () => {
-        modalEndereco.style.display = "none";
+    openModalButtonEndereco.addEventListener("click", () => {
+        modalEndereco.style.display = "block";
     });
+
+    for (const closeButtonsEnd of closeButtonsEndereco) {
+        closeButtonsEnd.addEventListener("click", () => {
+            modalEndereco.style.display = "none";
+        });
+    }
 }
 
 // Função para abrir modal personalizado Cargo
-const openModalButtonCargo = document.getElementById("openModalButtonCargo");
-const modalCargo = document.getElementById("myModalCargo");
-const closeButtonsCargo = document.getElementsByClassName("close");
+if (isSuperUser) {
+    const openModalButtonCargo = document.getElementById("openModalButtonCargo");
+    const modalCargo = document.getElementById("myModalCargo");
+    const closeButtonsCargo = document.getElementsByClassName("close");
 
-openModalButtonCargo.addEventListener("click", () => {
-    modalCargo.style.display = "block";
-});
-
-for (const closeButtonCa of closeButtonsCargo) {
-    closeButtonCa.addEventListener("click", () => {
-        modalCargo.style.display = "none";
+    openModalButtonCargo.addEventListener("click", () => {
+        modalCargo.style.display = "block";
     });
+
+    for (const closeButtonCa of closeButtonsCargo) {
+        closeButtonCa.addEventListener("click", () => {
+            modalCargo.style.display = "none";
+        });
+    }
 }
 
 // Função para abrir modal personalizado Calendário
-const openModalButtonCalendario = document.getElementById("openModalButtonCalendario");
-const modalCalendario = document.getElementById("myModalCalendario");
-const closeButtonsCalendario = document.getElementsByClassName("close");
+if (isSuperUser) {
+    const openModalButtonCalendario = document.getElementById("openModalButtonCalendario");
+    const modalCalendario = document.getElementById("myModalCalendario");
+    const closeButtonsCalendario = document.getElementsByClassName("close");
 
-openModalButtonCalendario.addEventListener("click", () => {
-    modalCalendario.style.display = "block";
-});
-
-for (const closeButtonCal of closeButtonsCalendario) {
-    closeButtonCal.addEventListener("click", () => {
-        modalCalendario.style.display = "none";
+    openModalButtonCalendario.addEventListener("click", () => {
+        modalCalendario.style.display = "block";
     });
+
+    for (const closeButtonCal of closeButtonsCalendario) {
+        closeButtonCal.addEventListener("click", () => {
+            modalCalendario.style.display = "none";
+        });
+    }
 }
 
 // Função para abrir modal personalizado Condominio
+if (isSuperUser) {
 const openModalButtonCondominio = document.getElementById("openModalButtonCondominio");
 const modalCondominio = document.getElementById("myModalCondominio");
 const closeButtonsCondominio = document.getElementsByClassName("close");
@@ -483,8 +494,10 @@ for (const closeButtonCon of closeButtonsCondominio) {
         modalCondominio.style.display = "none";
     });
 }
+}
 
 // Função para abrir modal personalizado Encargos
+if (isSuperUser) {
 const openModalButtonEncargos = document.getElementById("openModalButtonEncargos");
 const modalEncargos = document.getElementById("myModalEncargos");
 const closeButtonsEncargos = document.getElementsByClassName("close");
@@ -498,8 +511,10 @@ for (const closeButtonEnc of closeButtonsEncargos) {
         modalEncargos.style.display = "none";
     });
 }
+}
 
 // Função para abrir modal personalizado Beneficios
+if (isSuperUser) {
 const openModalButtonBeneficios = document.getElementById("openModalButtonBeneficios");
 const modalBeneficios = document.getElementById("myModalBeneficios");
 const closeButtonsBeneficios = document.getElementsByClassName("close");
@@ -512,6 +527,7 @@ for (const closeButtonBen of closeButtonsBeneficios) {
     closeButtonBen.addEventListener("click", () => {
         modalBeneficios.style.display = "none";
     });
+}
 }
 
 // Função para abrir modal personalizado Vincular Cargos
@@ -545,19 +561,19 @@ for (const closeButtonOrc of closeButtonsOrcamento) {
 }
 
 // Função para abrir modal personalizado Orçamento
-const openModalButtonMemorias = document.getElementById("openModalButtonMemorias");
-const modalMemorias = document.getElementById("myModalMemorias");
-const closeButtonsMemorias = document.getElementsByClassName("close");
+// const openModalButtonMemorias = document.getElementById("openModalButtonMemorias");
+// const modalMemorias = document.getElementById("myModalMemorias");
+// const closeButtonsMemorias = document.getElementsByClassName("close");
 
-openModalButtonMemorias.addEventListener("click", () => {
-    modalMemorias.style.display = "block";
-});
+// openModalButtonMemorias.addEventListener("click", () => {
+//     modalMemorias.style.display = "block";
+// });
 
-for (const closeButtonMem of closeButtonsMemorias) {
-    closeButtonMem.addEventListener("click", () => {
-        modalMemorias.style.display = "none";
-    });
-}
+// for (const closeButtonMem of closeButtonsMemorias) {
+//     closeButtonMem.addEventListener("click", () => {
+//         modalMemorias.style.display = "none";
+//     });
+// }
 
 // Cadastro OK Mão de obra (msg em tela e não fecha modal) 
 document.addEventListener('DOMContentLoaded', function () {
@@ -592,14 +608,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Cadastro Condominio Lista (msg em tela e não fecha modal)
-    $(document).ready(function() {
-        $("#formDespesasLista").submit(function(event) {
+    $(document).ready(function () {
+        $("#formDespesasLista").submit(function (event) {
             event.preventDefault();
             $.ajax({
                 type: "POST",
                 url: "inserir_gasto_fixo/",
                 data: $(this).serialize(),
-                success: function(response) {
+                success: function (response) {
                     $("#formDespesasLista input[type=text], #formDespesasLista input[type=number]").val("");
                     $("#successMessageLista").show();
                 }
@@ -608,14 +624,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Cadastro Condominio Total (msg em tela e não fecha modal)
-    $(document).ready(function() {
-        $("#formDespesasTotal").submit(function(event) {
+    $(document).ready(function () {
+        $("#formDespesasTotal").submit(function (event) {
             event.preventDefault();
             $.ajax({
                 type: "POST",
                 url: "inserir_gasto_fixo/",
                 data: $(this).serialize(),
-                success: function(response) {
+                success: function (response) {
                     $("#formDespesasTotal input[type=text], #formDespesasTotal input[type=number]").val("");
                     $("#successMessageTotal").show();
                 }
@@ -624,14 +640,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Cadastro Beneficio (msg em tela e não fecha modal)
-    $(document).ready(function() {
-        $("#formBeneficio").submit(function(event) {
+    $(document).ready(function () {
+        $("#formBeneficio").submit(function (event) {
             event.preventDefault();
             $.ajax({
                 type: "POST",
                 url: "inserir_beneficio/",
                 data: $(this).serialize(),
-                success: function(response) {
+                success: function (response) {
                     $("#formBeneficio input[type=text], #formBeneficio input[type=number]").val("");
                     $("#successMessageBeneficio").show();
                 }
@@ -640,14 +656,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Cadastro Cargo (msg em tela e não fecha modal)
-    $(document).ready(function() {
-        $("#formCargo").submit(function(event) {
+    $(document).ready(function () {
+        $("#formCargo").submit(function (event) {
             event.preventDefault();
             $.ajax({
                 type: "POST",
                 url: "inserir_cargo/",
                 data: $(this).serialize(),
-                success: function(response) {
+                success: function (response) {
                     $("#formCargo input[type=text], #formCargo input[type=number]").val("");
                     $("#successMessageCargo").show();
                 }
@@ -656,14 +672,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Cadastro de Vinculos (msg em tela e não fecha modal)
-    $(document).ready(function() {
-        $("#FormVincularCargos").submit(function(event) {
+    $(document).ready(function () {
+        $("#FormVincularCargos").submit(function (event) {
             event.preventDefault();
             $.ajax({
                 type: "POST",
                 url: "inserir_vinculo/",
                 data: $(this).serialize(),
-                success: function(response) {
+                success: function (response) {
                     $("#FormVincularCargos input[type=text], #FormVincularCargos input[type=number]").val("");
                     $("#successMessageVinculo").show();
                     $(".inputCargoS").val("");
@@ -673,8 +689,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Cadastro Encargo (msg em tela e não fecha modal)
-    $(document).ready(function() {
-        $("#formEncargo").submit(function(event) {
+    $(document).ready(function () {
+        $("#formEncargo").submit(function (event) {
             const colaboradorId = $("#funcionario").val();
             const cargoId = $("#cargos").val();
             const setor = $("#setor").val();
@@ -687,7 +703,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     cargo_id: cargoId,
                     setor: setor
                 },
-                success: function(response) {
+                success: function (response) {
                     if (response.exists) {
                         window.location.href = "/encargo_duplicado.html";
                         console.log(window.location.href)
@@ -696,23 +712,23 @@ document.addEventListener('DOMContentLoaded', function () {
                             type: "POST",
                             url: "inserir_encargo/",
                             data: $("#formEncargo").serialize(),
-                            success: function(response) {
+                            success: function (response) {
                                 $("#formEncargo input[type=text], #formEncargo input[type=number]").val("");
                                 $(".inputCargoS").val("");
                                 $(".funcionarioInputS").val("");
-                                
+
                                 $("#successMessageEncargo").show();
-    
+
                                 $("#teste").modal("hide");
                             },
-                            error: function(xhr, status, error) {
+                            error: function (xhr, status, error) {
                                 alert("Erro ao enviar o formulário. Por favor, tente novamente mais tarde.");
                                 console.error(error);
                             }
                         });
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     alert("Erro ao verificar o encargo. Por favor, tente novamente mais tarde.");
                     console.error(error);
                 }
@@ -722,22 +738,22 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-    //Recupera valores do Banco de Dados para Usar no Rateio da Estrutura do RH
-    $(document).ready(function() {
-        $(".nav-sub").on("click", function(e) {
-            e.preventDefault();
-    
-            var url = $(this).data("url");
-            
-            $.ajax({
-                type: "GET",
-                url: url,
-                success: function(response) {
-                    console.log("Dados atualizados com sucesso!");
-                },
-                error: function(error) {
-                    console.error("Erro ao atualizar dados:", error);
-                }
-            });
+//Recupera valores do Banco de Dados para Usar no Rateio da Estrutura do RH
+$(document).ready(function () {
+    $(".nav-sub").on("click", function (e) {
+        e.preventDefault();
+
+        var url = $(this).data("url");
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function (response) {
+                console.log("Dados atualizados com sucesso!");
+            },
+            error: function (error) {
+                console.error("Erro ao atualizar dados:", error);
+            }
         });
     });
+});
