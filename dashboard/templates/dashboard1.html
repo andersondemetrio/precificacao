@@ -153,7 +153,7 @@
                                 <i class="fa fa-print"></i>Relatórios</a>
                                 <div id="relatorioCollapse" class="collapse">
                                     <ul class="ul-item">
-                                        <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalRelatorios">DRE</a></li>
+                                        <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalRelatorios">Rel. Financeiro</a></li>
                                         <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalEncargosRelatorios">Encargos</a></li>
                                         <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalHoraslista">Valor Hora Fixa</a></li>                                     
                                     </ul>
@@ -188,11 +188,13 @@
                     </div>
                 </div>
             </form>
+            <div class="table-responsive">
             <table class="tab-emp" id="searchResultsTableEmpresa">
                 <tbody>
 
                 </tbody>
             </table>
+            </div>
             <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
@@ -290,11 +292,13 @@
                     </div>
                 </div>
             </form>
+            <div class="table-responsive">
             <table class="tab-emp-enc" id="searchResultsTableColaboradores">
                 <tbody>
 
                 </tbody>
             </table>
+            </div>
             <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
@@ -358,11 +362,13 @@
                     </div>
                 </div>
             </form>
+            <div class="table-responsive">
             <table id="searchResultsTableEndereco">
                 <tbody>
 
                 </tbody>
             </table>
+            </div>
             <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
@@ -481,11 +487,13 @@
                     </div>
                 </div>
             </form>
+            <div class="table-responsive">
             <table id="searchResultsTable">
                 <tbody>
 
                 </tbody>
             </table>
+            </div>
             <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
@@ -544,11 +552,13 @@
                     </div>
                 </div>
             </form>
+            <div class="table-responsive">
             <table id="searchResultsTableBeneficios">
                 <tbody>
 
                 </tbody>
             </table>
+            </div>
             <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
             <a href="{% url 'exportar_beneficios_pdf' %}" class="btn btn-danger">
                 <i class="bi bi-file-pdf" style="color: withe;"></i> 
@@ -615,11 +625,13 @@
                     </div>
                 </div>
             </form>
+            <div class="table-responsive">
             <table class="tab-emp" id="searchResultsTableEncargos">
                 <tbody>
 
                 </tbody>
             </table>
+            </div>
             <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
@@ -687,11 +699,13 @@
                     </div>
                 </div>
             </form>
+            <div class="table-responsive">
             <table class="tab-emp" id="searchResultsTableCondominio">
                 <tbody>
 
                 </tbody>
             </table>
+            </div>
             <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
@@ -848,11 +862,13 @@
                     </div>
                 </div>
             </form>
+            <div class="table-responsive">
             <table id="searchResultsTableCalendario">
                 <tbody>
 
                 </tbody>
             </table>
+            </div>
             <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
@@ -926,11 +942,13 @@
                     </div>
                 </div>
             </form>
+            <div class="table-responsive">
             <table id="searchResultsTableVincularCargos">
                 <tbody>
 
                 </tbody>
             </table>
+            </div>
             <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
@@ -995,11 +1013,13 @@
                     </div>
                 </div>
             </form>
+            <div class="table-responsive">
             <table id="searchResultsTableOrcamento">
                 <tbody>
 
                 </tbody>
             </table>
+            </div>
             <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
@@ -1033,52 +1053,6 @@
         </div>
     </div>       
     <!-- Fim Modal / CRIAR ORÇAMENTO -->
-
-    {% comment %} <!--Início modal Personalizado / MEMORIAS CALCULOS -->
-    <div id="myModalMemorias" class="modal">
-        <div class="modal-personalizado">
-          <div class="modal-header">
-            <p class="p-modal-person mb-0">Orçamentos</p>
-            <span class="close">&times;</span>
-          </div>
-          <div class="modal-body">
-            <form id="searchFormDRE_report" method="get" action="{% url 'dre_report' %}">
-                <div class="input-group div-modal-person">
-                    <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Encargos">
-                    <button type="submit" id="searchFormDRE_report" class="btn btn-outline-primary">Buscar</button>
-                </div>
-            </form>
-        </div>
-      </div>
-    </div>
-    <!--Fim modal Personalizado / MEMORIAS CALCULOS --> {% endcomment %}
-
-
-    <!-- Começo Modal / RELATÓRIO ENCARGO -->
-    {% comment %} <div class="modal fade" id="modalEngargoslista" tabindex="-1" aria-labelledby="modalEngargoslistaLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalMaoDeObraLabel">Retatório Encargos</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                </div>
-                <div>
-                    <p class="p-rel-encargos">
-                        Emissão da estrutura de RH, com os encargos e rateio de cada funcionário (Custos de Mão de Obra)
-                    </p>
-                </div>
-                <div class="modal-footer d-flex flex-row justify-content-between align-items-center">
-                    <a href="{% url 'lista_salarios_view' %}" class="btn btn-primary">
-                        <i class="fa fa-print"></i> Gerar Relatório
-                    </a>
-                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar para o Dashboard</a>
-                </div>
-            </div>
-        </div>
-    </div>        {% endcomment %}
-    <!-- Fim Modal / RELATÓRIO ENCARGO -->
 
 
     <!-- Começo Modal / RELATÓRIO HORA CONDOMÍNIO -->
@@ -1132,37 +1106,18 @@
     </div>
     <!-- Fim Modal / RELATÓRIO ENCARGO COM FILTROS -->
 
-    <!-- Modal "Encargos" -->
-    {% comment %} <div id="modalEncargosRelatorios" class="modal">
-        <div class="modal-personalizado">
-            <div class="modal-header">
-                <p class="p-modal-person mb-0">Encargos</p>
-                <span class="close">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="searchFormEncargosRelatorios" method="get" action="{% url 'buscar_encargo_1' %}">
-                    <div class="input-group div-modal-person">
-                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Encargos">
-                        <button type="submit" id="searchButtonEncargosRelatorios" class="btn btn-outline-primary">Buscar</button>
-                    </div>
-                </form>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDRE">Ver DRE</button>            
-            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div> {% endcomment %}
 
     <!-- Começo Modal / DRE -->
     <div id="modalRelatorios" class="modal">
         <div class="modal-personalizado">
             <div class="modal-header">
-                <p class="p-modal-person mb-0">DRE</p>
+                <p class="p-modal-person mb-0">Relatório Financeiro</p>
                 <span class="close">&times;</span>
             </div>
             <div class="modal-body">
                 <form id="searchFormDRE_report" method="get" action="{% url 'dre_report' %}">
                     <div class="input-group div-modal-person">
-                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Encargos">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar">
                         <button type="submit" id="searchFormDRE_report" class="btn btn-outline-primary">Buscar</button>
                     </div>
                 </form>
