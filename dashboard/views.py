@@ -121,10 +121,12 @@ def inserir_mao_de_obra(request):
 
         if len(cpf) == 11:
             if not Colaboradores.objects.filter(cpf=cpf):
+                empresa_do_admin = request.user.colaboradores.empresa_id
                 mao_de_obra = Colaboradores(
                     matricula=matricula,
                     nome=nome,
                     cpf=cpf,
+                    empresa_id=empresa_do_admin,
                 )
                 mao_de_obra.save()
                 return redirect('dashboard')
@@ -138,9 +140,12 @@ def inserir_mao_de_obra(request):
     return render(request, 'dashboard1.html')
 
 
-def buscar_colaborador(request): 
+def buscar_colaborador(request):
+    colaborador_logado = request.user.colaboradores
+    empresa_id_colaborador = colaborador_logado.empresa.id 
+    
     q = request.GET.get('search')   
-    colaboradores = Colaboradores.objects.filter(nome__icontains=q).order_by('id')
+    colaboradores = Colaboradores.objects.filter(Q(nome__icontains=q)& Q(empresa_id=empresa_id_colaborador)).order_by('id')
     return render(request, 'pesquisa_colaborador.html', {'colaborador': colaboradores})
 
 
@@ -189,7 +194,9 @@ def deletar_colaborador(request, colaborador_id):
 # Funções do CRUD de cargos
 
 def inserir_cargo(request):
-    print("request.POST")
+    administrador_logado = request.user.colaboradores
+    empresa_do_admin = administrador_logado.empresa_id
+    
     if request.method == 'POST':
         nome_cargo = request.POST['nome_cargo']
         salario = request.POST['salario']
@@ -197,6 +204,7 @@ def inserir_cargo(request):
         cargo = Cargos(
             nome_cargo=nome_cargo,
             salario=salario,
+            empresa_id=empresa_do_admin,
         )   
 
         cargo.save()
@@ -240,9 +248,13 @@ def cargos_vieww(request):
     return JsonResponse({'cargos': cargos_list})
 
 
-def buscar_cargo(request): 
+def buscar_cargo(request):
+    colaborador_logado = request.user.colaboradores
+    empresa_id_colaborador = colaborador_logado.empresa.id 
+    
     q = request.GET.get('search')   
-    cargos = Cargos.objects.filter(nome_cargo__icontains=q).order_by('id')
+    
+    cargos = Cargos.objects.filter(Q(nome_cargo__icontains=q) & Q(empresa_id=empresa_id_colaborador)).order_by('id')
     return render(request, 'pesquisa_cargo.html', {'cargo': cargos})
 
 
@@ -266,6 +278,9 @@ def deletar_cargo(request, cargo_id):
 # Funções do CRUD de endereços
 
 def inserir_endereco(request):
+    administrador_logado = request.user.colaboradores
+    empresa_do_admin = administrador_logado.empresa_id
+    
     if request.method == 'POST':
         cep = request.POST['cep']
         logradouro = request.POST['logradouro']
@@ -275,7 +290,7 @@ def inserir_endereco(request):
         cidade = request.POST['cidade']
         estado = request.POST['estado']
         Endereco.objects.create(cep=cep, logradouro=logradouro, numero=numero, complemento=complemento, bairro=bairro, cidade=cidade, 
-                                estado=estado)
+                                estado=estado,empresa_endereco_id=empresa_do_admin)
         return redirect('dashboard')
     return render(request, 'dashboard1.html', context={})
 
@@ -297,9 +312,13 @@ def detalhes_endereco(request, id):
     return render(request, 'detalhes_endereco.html', {'endereco':endereco})
 
 
-def buscar_endereco(request): 
-    q = request.GET.get('search')   
-    endereco = Endereco.objects.filter(logradouro__icontains=q).order_by('id')
+def buscar_endereco(request):
+    colaborador_logado = request.user.colaboradores
+    empresa_id_colaborador = colaborador_logado.empresa.id
+     
+    q = request.GET.get('search')
+       
+    endereco = Endereco.objects.filter(Q(logradouro__icontains=q) & Q(empresa_endereco_id=empresa_id_colaborador)).order_by('id')
     return render(request, 'pesquisa_endereco.html', {'endereco': endereco})
 
 
@@ -344,7 +363,7 @@ def deletar_endereco(request, endereco_id):
 
 # Funções do CRUD de Empresa
 
-def inserir_empresa(request):
+def inserir_empresa(request):    
     if request.method == 'POST':
         cnpj = request.POST['cnpj']
         numero_empresa = request.POST['numero_empresa']
@@ -390,9 +409,12 @@ def detalhes_empresa(request, id):
     return render(request, 'detalhes_empresa.html', {'empresa':empresa})
 
 
-def buscar_empresa(request): 
+def buscar_empresa(request):
+    colaborador_logado = request.user.colaboradores
+    empresa_id_colaborador = colaborador_logado.empresa.id 
+    
     q = request.GET.get('search')   
-    empresa = Empresa.objects.filter(nome_empresa__icontains=q).order_by('id')
+    empresa = Empresa.objects.filter(Q(nome_empresa__icontains=q)& Q(id=empresa_id_colaborador)).order_by('id')
     return render(request, 'pesquisa_empresa.html', {'empresa': empresa})
 
 
@@ -490,15 +512,22 @@ def detalhes_calendario(request, id):
     return render(request, 'detalhes_calendario.html', {'calendario':calendario})
 
 
-def buscar_calendario(request): 
+def buscar_calendario(request):
+    colaborador_logado = request.user.colaboradores
+    empresa_id_colaborador = colaborador_logado.empresa.id 
+    
     q = request.GET.get('searchCal')   
-    calendario = CalendarioMensal.objects.filter(ano__icontains=q).order_by('ano', 'mes')
+    
+    calendario = CalendarioMensal.objects.filter(Q(ano__icontains=q)& Q(empresa_id=empresa_id_colaborador)).order_by('ano', 'mes')
     return render(request, 'pesquisa_calendario.html', {'calendario': calendario})
         
 
 # Funções do CRUD de Despesas Condominio
 
 def inserir_gasto_fixo(request):
+    administrador_logado = request.user.colaboradores
+    empresa_do_admin = administrador_logado.empresa_id
+    
     if request.method == 'POST':
         descricao = request.POST['descricao']
         valor = request.POST['valor']
@@ -511,7 +540,7 @@ def inserir_gasto_fixo(request):
         else:
             tipo = 'Lista Mês'
             
-        gasto_fixo = GastosFixos(descricao=descricao, valor=valor, mes=mes, ano=ano, tipo=tipo)
+        gasto_fixo = GastosFixos(descricao=descricao, valor=valor, mes=mes, ano=ano, tipo=tipo, empresa_id=empresa_do_admin)
         gasto_fixo.save()
         calcular_gastos_ano_corrente(request)
         
@@ -537,9 +566,12 @@ def detalhes_gasto_fixo(request, id):
     return render(request, 'detalhes_gasto_fixo.html', {'gastosfixos':gastosfixos})
 
 
-def buscar_gasto_fixo(request): 
+def buscar_gasto_fixo(request):
+    colaborador_logado = request.user.colaboradores
+    empresa_id_colaborador = colaborador_logado.empresa.id
+     
     q = request.GET.get('search')   
-    gastosfixos = GastosFixos.objects.filter(descricao__icontains=q).order_by('ano', 'mes')
+    gastosfixos = GastosFixos.objects.filter(Q(descricao__icontains=q)& Q(empresa_id=empresa_id_colaborador)).order_by('ano', 'mes')
     return render(request, 'pesquisa_gasto_fixo.html', {'gastosfixos': gastosfixos})
 
 
@@ -585,6 +617,9 @@ def deletar_gasto_fixo(request, gasto_fixo_id):
 #Funções do CRUD de Encargo
 
 def inserir_encargo(request):
+    administrador_logado = request.user.colaboradores
+    empresa_do_admin = administrador_logado.empresa_id
+    
     if request.method == 'POST':
         colaborador_id = request.POST['funcionario']
         cargo_id = request.POST['cargos']
@@ -634,6 +669,7 @@ def inserir_encargo(request):
             beneficios=beneficios,
             rateio=rateio,
             custo_mes=custo_mes,
+            empresa_id=empresa_do_admin,
         )
         
         colaborador.setor = setor
@@ -645,9 +681,12 @@ def inserir_encargo(request):
     return render(request, 'dashboard1.html')
 
 
-def buscar_encargo(request):
+def buscar_encargo(request):    
+    colaborador_logado = request.user.colaboradores
+    empresa_id_colaborador = colaborador_logado.empresa.id
+    
     q = request.GET.get('search')
-    encargo = Employee.objects.all()
+    encargo = Employee.objects.filter(empresa__id=empresa_id_colaborador)
 
     if q:
         if q.isdigit():
@@ -714,17 +753,20 @@ def deletar_encargo(request, encargo_id):
 #Funções do CRUD de Beneficios
 
 def inserir_beneficio(request):
+    administrador_logado = request.user.colaboradores
+    empresa_do_admin = administrador_logado.empresa_id
+    
     if request.method == 'POST':
         descricao = request.POST['descricao']
         valor = request.POST['valor']
         cargo_id = request.POST['cargos']
         cargo = Cargos.objects.get(pk=cargo_id)
-
-        
+      
         beneficio = Beneficios(
             descricao=descricao,
             valor=valor,
             cargo=cargo,
+            empresa_id=empresa_do_admin,
         )
         beneficio.save()
         calcular_soma_beneficio_funcionario(request)
@@ -735,8 +777,13 @@ def inserir_beneficio(request):
 
 
 def buscar_beneficio(request): 
-    q = request.GET.get('search')   
-    beneficio = Beneficios.objects.filter(descricao__icontains=q).order_by('cargo__nome_cargo')
+    colaborador_logado = request.user.colaboradores
+    empresa_id_colaborador = colaborador_logado.empresa.id
+    
+    q = request.GET.get('search')
+
+    beneficio = Beneficios.objects.filter(Q(descricao__icontains=q) & Q(empresa_id=empresa_id_colaborador)).order_by('cargo__nome_cargo')
+
     return render(request, 'pesquisa_beneficio.html', {'beneficio': beneficio})
 
 
@@ -772,6 +819,9 @@ def deletar_beneficio(request, beneficio_id):
 #Funções do CRUD de Vincular Cargos
 
 def inserir_vinculo(request):
+    administrador_logado = request.user.colaboradores
+    empresa_do_admin = administrador_logado.empresa_id
+    
     if request.method == 'POST':
         horas_str = request.POST['horas']
         quantidade_str = request.POST['quantidade']
@@ -831,7 +881,8 @@ def inserir_vinculo(request):
             total_mod=total_mod,
             total_condominio=total_condominio,
             total_custo=total_custo,
-            auxiliarcalculo=auxiliar_calculo
+            auxiliarcalculo=auxiliar_calculo,
+            empresa_id=empresa_do_admin,
         )
         vinculo.save()
         # calcular_soma_beneficio_funcionario(request)
@@ -842,8 +893,12 @@ def inserir_vinculo(request):
 
 
 def buscar_vinculo(request): 
+    colaborador_logado = request.user.colaboradores
+    empresa_id_colaborador = colaborador_logado.empresa.id
+    
     q = request.GET.get('search')   
-    vinculo = DescricaoObra.objects.filter(orcamento_id__icontains=q).order_by('orcamento_id', 'cargo__nome_cargo')
+    
+    vinculo = DescricaoObra.objects.filter(Q(orcamento_id__icontains=q) & Q(empresa_id=empresa_id_colaborador)).order_by('orcamento_id', 'cargo__nome_cargo')
     return render(request, 'pesquisa_vinculo.html', {'vinculo': vinculo})
 
 
@@ -879,6 +934,8 @@ def deletar_vinculo(request, vinculo_id):
 #Funções do CRUD do Orçamento   
 
 def inserir_orcamento(request):
+    administrador_logado = request.user.colaboradores
+    empresa_do_admin = administrador_logado.empresa_id
     numero_novo_orcamento = request.GET.get('numeroNovoOrcamento', '')           
     
     descricao_obras = DescricaoObra.objects.filter(orcamento_id__iexact=numero_novo_orcamento)
@@ -924,7 +981,8 @@ def inserir_orcamento(request):
             valor_lucro = valor_lucro.replace(',', '.')
         
         rubrica = Rubrica.objects.create(orcamento_id=numero_novo_orcamento, capacidade_produtiva=capacidade_produtiva, cliente=cliente, quantidade=total_prestadores, custo_hora=custo_total, beneficios=totalSoma, 
-                               condominio=custo_condominio, outros=outros, tributos=tributos, lucros=lucros, status='Aberto', valor_sugerido=valor_sugerido, valor_outros=valor_outros, valor_tributos=valor_tributos, valor_lucro=valor_lucro)
+                               condominio=custo_condominio, outros=outros, tributos=tributos, lucros=lucros, status='Aberto', valor_sugerido=valor_sugerido, valor_outros=valor_outros, valor_tributos=valor_tributos,
+                               valor_lucro=valor_lucro, empresa_id=empresa_do_admin)
 
         descricoes = request.POST.getlist('descricao[]')
         valores = request.POST.getlist('valor[]')
@@ -934,7 +992,7 @@ def inserir_orcamento(request):
                 descricao = descricoes[i]
                 valor = valores[i]
 
-                despesa = DespesasDinamicas(descricao=descricao, valor=valor, rubrica=rubrica)
+                despesa = DespesasDinamicas(descricao=descricao, valor=valor, rubrica=rubrica, empresa_id=empresa_do_admin)
                 despesa.save()
 
         return redirect('dashboard')
@@ -1018,7 +1076,7 @@ def editar_orcamento(request, id):
             nova_despesa = DespesasDinamicas(
                 rubrica=novo_rubrica, 
                 descricao=descricao.replace(',', '.'),
-                valor=valor.replace(',', '.')
+                valor=valor.replace(',', '.'),
             )
             nova_despesa.save()
             
@@ -1064,8 +1122,12 @@ def detalhes_orcamento(request, id):
 
 
 def buscar_orcamento(request): 
+    colaborador_logado = request.user.colaboradores
+    empresa_id_colaborador = colaborador_logado.empresa.id
+    
     q = request.GET.get('search')   
-    orcamento = Rubrica.objects.filter(orcamento_id__icontains=q).order_by('orcamento_id')    
+    
+    orcamento = Rubrica.objects.filter(Q(orcamento_id__icontains=q) & Q(empresa_id=empresa_id_colaborador)).order_by('orcamento_id')    
     return render(request, 'pesquisa_orcamento.html', {'orcamento': orcamento})
 
 
