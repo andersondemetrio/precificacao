@@ -11,7 +11,6 @@
     <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     {% comment %} <script defer src="{% static 'assets/js/script_tabelas.js' %}"></script> {% endcomment %}
     <script defer src="{% static 'assets/js/delete.js' %}"></script>
-    <script defer src="{% static 'assets/js/dre.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
@@ -26,7 +25,6 @@
             font-size: 24px;
         }
 
-        /* Ocultar elementos com a classe "noprint" na visualização de impressão */
         @media print {
             .noprint {
                 display: none;
@@ -81,7 +79,6 @@
     <script>
         var ctx = document.getElementById('myPieChart').getContext('2d');
 
-        // Calcular o somatório de impostos e lucro
         var totalImpostos = 0;
         var totalLucro = 0;
 
@@ -101,7 +98,6 @@
             }]
         };
 
-        // Defina cores personalizadas para cada fatia do gráfico
         for (var i = 0; i < data.datasets[0].data.length; i++) {
             if (i === 0) {
                 data.datasets[0].backgroundColor[i] = 'rgba(255, 99, 132, 0.6)'; 
