@@ -44,6 +44,6 @@ class EmailForm(forms.ModelForm):
 class RubricaForm(forms.ModelForm):
     class Meta:
         model = Rubrica
-        fields = '__all__'  # Isso permite que todos os campos do modelo sejam editáveis no formulário
+        fields = '__all__'  
 
 
