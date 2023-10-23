@@ -8,7 +8,6 @@ feriados = cal.holidays(ano)
 data_inicial = datetime.date(ano, 1, 1)
 data_final = datetime.date(ano, 12, 31)
 
-# Calculando a diferença entre as datas e excluindo os feriados
 dias_uteis = 0
 data_atual = data_inicial
 while data_atual <= data_final:
