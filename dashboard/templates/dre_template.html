@@ -8,8 +8,7 @@
     <title>Pesquisa Orçamento</title>
     <link rel="stylesheet" href="{% static 'assets/css/tabelas.css' %}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    {% comment %} <script defer src="{% static 'assets/js/script_tabelas.js' %}"></script> {% endcomment %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Certifique-se de que o jQuery seja carregado aqui -->
     <script defer src="{% static 'assets/js/delete.js' %}"></script>
     <script defer src="{% static 'assets/js/dre.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -36,93 +35,125 @@
 
 </head>
 <body>
-    <div class="container">
-        <p class="centered-text">Orçamento</p>
-    </div>
-    <div class="container">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Identificador</th>
-                    <th>Impostos</th>
-                    <th>Lucro</th>
-                    <th>Valor Sugerido</th>
-                    <th>Custo Hora</th>
-                    <th>Status</th>
-                    <th class="noprint"></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for orcamento_item in orcamento %}
-                    <tr>
-                        <td>{{ orcamento_item.orcamento_id }}</td>
-                        <td>{{ orcamento_item.valor_tributos }}</td>
-                        <td>{{ orcamento_item.valor_lucro }}</td>
-                        <td>{{ orcamento_item.valor_sugerido }}</td>
-                        <td>{{ orcamento_item.custo_hora }}</td>
-                        <td>{{ orcamento_item.status }}</td>
-                        <td class="noprint">
-                            <button class="btn btn-primary" onclick="window.print();return false;">
-                                <i class="bi bi-printer"></i>
-                            </button>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <div class="container">
-        <div class="centered-chart" style="width: 400px; height: 400px;">
-            <canvas id="myPieChart"></canvas>
-        </div>
-    </div>
-
-    <script>
-        var ctx = document.getElementById('myPieChart').getContext('2d');
-
-        // Calcular o somatório de impostos e lucro
-        var totalImpostos = 0;
-        var totalLucro = 0;
-
+<div class="container">
+    <p class="centered-text">Orçamento</p>
+</div>
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Identificador</th>
+            <th>Impostos</th>
+            <th>Lucro</th>
+            <th>Valor Sugerido</th>
+            <th>Custo Hora</th>
+            <th>Status</th>
+            <th class="noprint"></th>
+        </tr>
+        </thead>
+        <tbody>
         {% for orcamento_item in orcamento %}
-            totalImpostos += {{ orcamento_item.valor_tributos }};
-            totalLucro += {{ orcamento_item.valor_lucro }};
+        <tr>
+            <td>{{ orcamento_item.orcamento_id }}</td>
+            <td>{{ orcamento_item.valor_tributos }}</td>
+            <td>{{ orcamento_item.valor_lucro }}</td>
+            <td>{{ orcamento_item.valor_sugerido }}</td>
+            <td>{{ orcamento_item.custo_hora }}</td>
+            <td>{{ orcamento_item.status }}</td>
+            <td class="noprint">
+                <button class="btn btn-primary" onclick="window.print();return false;">
+                    <i class="bi bi-printer"></i>
+                </button>
+            </td>
+        </tr>
         {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div>
+    <button id="enviarEmail" class="btn btn-primary" data-rubrica-id="{{ rubrica.id }}"
+            data-destinatario-email="anderson.debhora@gmail.com">
+        Enviar por E-mail
+    </button>
+</div>
+<form id="emailForm">
+    {% csrf_token %}
+    <!-- Outros campos do formulário aqui -->
+    <input type="hidden" name="csrfmiddlewaretoken" value="{% csrf_token %}">
+</form>
+<div class="container">
+    <div class="centered-chart" style="width: 400px; height: 400px;">
+        <canvas id="myPieChart"></canvas>
+    </div>
+</div>
+<script>
+    var csrftoken = $('[name="csrfmiddlewaretoken"]').val(); // Obtenha o valor do token CSRF
 
-        var data = {
-            labels: ['Impostos', 'Lucro'],
-            datasets: [{
-                data: [totalImpostos, totalLucro],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(75, 192, 192, 0.6)' 
-                ]
-            }]
-        };
+    $("#enviarEmail").click(function () {
+        var rubricaId = $('#enviarEmail').data('rubrica-id');
+        var destinatarioEmail = $('#enviarEmail').data('destinatario-email');
 
-        // Defina cores personalizadas para cada fatia do gráfico
-        for (var i = 0; i < data.datasets[0].data.length; i++) {
-            if (i === 0) {
-                data.datasets[0].backgroundColor[i] = 'rgba(255, 99, 132, 0.6)'; 
-            } else {
-                data.datasets[0].backgroundColor[i] = 'rgba(75, 192, 192, 0.6)';
-            }
-        }
+        // Construa a URL para a view que envia o e-mail
+        var url = '{% url 'enviar_email_rubrica' 0 %}'.replace('0', rubricaId) + '?destinatario_email=' + destinatarioEmail;
 
-        var myPieChart = new Chart(ctx, {
-            type: 'pie',
-            data: data,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                title: {
-                    display: true,
-                    text: 'Impostos vs. Lucro'
-                }
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                csrfmiddlewaretoken: csrftoken, // Inclua o token CSRF na solicitação
+            },
+            success: function (response) {
+                alert('E-mail enviado com sucesso!');
+            },
+            error: function (error) {
+                // Lógica de tratamento de erro
             }
         });
-    </script>
+    });
 
+    var ctx = document.getElementById('myPieChart').getContext('2d');
+
+    // Calcular o somatório de impostos e lucro
+    var totalImpostos = 0;
+    var totalLucro = 0;
+
+    {% for orcamento_item in orcamento %}
+    totalImpostos += {{ orcamento_item.valor_tributos }};
+    totalLucro += {{ orcamento_item.valor_lucro }};
+    {% endfor %}
+
+    var data = {
+        labels: ['Impostos', 'Lucro'],
+        datasets: [{
+            data: [totalImpostos, totalLucro],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.6)',
+                'rgba(75, 192, 192, 0.6)'
+            ]
+        }]
+    };
+
+    // Defina cores personalizadas para cada fatia do gráfico
+    for (var i = 0; i < data.datasets[0].data.length; i++) {
+        if (i === 0) {
+            data.datasets[0].backgroundColor[i] = 'rgba(255, 99, 132, 0.6';
+        } else {
+            data.datasets[0].backgroundColor[i] = 'rgba(75, 192, 192, 0.6';
+        }
+    }
+
+    var myPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            title: {
+                display: true,
+                text: 'Impostos vs. Lucro'
+            }
+        }
+    });
+</script>
 </body>
 </html>

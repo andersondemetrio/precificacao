@@ -101,6 +101,10 @@ urlpatterns = [
     path('exportar_beneficios_xlsx/', exportar_beneficios_xlsx, name='exportar_beneficios_xlsx'),
     path('exportar_beneficios_pdf/', exportar_beneficios_pdf, name='exportar_beneficios_pdf'),
     path('enviar_email_personalizado/<int:auxiliar_calculo_id>/', enviar_email_personalizado, name='enviar_email_personalizado'),
+
+    path('enviar_email_rubrica/<int:rubrica_id>/', enviar_email_rubrica, name='enviar_email_rubrica'),
+
+
     path('dre_report/', dre_report, name='dre_report'),
     path('get_valor_sugerido/<int:rubrica_id>/', get_valor_sugerido, name='get_valor_sugerido'),
 

@@ -1921,6 +1921,25 @@ def export_orcamento_pdf(request, rubrica_id):
 
     return response
 
+#Adição do método de enviar a rubrica por e-mail
+
+def enviar_email_rubrica(request, rubrica_id, destinatario_email):
+    
+    pdf_response = export_orcamento_pdf(request, rubrica_id)
+
+    rubrica = Rubrica.objects.get(id=rubrica_id)
+    context = {
+        'rubrica': rubrica,
+    }
+    email_body = render_to_string('template_email_rubrica.html', context)
+
+  
+    email = EmailMessage('Assunto do Email', email_body, to=[destinatario_email])
+    email.attach('rubrica.pdf', pdf_response.getvalue(), 'application/pdf')
+    email.content_subtype = 'html'
+    email.send()
+
+    pdf_response.close()
 
 def exportar_beneficios_xlsx(request): 
     beneficios = Beneficios.objects.all()
