@@ -11,7 +11,7 @@ class Endereco(models.Model):
     bairro = models.CharField(max_length=30)
     cidade = models.CharField(max_length=30)
     estado = models.CharField(max_length=30)
-    empresa_endereco = models.ForeignKey('Empresa', on_delete=models.CASCADE, related_name='enderecos')
+    # empresa_endereco = models.ForeignKey('Empresa', on_delete=models.CASCADE, related_name='enderecos')
 
 class Usuarios(models.Model):
     email = models.CharField(max_length=100)
@@ -22,7 +22,7 @@ class Usuarios(models.Model):
 class Cargos(models.Model):
     nome_cargo = models.CharField(max_length=100)
     salario = models.DecimalField(max_digits=10, decimal_places=2)
-    empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
+    # empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
 
 class HorasProdutivas(models.Model):
     data = models.DateField()
@@ -35,7 +35,7 @@ class GastosFixos(models.Model):
     mes = models.PositiveIntegerField()
     ano = models.PositiveIntegerField()
     tipo = models.CharField(max_length=12)
-    empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
+    # empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
     
 class AuxiliarCalculo(models.Model):
     total_salarios_gestores = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -57,7 +57,7 @@ class Empresa(models.Model):
     telefone = models.CharField(max_length=15)
     ativa = models.BooleanField()
     endereco = models.ForeignKey(Endereco, on_delete=models.CASCADE)
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    # usuario = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
 
 class Colaboradores(models.Model):
     nome = models.CharField(max_length=100)
@@ -65,24 +65,24 @@ class Colaboradores(models.Model):
     cpf = models.CharField(max_length=14)
     setor = models.CharField(max_length=50, null=True)
     usuario = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    # empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
     
 class Beneficios(models.Model):
     descricao = models.CharField(max_length=100)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
     cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE)
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    # empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
 
 class GastosVariaveis(models.Model):
     colaborador = models.ForeignKey(Colaboradores, on_delete=models.CASCADE)
     quantidade = models.DecimalField(max_digits=10, decimal_places=2)
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    # empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
 
 class Propostas(models.Model):
     usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
     data_proposta = models.DateField()
     aprovada = models.BooleanField()
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    # empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
 
 class CalendarioMensal(models.Model):
     ano = models.PositiveIntegerField()
@@ -92,7 +92,7 @@ class CalendarioMensal(models.Model):
     jornada_diaria = models.PositiveIntegerField()
     feriado = models.DecimalField(max_digits=5, decimal_places=2)
     horas_produtivas = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    # empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
 
 class Employee(models.Model):
     SETOR_CHOICES = (
@@ -114,7 +114,7 @@ class Employee(models.Model):
     custo_mes = models.DecimalField(max_digits=10, decimal_places=2)    
     colaborador = models.ForeignKey(Colaboradores, on_delete=models.CASCADE)
     cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE)
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    # empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
 
 class DescricaoObra(models.Model):
     horas = models.DecimalField(max_digits=10, decimal_places=2)
@@ -129,7 +129,7 @@ class DescricaoObra(models.Model):
     total_condominio = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total_custo = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     auxiliarcalculo= models.ForeignKey(AuxiliarCalculo, on_delete=models.CASCADE)
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    # empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
 
 class Rubrica(models.Model):
     orcamento_id = models.CharField(max_length=20)
@@ -147,11 +147,11 @@ class Rubrica(models.Model):
     valor_outros = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     valor_tributos = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     valor_lucro = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    # empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
                 
     
 class DespesasDinamicas(models.Model):
     descricao = models.CharField(max_length=100)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
     rubrica= models.ForeignKey(Rubrica, on_delete=models.CASCADE)
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    # empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)

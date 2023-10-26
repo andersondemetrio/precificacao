@@ -1,0 +1,1174 @@
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Página inicial</title>
+    <link rel="stylesheet" href="{% static 'assets/css/index.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/tabelas.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script>
+        const cargosUrl = "{% url 'cargos_vieww' %}";
+        const enderecoUrl = "{% url 'endereco_view' %}";
+		const colaboradoresUrl = "{% url 'colaboradores_view' %}";
+        const lista_salariosUrl = "{% url 'lista_salarios_view' %}";
+        const verificarCpfUrl = "{% url 'verificar_cpf' %}";
+        const dre= "{% url 'dre_report' %}";
+
+        var keepModalOpen = {% if keep_modal_open %}true{% else %}false{% endif %};
+        var messagesExist = {% if messages %}true{% else %}false{% endif %};
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script defer src="{% static 'assets/js/script_index.js' %}"></script>
+    <script defer src="{% static 'assets/js/script_tabelas.js' %}"></script>
+    <script defer src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script defer src="{% static 'assets/js/Simple-Slider-swiper-bundle.min.js' %}"></script>
+    <script defer src="{% static 'assets/js/Simple-Slider.js' %}"></script>
+    <script defer src="{% static 'assets/js/jquery.mask.js' %}"></script>
+    <script defer src="{% static 'assets/js/jquery.mask.min.js' %}"></script>
+    {% comment %} <script defer src="{% static 'assets/js/mascaras_cnpj.js' %}"></script>
+    <script defer src="{% static 'assets/js/mascaras_email.js' %}"></script>
+    <script defer src="{% static 'assets/js/mascaras_telefone.js' %}"></script> {% endcomment %}
+    <!--script defer src="{% static 'assets/js/mascaras_cpf.js' %}"></script-->
+    <script defer src="{% static 'assets/js/document_mask.js' %}"></script>
+    <script defer src="{% static 'assets/js/validacao_numero.js' %}"></script>
+    <script defer src="{% static 'assets/js/validacao_matricula.js' %}"></script>
+    <script src="{% static 'assets/js/hora_data.js' %}"></script>
+    
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome5-overrides.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/swiper-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Navbar-With-Button-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Simple-Slider-swiper-bundle.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Simple-Slider.css' %}">
+</head>
+
+<body class="fundo" style="background-color: red;">
+    
+     <header>
+        <div class="d-flex flex-row justify-content-end align-items-center header">
+            <div class="dropdown d-flex flex-row">
+                <p id="data-hora" class="userName"></p>
+                <p class="p-header">Bem-vindo, <span class="userName">{{ nome_usuario }}.</span></p>
+                <a class="btn-sair dropdown d-flex flex-row justify-content-end align-items-center" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="far fa-user"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li class="nav-item">
+                    </li>
+                    <li class="nav-item">
+                        <a class="dropdown-item" href="{% url 'logout' %}">
+                            <i class="fa fa-sign-out me-2"></i>Sair
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+ 
+    <div class="offcanvas-sm offcanvas-start bg-body" tabindex="-1" data-bs-scroll="true" data-bs-backdrop="false" id="offcanvas-menu">
+        <div class="offcanvas-body d-flex flex-column justify-content-between pt-0">
+            <div class="div-logo">
+                
+            </div>
+            <div>
+                <hr class="mt-0">
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <a class="a-titulo" href="#" aria-current="page" id="botaoHome">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-house-door me-2">
+                                <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146ZM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5Z"></path>
+                            </svg>Home </a></li>
+                    <li class="nav-item">
+                        <div class="teste">
+                        <a class="a-titulo" href="#cadastrosCollapse" aria-expanded="false" data-bs-toggle="collapse" role="button" aria-controls="cadastrosCollapse">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-people-fill me-2">
+                                <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"></path>
+                            </svg>Cadastros</a>
+                        <div id="cadastrosCollapse" class="collapse">
+                            <ul class="ul-item">
+                                <!-- <li class="li-pad"><a class="nav-sub" id="openModalButtonEndereco">Endereço</a></li> 
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonEmpresa">Empresa</a></li>
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonColaboradores">Colaborador</a></li> -->
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalSenha">Alterar Senha</a></li>
+                            </ul>
+                        </div>
+                        </div>                        
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="a-titulo" data-bs-toggle="collapse" role="button" aria-expanded="false" href="#maoDeObraCollapse" aria-controls="maoDeObraCollapse">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-tools me-2">
+                                <path d="M1 0 0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.27 3.27a.997.997 0 0 0 1.414 0l1.586-1.586a.997.997 0 0 0 0-1.414l-3.27-3.27a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3c0-.269-.035-.53-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814L1 0Zm9.646 10.646a.5.5 0 0 1 .708 0l2.914 2.915a.5.5 0 0 1-.707.707l-2.915-2.914a.5.5 0 0 1 0-.708ZM3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026L3 11Z"></path>
+                            </svg>Mão de Obra</a>
+                        <div id="maoDeObraCollapse" class="collapse">
+                            <ul class="ul-item">
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonCargo">Cargo / Salário</a></li>
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonBeneficios">Benefícios</a></li>
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonEncargos">Encargos</a></li>
+                            </ul>
+                        </div>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="a-titulo" href="#horasProdutivasCollapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="horasProdutivasCollapse">
+                            <i class="fa fa-calendar"></i>Horas Produtivas</a>
+                        <div id="horasProdutivasCollapse" class="collapse">
+                            <ul class="ul-item">
+                                <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalCapacidadeProdutiva">Capacidade Produtiva</a></li>
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonCalendario">Calendário mensal</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="a-titulo" href="#despesasFixasCollapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="despesasFixasCollapse">
+                            <i class="fa fa-dollar"></i>Despesas Fixas</a>
+                        <div id="despesasFixasCollapse" class="collapse">
+                            <ul class="ul-item">
+                                <li class="li-pad"><a class="nav-sub" id="openModalButtonCondominio">Condomínio</a></li>
+                            </ul>
+                        </div>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="a-titulo" href="#precificacaoCollapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="precificacaoCollapse">
+                            <i class="fa fa-clipboard"></i>Orçamento</a>
+                            <div id="precificacaoCollapse" class="collapse">
+                                <ul class="ul-item">
+                                    <li class="li-pad"><a class="nav-sub" id="openModalButtonVincularCargos">Vincular Cargos</a></li>
+                                    <li class="li-pad"><a class="nav-sub" id="openModalButtonOrcamento">Cadastrar Orçamento</a></li>
+                                    {% comment %} <li class="li-pad"><a class="nav-sub" id="openModalButtonMemorias">Memórias de Cálculos</a></li> {% endcomment %}
+                                </ul>
+                            </div>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a class="a-titulo" href="#relatorioCollapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="relatorioCollapse">
+                                <i class="fa fa-print"></i>Relatórios</a>
+                                <div id="relatorioCollapse" class="collapse">
+                                    <ul class="ul-item">
+                                        <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalRelatorios">DRE</a></li>
+                                        <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalEncargosRelatorios">Encargos</a></li>
+                                        <li class="li-pad"><a class="nav-sub" data-bs-toggle="modal" href="#modalHoraslista">Valor Hora Fixa</a></li>                                     
+                                    </ul>
+                                </div>
+                        </li>                                     -->
+                    <li class="nav-item">
+                        <a class="a-titulo" href="{% url 'logout' %}">
+                            <i class="fa fa-sign-in me-2"></i>Sair</a>
+                        <ul style="font-size: 20px;font-weight: bold;"></ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    
+    <!--Início Modal Personalizado / CADASTRO EMPRESA -->
+    <div id="myModalEmpresa" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Empresa</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormEmpresa" method="get" action="{% url 'buscar_empresa' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Empresa">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCadastros">Cadastrar Empresa</button>
+                    </div>
+                </div>
+            </form>
+            <table class="tab-emp" id="searchResultsTableEmpresa">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim Modal Personalizado / CADASTRO EMPRESA -->
+    <!--Começo Modal / CADASTRO EMPRESA -->
+    <div class="modal fade" id="modalCadastros" tabindex="-1" aria-labelledby="modalCadastros" aria-hidden="true">  
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCadastrosLabel">Cadastrar Empresa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_empresa' %}">
+                        {% csrf_token %}
+                        <div class="empresa-container">
+                            <div class="mb-3">
+                                <label for="cnpj" class="form-label">CNPJ</label>
+                                <input type="text" class="form-control" id="cnpjfInput" name="cnpj" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="numero_empresa" class="form-label">Número da Empresa</label>
+                                <input type="number" class="form-control" name="numero_empresa" max="9999" id="numeroInput" required >
+                            </div>
+                            <div class="mb-3">
+                                <label for="nome_empresa" class="form-label">Nome da Empresa</label>
+                                <input type="text" class="form-control" name="nome_empresa" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nome_fantasia" class="form-label">Nome Fantasia</label>
+                                <input type="text" class="form-control" name="nome_fantasia" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="emailInput" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="telefone" class="form-label">Telefone</label>
+                                <input type="text" class="form-control" id="telefoneInput"name="telefone" required>
+                            </div>
+                            <div class="mb-3 form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="ativa">
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Ativa</label>
+                            </div>
+                            <div class="mb-3">
+                                <label for="endereco" class="form-label">Endereço</label>
+                                <select class="form-select" name="endereco" required>
+                                    <option value="" selected disabled>Selecione um endereço</option>
+                                    {% for endereco in enderecos %}
+                                        <option value="{{ endereco.id }}">{{ endereco.endereco }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                        {% if request.GET.success %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            Empresa cadastrada com sucesso!
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <script>
+                                setTimeout(function () {
+                                    window.location.href = "{% url 'dashboard' %}";
+                                }, 3000);
+                            </script>
+                        </div>
+                        {% endif %}                                           
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <!--Fim modal / CADASTRO EMPRESA -->
+
+    
+    <!--Início modal Personalizado/ MÃO DE OBRA -->
+    <div id="myModalColaboradores" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Colaborador</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormColaboradores" method="get" action="{% url 'buscar_colaborador' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Colaborador">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalMaoDeObra">Cadastrar Colaborador</button>
+                    </div>
+                </div>
+            </form>
+            <table class="tab-emp-enc" id="searchResultsTableColaboradores">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim modal Personalizado / MÃO DE OBRA -->
+    <!-- Começo da Modal / MÃO DE OBRA -->
+    <div class="modal fade" id="modalMaoDeObra" tabindex="-1" aria-labelledby="modalMaoDeObraLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalMaoDeObraLabel">Cadastrar Colaborador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_mao_de_obra' %}" id="maoDeObraForm">
+                        {% csrf_token %}
+                        <div class="mao-de-obra-container">
+                            <div class="mb-3">
+                                <label for="matricula" class="form-label">Matrícula</label>
+                                <input type="text" class="form-control" name="matricula" id="matriculaInput" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nome" class="form-label">Nome</label>
+                                <input type="text" class="form-control" name="nome" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cpf" class="form-label">CPF</label>
+                                <input type="text" class="form-control" id="cpfInput" name="cpf" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" required>
+                                <small id="cpfHelp" class="form-text text-muted">Informe um CPF no formato 999.999.999-99.</small>
+                            </div>
+                            
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Cadastrar</button>
+                        <p id="successMessage" class="text-success" style="display: none;">Mão de obra cadastrada com sucesso!</p>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim do modal / MÃO DE OBRA -->
+
+
+    <!--Início Modal Personalizado / ENDEREÇO -->
+    <div id="myModalEndereco" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Endereço</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormEndereco" method="get" action="{% url 'buscar_endereco' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Endereço">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalEndereco">Cadastrar Endereço</button>
+                    </div>
+                </div>
+            </form>
+            <table id="searchResultsTableEndereco">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim Modal Personalizado / ENDEREÇO -->
+    <!-- Começo Modal / ENDEREÇO -->
+    <div class="modal fade" id="modalEndereco" tabindex="-1" aria-labelledby="modalEnderecoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEnderecoLabel">Cadastrar Endereço</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_endereco' %}">
+                        {% csrf_token %}
+                        <div class="endereco-container">
+                            <div class="mb-3">
+                                <label for="cep" class="form-label">CEP</label>
+                                <input type="number" class="form-control" id="cepInput" name="cep" required maxlength="8">
+                            </div>
+                            <button type="button" class="btn btn-primary" id="btnBuscarCEP">Buscar CEP</button>
+                        
+                            <div class="mb-3">
+                                <label for="logradouro" class="form-label">Logradouro</label>
+                                <input type="text" class="form-control" id="logradouro" name="logradouro" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="numero" class="form-label">Número</label>
+                                <input type="text" class="form-control" name="numero" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="complemento" class="form-label">Complemento</label>
+                                <input type="text" class="form-control" name="complemento">
+                            </div>
+                            <div class="mb-3">
+                                <label for="bairro" class="form-label">Bairro</label>
+                                <input type="text" class="form-control" id="bairro" name="bairro" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cidade" class="form-label">Cidade</label>
+                                <input type="text" class="form-control" id="cidade" name="cidade" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="estado" class="form-label">Estado</label>
+                                <input type="text" class="form-control" id="estado" name="estado" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cadastrar Endereço</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim modal / ENDEREÇO -->
+
+
+    <!-- Começo Modal / ALTERAR SENHA -->
+    <div class="modal fade" id="modalSenha" tabindex="-1" aria-labelledby="modalSenhaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalSenhaLabel">Alterar Senha</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'alterar_senha' %}">
+                        {% csrf_token %}
+                        <div class="cargo-container">
+                            <div class="mb-3">
+                                <label for="novaSenha" class="form-label">Nova senha</label>
+                                <input type="text" class="form-control" id="novaSenhaInput" name="novaSenha" required>
+                            </div>                       
+                        </div>
+                        <div class="cargo-container">
+                            <div class="mb-3">
+                                <label for="repetirSenha" class="form-label">Repetir senha</label>
+                                <input type="text" class="form-control" id="repetirSenhaInput" name="repetirSenha" required>
+                            </div>                       
+                        </div>
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-danger">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim modal / ALTERAR SENHA -->
+
+
+    <!--Início modal Personalizado/ CARGOS E SALÁRIOS -->
+    <div id="myModalCargo" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Cargos / Salários</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormCargo" method="get" action="{% url 'buscar_cargo' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Cargos">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCargoSalario">Cadastrar Cargo</button>
+                    </div>
+                </div>
+            </form>
+            <table id="searchResultsTable">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim modal Personalizado / CARGOS E SALÁRIOS -->
+    <!-- Começo Modal Cadastro / CARGOS E SALÁRIOS -->
+    <div class="modal fade" id="modalCargoSalario" tabindex="-1" aria-labelledby="modalCargoSalarioLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCargoSalarioLabel">Novo Cadastro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_cargo' %}" id="formCargo">
+                        {% csrf_token %}
+                        <div class="cargo-container">
+
+                            <div class="mb-3">
+                                <label for="nome_cargo" class="form-label">Nome Cargo</label>
+                                <input type="text" class="form-control" id="nome_cargo" name="nome_cargo" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="salario" class="form-label">Salário</label>
+                                <input type="number" class="form-control" name="salario" step="0.01" required>
+                            </div>
+                        </div>
+                        <p id="successMessageCargo" class="text-success" style="display: none;">Cargo cadastrado com sucesso!</p>
+                        <button type="submit" class="btn btn-primary">Cadastrar Cargo</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim Modal Cadastro / CARGOS E SALÁRIOS -->
+
+
+    <!--Início modal Personalizado / BENEFICIOS -->
+    <div id="myModalBeneficios" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Benefícios</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormBeneficios" method="get" action="{% url 'buscar_beneficio' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Beneficios">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalPerfilBeneficios">Cadastrar Benefício</button>
+                    </div>
+                </div>
+            </form>
+            <table id="searchResultsTableBeneficios">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+            <a href="{% url 'exportar_beneficios_pdf' %}" class="btn btn-danger">
+                <i class="bi bi-file-pdf" style="color: withe;"></i> 
+            </a>
+            <a href="{% url 'exportar_beneficios_xlsx' %}" class="btn btn-success">
+                <i class="bi bi-file-earmark-excel-fill" style="color: withe;"></i>
+            </a>   
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim modal Personalizado / BENEFICIOS -->
+    <!-- Começo Modal / BENEFICIOS -->
+    <div class="modal fade" id="modalPerfilBeneficios" tabindex="-1" aria-labelledby="modalPerfilBeneficioLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalPerfilBeneficioLabel">Cadastrar Benefício</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_beneficio' %}" id="formBeneficio">
+                        {% csrf_token %}
+                        <div class="mb-3 d-flex flex-column">
+                            <label for="cargos" class="form-label">Cargo</label>
+                            <select class="form-select inputCargoS" name="cargos" required>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descricao" class="form-label">Descricão</label>
+                            <input type="text" class="form-control" id="descricao" name="descricao" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="valor" class="form-label">Valor</label>
+                            <input type="text" class="form-control" id="valor" name="valor" required>
+                        </div>
+                        <p id="successMessageBeneficio" class="text-success" style="display: none;">Benefício cadastrado com sucesso!</p>
+                        <button type="submit" class="btn btn-primary">Cadastrar Benefício</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim modal / BENEFICIOS -->
+
+
+    <!--Início Modal Personalizado / ENCARGO -->
+    <div id="myModalEncargos" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Encargos</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormEncargos" method="get" action="{% url 'buscar_encargo' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Encargos">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalPerfilEncargo">Gerar Encargos</button>
+                    </div>
+                </div>
+            </form>
+            <table class="tab-emp" id="searchResultsTableEncargos">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim Modal Personalizado / ENCARGO -->
+    <!-- Começo Modal / ENCARGO -->
+    <div class="modal fade" id="modalPerfilEncargo" tabindex="-1" aria-labelledby="modalPerfilEncargoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalPerfilEncargoLabel">Cadastrar Encargos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_encargo' %}" id="formEncargo">
+                        {% csrf_token %}
+                        <div class="encargo-container">
+                            <div class="mb-3">
+                                <label for="setor" class="form-label">Setor</label>
+                                <select class="form-select" id="setorInput" name="setor" required>
+                                    <option value="Gestores">Gestores</option>
+                                    <option value="Prestador de Serviço">Prestador de Serviço</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 d-flex flex-column">
+                                <label for="cargos" class="form-label">Cargo</label>
+                                <select class="form-select inputCargoS" name="cargos" required>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="funcionario" class="form-label">Funcionário</label>
+                                <select class="form-select funcionarioInputS" id="funcionarioInput" name="funcionario" required>
+                                </select>
+                            </div>
+                        </div>
+                        <p id="successMessageEncargo" class="text-success" style="display: none;">Encargos cadastrados com sucesso!</p>
+                        <button type="submit" class="btn btn-primary">Cadastrar Encargos</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim modal Perfil / ENCARGO -->
+
+
+    <!--Início Modal Personalizado / GASTOS FIXOS -->
+    <div id="myModalCondominio" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Condomínio</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormCondominio" method="get" action="{% url 'buscar_gasto_fixo' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Despesas">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" style="margin-left: 2px;" data-bs-toggle="modal" data-bs-target="#modalDespesasTotalMes">Cadastrar Total</button>
+                        <button type="button" class="btn btn-success" style="margin-left: 2px;" data-bs-toggle="modal" data-bs-target="#modalDespesasListaMes">Cadastrar Invididual</button>
+                    </div>
+                </div>
+            </form>
+            <table class="tab-emp" id="searchResultsTableCondominio">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim Modal Personalizado / GASTOS FIXOS (TOTAL) -->
+    <!-- Modal para / GASTOS FIXOS -->
+    <div class="modal fade" id="modalDespesasTotalMes" tabindex="-1" aria-labelledby="modalDespesasTotalMesLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDespesasTotalMesLabel">Despesa Total Mensal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_gasto_fixo' %}" id="formDespesasTotal">
+                        {% csrf_token %}
+                        <div class="despesaMes-container">
+                            <div class="mb-3">
+                                <label for="escolha" class="form-label">Despesa</label>
+                                <select class="form-select" id="totalMesInput" name="escolha" required>
+                                    <option value="totalMes">Total Mês</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label">Descrição</label>
+                                <select class="form-select" id="gastoFixoTotal" name="descricao" required>
+                                    <option value="Janeiro">JANEIRO</option>
+                                    <option value="Fevereiro">FEVEREIRO</option>
+                                    <option value="Março">MARÇO</option>
+                                    <option value="Abril">ABRIL</option>
+                                    <option value="Maio">MAIO</option>
+                                    <option value="Junho">JUNHO</option>
+                                    <option value="Julho">JULHO</option>
+                                    <option value="Agosto">AGOSTO</option>
+                                    <option value="Setembro">SETEMBRO</option>
+                                    <option value="Outubro">OUTUBRO</option>
+                                    <option value="Novembro">NOVEMBRO</option>
+                                    <option value="Dezembro">DEZEMBRO</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="valor" class="form-label">Valor</label>
+                                <input type="number" class="form-control" name="valor" step="0.01" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mes" class="form-label">Mês</label>
+                                <input type="text" class="form-control" name="mes" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="ano" class="form-label">Ano</label>
+                                <input type="text" class="form-control" name="ano" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="submitBtnTotal">Cadastrar</button>
+                        <p id="successMessageTotal" class="text-success" style="display: none;">Despesa cadastrada com sucesso!</p>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fim do modal para / GASTOS FIXOS (TOTAL)  -->
+     <!-- Modal para / GASTOS FIXOS (LISTA) -->
+    <div class="modal fade" id="modalDespesasListaMes" tabindex="-1" aria-labelledby="modalDespesasListaMesLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDespesasListaMesLabel">Cadastrar Despesa Fixa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_gasto_fixo' %}" id="formDespesasLista">
+                        {% csrf_token %}
+                        <div class="despesa-container">
+                            <div class="mb-3">
+                                <label for="escolha" class="form-label">Despesa</label>
+                                <select class="form-select" id="totalMesInput" name="escolha" required>
+                                    <option value="listaMes">Lista Mês</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label">Descrição</label>
+                                <input type="text" class="form-control" name="descricao" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="valor" class="form-label">Valor</label>
+                                <input type="number" class="form-control" name="valor" step="0.01" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mes" class="form-label">Mês</label>
+                                <input type="text" class="form-control" name="mes" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="ano" class="form-label">Ano</label>
+                                <input type="text" class="form-control" name="ano" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="submitBtnLista">Cadastrar</button>
+                        <p id="successMessageLista" class="text-success" style="display: none;">Despesa cadastrada com sucesso!</p>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fim do modal para / GASTOS FIXOS (LISTA)  -->
+
+
+    <!-- Começo Modal / CAPACIDADE PRODUTIVA -->
+    <div class="modal fade" id="modalCapacidadeProdutiva" tabindex="-1" aria-labelledby="modalCapacidadeProdutivaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalCapacidadeProdutivaLabel">Cadastrar Capacidade Produtiva</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <form method="post" action="{% url 'inserir_capacidade_produtiva' %}">
+                    {% csrf_token %}
+                    <div class="mb-3 d-flex flex-row justify-content-center align-items-center" style="width: 495px;">
+                        <label for="capacidadeProdutiva" class="form-label" style="width: 180px;"><b>Capacidade Produtiva</b></label>
+                        <input type="text" class="form-control" style="width: 210px;" id="capacidadeProdutiva" name="capacidadeProdutiva" required>
+                    </div>
+                    <div class="modal-footer d-flex flex-row justify-content-between align-items-center">
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar para o Dashboard</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Fim Modal / CAPACIDADE PRODUTIVA -->
+
+
+    <!--Início Modal Personalizado / CALENDÁRIO -->
+    <div id="myModalCalendario" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Calendário</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormCalendario" method="get" action="{% url 'buscar_calendario' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="searchCal" value="{{ search_query }}" placeholder="Buscar por Ano" required>
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                    </div>
+                </div>
+            </form>
+            <table id="searchResultsTableCalendario">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim Modal Personalizado / CALENDÁRIO -->
+    <!-- Começo modal / CALENDÁRIO -->
+    <div class="modal fade" id="modalCalendario" tabindex="-1" aria-labelledby="modalCalendarioLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCalendarioLabel">Cadastrar Dias Úteis</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_calendario' %}" id="calendarioForm">
+                        {% csrf_token %}
+                        <div class="calendario-container">
+                            <div class="mb-3">
+                                <label for="mes" class="form-label">Mês</label>
+                                <input type="number" class="form-control" id="mes" name="mes" min="1" max="12" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="ano" class="form-label">Ano</label>
+                                <input type="number" class="form-control" id="ano" name="ano" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="jornada_diaria" class="form-label">Jornada Diária</label>
+                                <input type="number" class="form-control" id="jornada_diaria" name="jornada_diaria" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="feriados" class="form-label">Dias de Folgas e Feriados</label>
+                                <input type="number" class="form-control" id="feriados" name="feriados" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="funcionario" class="form-label">Funcionário</label>
+                                <select class="form-select funcionarioInputC" id="funcionario" name="funcionario" required>
+                                    <option value="" disabled selected>Selecione um funcionário</option>
+                                </select>
+                            </div>
+                        </div>
+                        <input type="hidden" id="horas_produtivas" name="horas_produtivas">
+                        <input type="hidden" id="dias_uteis" name="dias_uteis">
+                        <p id="successMessageCalendario" class="text-success" style="display: none;">Hora Mensal cadastrada com sucesso!</p>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Salvar</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+	<!--Fim modal / CALENDÁRIO -->
+
+    
+    <!--Início modal Personalizado / VINCULAR CARGOS -->
+    <div id="myModalVincularCargos" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Vincular Cargos</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormVincularCargos" method="get" action="{% url 'buscar_vinculo' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar por Orçamento">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalPerfilVincularCargos">Cadastrar Vínculo</button>
+                    </div>
+                </div>
+            </form>
+            <table id="searchResultsTableVincularCargos">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim modal Personalizado / VINCULAR CARGOS -->
+    <!-- Começo Modal / VINCULAR CARGOS -->
+    <div class="modal fade" id="modalPerfilVincularCargos" tabindex="-1" aria-labelledby="modalPerfilVincularCargos" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalPerfilVincularCargos">Cadastrar Vínculo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'inserir_vinculo' %}" id="FormVincularCargos">
+                        {% csrf_token %}
+                        <div class="mb-3 d-flex flex-column">
+                            <label for="cargos" class="form-label">Cargo</label>
+                            <select class="form-select inputCargoS" name="cargos" required>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="horas" class="form-label">Qtd Horas</label>
+                            <input type="text" class="form-control" id="horas" name="horas" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quantidade" class="form-label">Qtd Prestadores</label>
+                            <input type="text" class="form-control" id="quantidade" name="quantidade" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="numeroOrcamento" class="form-label">Nº Orçamento</label>
+                            <input type="text" class="form-control" id="numeroOrcamento" name="numeroOrcamento" required>
+                        </div>
+                        <p id="successMessageVinculo" class="text-success" style="display: none;">Vínculo cadastrado com sucesso!</p>
+                        <button type="submit" class="btn btn-primary">Cadastrar Vínculo</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim modal / VINCULAR CARGOS -->
+
+
+    <!--Início modal Personalizado / CADASTRAR ORÇAMENTO -->
+    <div id="myModalOrcamento" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Orçamentos</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormOrcamento" method="get" action="{% url 'buscar_orcamento' %}">
+                <div class="">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Orçamento">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary">Buscar</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCriarOrcamento">Cadastrar Orçamento</button>
+                    </div>
+                </div>
+            </form>
+            <table id="searchResultsTableOrcamento">
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Fim modal Personalizado / CADASTRAR ORÇAMENTO -->
+    <!-- Começo Modal / CRIAR ORÇAMENTO -->
+    <div class="modal fade" id="modalCriarOrcamento" tabindex="-1" aria-labelledby="modalCriarOrcamentoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalCriarOrcamentoLabel">Criar Novo Orçamento</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <form id="myForm" method="get" action="{% url 'inserir_orcamento' %}">
+                    {% csrf_token %}
+                    <div class="mb-3 d-flex flex-row justify-content-center align-items-center" style="width: 495px;">
+                        <label for="numeroNovoOrcamento" class="form-label" style="width: 120px;"><b>Identificador *</b></label>
+                        <input type="text" class="form-control" style="width: 310px;" id="numeroNovoOrcamento" name="numeroNovoOrcamento" required>
+                    </div>
+                    <div class="modal-footer d-flex flex-row justify-content-between align-items-center">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-dollar"></i> Novo Orçamento
+                        </button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar para o Dashboard</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>       
+    <!-- Fim Modal / CRIAR ORÇAMENTO -->
+
+    {% comment %} <!--Início modal Personalizado / MEMORIAS CALCULOS -->
+    <div id="myModalMemorias" class="modal">
+        <div class="modal-personalizado">
+          <div class="modal-header">
+            <p class="p-modal-person mb-0">Orçamentos</p>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="searchFormDRE_report" method="get" action="{% url 'dre_report' %}">
+                <div class="input-group div-modal-person">
+                    <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Encargos">
+                    <button type="submit" id="searchFormDRE_report" class="btn btn-outline-primary">Buscar</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+    <!--Fim modal Personalizado / MEMORIAS CALCULOS --> {% endcomment %}
+
+
+    <!-- Começo Modal / RELATÓRIO ENCARGO -->
+    {% comment %} <div class="modal fade" id="modalEngargoslista" tabindex="-1" aria-labelledby="modalEngargoslistaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalMaoDeObraLabel">Retatório Encargos</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div>
+                    <p class="p-rel-encargos">
+                        Emissão da estrutura de RH, com os encargos e rateio de cada funcionário (Custos de Mão de Obra)
+                    </p>
+                </div>
+                <div class="modal-footer d-flex flex-row justify-content-between align-items-center">
+                    <a href="{% url 'lista_salarios_view' %}" class="btn btn-primary">
+                        <i class="fa fa-print"></i> Gerar Relatório
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar para o Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>        {% endcomment %}
+    <!-- Fim Modal / RELATÓRIO ENCARGO -->
+
+
+    <!-- Começo Modal / RELATÓRIO HORA CONDOMÍNIO -->
+    <div class="modal fade" id="modalHoraslista" tabindex="-1" aria-labelledby="modalHoraslistaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalHoraslistaLabel">Retatório Hora Condomínio</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div>
+                    <p class="p-rel-encargos">
+                        Emissão da estrutura de valor hora Condomínio.
+                    </p>
+                </div>
+                <div class="modal-footer d-flex flex-row justify-content-between align-items-center">
+                    <a href="{% url 'lista_horas_condiminio_view' %}"  class="btn btn-primary">
+                        <i class="fa fa-print"></i> Gerar Relatório
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar para o Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>       
+    <!-- Fim Modal / RELATÓRIO HORA CONDOMÍNIO -->
+
+    
+    <!-- Começo Modal / RELATÓRIO ENCARGO COM FILTROS -->
+    <div id="modalEncargosRelatorios" class="modal">
+        <div class="modal-personalizado">
+            <div class="modal-header">
+                <p class="p-modal-person mb-0">Encargos</p>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="searchFormEncargosRelatorios" method="get" action="{% url 'buscar_encargo_1' %}">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Encargos">
+                        <button type="submit" id="searchButtonEncargosRelatorios" class="btn btn-outline-primary">Buscar</button>
+                    </div>
+                </form>
+                
+                <table class="tab-emp-enc" id="searchResultsTableEncargosRelatorios">
+
+                </table>
+                <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+    <!-- Fim Modal / RELATÓRIO ENCARGO COM FILTROS -->
+
+    <!-- Modal "Encargos" -->
+    {% comment %} <div id="modalEncargosRelatorios" class="modal">
+        <div class="modal-personalizado">
+            <div class="modal-header">
+                <p class="p-modal-person mb-0">Encargos</p>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="searchFormEncargosRelatorios" method="get" action="{% url 'buscar_encargo_1' %}">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Encargos">
+                        <button type="submit" id="searchButtonEncargosRelatorios" class="btn btn-outline-primary">Buscar</button>
+                    </div>
+                </form>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDRE">Ver DRE</button>            
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div> {% endcomment %}
+
+    <!-- Começo Modal / DRE -->
+    <div id="modalRelatorios" class="modal">
+        <div class="modal-personalizado">
+            <div class="modal-header">
+                <p class="p-modal-person mb-0">DRE</p>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="searchFormDRE_report" method="get" action="{% url 'dre_report' %}">
+                    <div class="input-group div-modal-person">
+                        <input type="text" class="form-control input-modal-person" aria-label="Default" aria-describedby="inputGroup-sizing-default" name="search" value="{{ search_query }}" placeholder="Buscar Encargos">
+                        <button type="submit" id="searchFormDRE_report" class="btn btn-outline-primary">Buscar</button>
+                    </div>
+                </form>
+            </div>
+            <button type="button" class="btn btn-outline-dark close" data-bs-dismiss="modal">Fechar</button> 
+        </div>
+    </div>
+    <!-- Fim Modal / DRE -->
+    
+</body>
+</html>
