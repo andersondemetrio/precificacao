@@ -1783,68 +1783,90 @@ def export_orcamento(request, rubrica_id):
     header_format.set_border(1)
     header_format.set_align('center')
     header_format.set_align('vcenter')
-    header_format.set_bg_color('#333333')
+    header_format.set_bg_color('#64656A')
     header_format.set_font_color('white')
     header_format.set_bold()
     
     data = [
-        ['Descrição', 'Valor'],
-        ['Orçamento Id', rubrica.orcamento_id],
-        ['Cliente', rubrica.cliente],
-        ['Capacidade Produtiva', rubrica.capacidade_produtiva],
-        ['Qtd Funcionários', rubrica.quantidade],
-        ['Total Custo HR/Func.', rubrica.custo_hora],
-        ['Total Benefícios', rubrica.beneficios],
-        ['Total Condomínio', rubrica.condominio],
-        ['Descrição', 'Aliquotas'],
-        ['Outros', str(rubrica.outros) + '%'],
-        ['Impostos', str(rubrica.tributos) + '%'],
-        ['Lucro', str(rubrica.lucros) + '%'],
-        ['Descrição', 'Valor'],
-        ['Outros R$', rubrica.valor_outros],
-        ['Impostos R$', rubrica.valor_tributos],
-        ['Lucro R$', rubrica. valor_lucro],
+        ['ORÇAMENTO ID:', rubrica.orcamento_id,''],
+        ['Cliente', rubrica.cliente, ''],
+        ['Qtd Funcionários Alocados', rubrica.quantidade, ''],
+        ['Capacidade Produtiva', rubrica.capacidade_produtiva, ''],
+        ['', '', ''],   
+        ['Valor Sugerido', rubrica.valor_sugerido, '%'],
+        ['Impostos ( - )', rubrica.valor_tributos, str(rubrica.tributos)],
+        ['Custo HR/Func. ( - )', rubrica.custo_hora, ''],
+        ['Benefícios ( - )', rubrica.beneficios, ''],
+        ['Outros ( - )', rubrica.valor_outros, str(rubrica.outros)],
     ]
   
     worksheet.set_column('A:A', 50)
     worksheet.set_column('B:B', 30)
+    worksheet.set_column('C:C', 15)
+    
+    row = 0
 
-    for row, (col1, col2) in enumerate(data):
-        if col1 == 'Descrição': 
+    worksheet.merge_range(row, 1, row, 2, '', header_format)
+    row += 1    
+    worksheet.merge_range(row, 1, row, 2, '', header_format)    
+    row += 1
+    worksheet.merge_range(row, 1, row, 2, '', header_format)    
+    row += 1    
+    worksheet.merge_range(row, 1, row, 2, '', header_format)
+    row += 1    
+    worksheet.merge_range(4, 0, 4, 4, '', '')
+    row += 1    
+
+    for row, (col1, col2, col3) in enumerate(data):
+        if col1 == 'ORÇAMENTO ID:' or col1 == 'Valor Sugerido':
             worksheet.write(row, 0, col1, header_format)
             worksheet.write(row, 1, col2, header_format)
+            worksheet.write(row, 2, col3, header_format)
         else:
             worksheet.write(row, 0, col1, cell_format)
             worksheet.write(row, 1, col2, cell_format)
+            worksheet.write(row, 2, col3, cell_format)
 
     row += 1
 
-    header = ['Despesas Adicionadas', 'Valor']
+    header = ['Despesas Adicionadas', '', '']
     for col, col_name in enumerate(header):
         worksheet.write(row, col, col_name, header_format)
 
     row += 1
 
     for despesa in despesas_dinamicas:
-        worksheet.write(row, 0, despesa.descricao, cell_format)
+        worksheet.write(row, 0, despesa.descricao + ' ( - )', cell_format)
         worksheet.write(row, 1, despesa.valor, cell_format)
+        worksheet.write(row, 2, '', cell_format)
         row += 1
         
     extended_header_format = workbook.add_format()
     extended_header_format.set_border(1)
     extended_header_format.set_align('center')
     extended_header_format.set_align('vcenter')
-    extended_header_format.set_bg_color('#333333')  
+    extended_header_format.set_bg_color('#64656A')  
     extended_header_format.set_font_color('white') 
     extended_header_format.set_bold()
+
+    worksheet.merge_range(row, 0, row, 2, '', extended_header_format)    
+    row += 1
         
     data.extend([
-        ['Valor Sugerido', rubrica.valor_sugerido],
+        ['Condomínio ( - )', rubrica.condominio, ''],
+        ['Lucro R$', rubrica. valor_lucro, str(rubrica.lucros)],
     ])
     
-    for col1, col2 in data[-1:]:
-        worksheet.write(row, 0, col1, extended_header_format)
-        worksheet.write(row, 1, col2, extended_header_format)
+
+    for col1, col2, col3 in data[-2:]:
+        if col1 == 'Lucro R$':
+            worksheet.write(row, 0, col1, extended_header_format)
+            worksheet.write(row, 1, col2, extended_header_format)
+            worksheet.write(row, 2, col3, extended_header_format)
+        else:
+            worksheet.write(row, 0, col1, cell_format)
+            worksheet.write(row, 1, col2, cell_format)
+            worksheet.write(row, 2, col3, cell_format)
         row += 1
 
     workbook.close()

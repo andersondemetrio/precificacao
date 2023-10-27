@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
             <div class="form-group col-md-4">
                 <label for="valor">Valor:</label>
-                <input type="number" class="form-control valorOrcNovo" id="valorOrcNovo" name="valor[]" required>
+                <input type="text" class="form-control valorOrcNovo" id="valorOrcNovo" name="valor[]" required>
             </div>
             <div class="form-group col-md-2">
                 <button type="button" class="btn btn-danger removerCampo div-button-remove">Remover</button>
@@ -216,7 +216,7 @@ function adicionarDespesa() {
         </div>
         <div class="form-group col-md-4">
             <label for="valor">Valor:</label>
-            <input type="number" class="form-control valorOrcNovo" name="valorAd[]" required>
+            <input type="text" class="form-control valorOrcNovo" name="valorAd[]" required>
         </div>
         <div class="form-group col-md-2">
             <button type="button" class="btn btn-danger removerDespesa" style="margin-top: 20px;">Remover</button>
