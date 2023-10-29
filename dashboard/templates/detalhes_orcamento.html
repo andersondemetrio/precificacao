@@ -89,7 +89,7 @@
                       </div>
                       <div class="mb-3">
                           <label for="valor{{ despesa.id }}" class="form-label">Valor</label>
-                          <input type="text" class="form-control" name="valor_{{ despesa.id }}" value="{{ despesa.valor }}" required>
+                          <input type="text" class="form-control" name="valor_{{ despesa.id }}" value="{{ despesa.valor }}" oninput="replaceCommaWithDot(this)" required>
                       </div>
                   </div>
                 <div>
@@ -197,5 +197,22 @@
             </div>
           </div>
         </div>
+        <script>
+        function substituirVirgulaPorPonto() {
+            var camposValor = document.querySelectorAll('[name^="valor_"]');
+            camposValor.forEach(function (valorInput) {
+                var valor = valorInput.value.replace(',', '.');
+                valorInput.value = valor;
+            });
+        }
+
+        window.addEventListener('load', substituirVirgulaPorPonto);
+
+        function replaceCommaWithDot(input) {
+          if (input.value.includes(',')) {
+              input.value = input.value.replace(',', '.');
+          }
+      }
+       </script>
     </body>
 </html>

@@ -75,7 +75,7 @@
                                   </div>
                                   <div class="form-group col-md-4">
                                       <label for="valor">Valor:</label>
-                                      <input type="text" class="form-control valorOrcNovo" id="valorOrcNovo" name="valor[]" required>
+                                      <input type="text" class="form-control valorOrcNovo" id="valorOrcNovo" name="valor[]" oninput="replaceCommaWithDot(this)" required>
                                   </div>
                                   <div class="form-group col-md-2">
                                     <button type="button" class="btn btn-primary div-button-add" id="addInput" hidden>Adicionar +</button>
@@ -114,5 +114,22 @@
             </div>
           </div>
         </div>
+        <script>
+          function substituirVirgulaPorPonto() {
+              var camposValor = document.querySelectorAll('[name^="valor_"]');
+              camposValor.forEach(function (valorInput) {
+                  var valor = valorInput.value.replace(',', '.');
+                  valorInput.value = valor;
+              });
+          }
+
+          window.addEventListener('load', substituirVirgulaPorPonto);
+  
+          function replaceCommaWithDot(input) {
+            if (input.value.includes(',')) {
+                input.value = input.value.replace(',', '.');
+            }
+        }  
+         </script>
     </body>
 </html>

@@ -65,6 +65,7 @@ from django.db import connection
 from django.http import HttpResponseServerError
 from django.db.models import F, Sum
 import xlsxwriter
+import xlrd
 import io
 from django.http import FileResponse
 
@@ -1780,6 +1781,12 @@ def export_orcamento(request, rubrica_id):
     cell_format.set_align('center')
     cell_format.set_align('vcenter')
     
+    cell_format_n = workbook.add_format()
+    cell_format_n.set_border(1) 
+    cell_format_n.set_align('center')
+    cell_format_n.set_align('vcenter')
+    cell_format_n.set_num_format('#,##0.00')
+    
     header_format = workbook.add_format()
     header_format.set_border(1)
     header_format.set_align('center')
@@ -1788,6 +1795,15 @@ def export_orcamento(request, rubrica_id):
     header_format.set_font_color('white')
     header_format.set_bold()
     
+    header_format_n = workbook.add_format()
+    header_format_n.set_border(1)
+    header_format_n.set_align('center')
+    header_format_n.set_align('vcenter')
+    header_format_n.set_bg_color('#64656A')
+    header_format_n.set_font_color('white')
+    header_format_n.set_bold()
+    header_format_n.set_num_format('#,##0.00')
+       
     data = [
         ['ORÇAMENTO ID:', rubrica.orcamento_id,''],
         ['Cliente', rubrica.cliente, ''],
@@ -1821,12 +1837,12 @@ def export_orcamento(request, rubrica_id):
     for row, (col1, col2, col3) in enumerate(data):
         if col1 == 'ORÇAMENTO ID:' or col1 == 'Valor Sugerido':
             worksheet.write(row, 0, col1, header_format)
-            worksheet.write(row, 1, col2, header_format)
+            worksheet.write(row, 1, col2, header_format_n)
             worksheet.write(row, 2, col3, header_format)
         else:
-            worksheet.write(row, 0, col1, cell_format)
-            worksheet.write(row, 1, col2, cell_format)
-            worksheet.write(row, 2, col3, cell_format)
+            worksheet.write(row, 0, col1, cell_format_n)
+            worksheet.write(row, 1, col2, cell_format_n)
+            worksheet.write(row, 2, col3, cell_format_n)
 
     row += 1
 
@@ -1837,9 +1853,9 @@ def export_orcamento(request, rubrica_id):
     row += 1
 
     for despesa in despesas_dinamicas:
-        worksheet.write(row, 0, despesa.descricao + ' ( - )', cell_format)
-        worksheet.write(row, 1, despesa.valor, cell_format)
-        worksheet.write(row, 2, '', cell_format)
+        worksheet.write(row, 0, despesa.descricao + ' ( - )', cell_format_n)
+        worksheet.write(row, 1, despesa.valor, cell_format_n)
+        worksheet.write(row, 2, '', cell_format_n)
         row += 1
         
     extended_header_format = workbook.add_format()
@@ -1849,6 +1865,15 @@ def export_orcamento(request, rubrica_id):
     extended_header_format.set_bg_color('#64656A')  
     extended_header_format.set_font_color('white') 
     extended_header_format.set_bold()
+    
+    extended_header_format_n = workbook.add_format()
+    extended_header_format_n.set_border(1)
+    extended_header_format_n.set_align('center')
+    extended_header_format_n.set_align('vcenter')
+    extended_header_format_n.set_bg_color('#64656A')  
+    extended_header_format_n.set_font_color('white') 
+    extended_header_format_n.set_bold()
+    extended_header_format_n.set_num_format('#,##0.00')
 
     worksheet.merge_range(row, 0, row, 2, '', extended_header_format)    
     row += 1
@@ -1862,12 +1887,12 @@ def export_orcamento(request, rubrica_id):
     for col1, col2, col3 in data[-2:]:
         if col1 == 'Lucro R$':
             worksheet.write(row, 0, col1, extended_header_format)
-            worksheet.write(row, 1, col2, extended_header_format)
+            worksheet.write(row, 1, col2, extended_header_format_n)
             worksheet.write(row, 2, col3, extended_header_format)
         else:
-            worksheet.write(row, 0, col1, cell_format)
-            worksheet.write(row, 1, col2, cell_format)
-            worksheet.write(row, 2, col3, cell_format)
+            worksheet.write(row, 0, col1, cell_format_n)
+            worksheet.write(row, 1, col2, cell_format_n)
+            worksheet.write(row, 2, col3, cell_format_n)
         row += 1
 
     workbook.close()
