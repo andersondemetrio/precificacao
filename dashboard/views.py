@@ -19,6 +19,7 @@ from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.http import HttpResponseServerError
 import json
+import locale
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -64,6 +65,7 @@ from django.db import connection
 from django.http import HttpResponseServerError
 from django.db.models import F, Sum
 import xlsxwriter
+import xlrd
 import io
 from django.http import FileResponse
 
@@ -1779,6 +1781,12 @@ def export_orcamento(request, rubrica_id):
     cell_format.set_align('center')
     cell_format.set_align('vcenter')
     
+    cell_format_n = workbook.add_format()
+    cell_format_n.set_border(1) 
+    cell_format_n.set_align('center')
+    cell_format_n.set_align('vcenter')
+    cell_format_n.set_num_format('#,##0.00')
+    
     header_format = workbook.add_format()
     header_format.set_border(1)
     header_format.set_align('center')
@@ -1787,6 +1795,15 @@ def export_orcamento(request, rubrica_id):
     header_format.set_font_color('white')
     header_format.set_bold()
     
+    header_format_n = workbook.add_format()
+    header_format_n.set_border(1)
+    header_format_n.set_align('center')
+    header_format_n.set_align('vcenter')
+    header_format_n.set_bg_color('#64656A')
+    header_format_n.set_font_color('white')
+    header_format_n.set_bold()
+    header_format_n.set_num_format('#,##0.00')
+       
     data = [
         ['ORÇAMENTO ID:', rubrica.orcamento_id,''],
         ['Cliente', rubrica.cliente, ''],
@@ -1820,12 +1837,12 @@ def export_orcamento(request, rubrica_id):
     for row, (col1, col2, col3) in enumerate(data):
         if col1 == 'ORÇAMENTO ID:' or col1 == 'Valor Sugerido':
             worksheet.write(row, 0, col1, header_format)
-            worksheet.write(row, 1, col2, header_format)
+            worksheet.write(row, 1, col2, header_format_n)
             worksheet.write(row, 2, col3, header_format)
         else:
-            worksheet.write(row, 0, col1, cell_format)
-            worksheet.write(row, 1, col2, cell_format)
-            worksheet.write(row, 2, col3, cell_format)
+            worksheet.write(row, 0, col1, cell_format_n)
+            worksheet.write(row, 1, col2, cell_format_n)
+            worksheet.write(row, 2, col3, cell_format_n)
 
     row += 1
 
@@ -1836,9 +1853,9 @@ def export_orcamento(request, rubrica_id):
     row += 1
 
     for despesa in despesas_dinamicas:
-        worksheet.write(row, 0, despesa.descricao + ' ( - )', cell_format)
-        worksheet.write(row, 1, despesa.valor, cell_format)
-        worksheet.write(row, 2, '', cell_format)
+        worksheet.write(row, 0, despesa.descricao + ' ( - )', cell_format_n)
+        worksheet.write(row, 1, despesa.valor, cell_format_n)
+        worksheet.write(row, 2, '', cell_format_n)
         row += 1
         
     extended_header_format = workbook.add_format()
@@ -1848,6 +1865,15 @@ def export_orcamento(request, rubrica_id):
     extended_header_format.set_bg_color('#64656A')  
     extended_header_format.set_font_color('white') 
     extended_header_format.set_bold()
+    
+    extended_header_format_n = workbook.add_format()
+    extended_header_format_n.set_border(1)
+    extended_header_format_n.set_align('center')
+    extended_header_format_n.set_align('vcenter')
+    extended_header_format_n.set_bg_color('#64656A')  
+    extended_header_format_n.set_font_color('white') 
+    extended_header_format_n.set_bold()
+    extended_header_format_n.set_num_format('#,##0.00')
 
     worksheet.merge_range(row, 0, row, 2, '', extended_header_format)    
     row += 1
@@ -1861,12 +1887,12 @@ def export_orcamento(request, rubrica_id):
     for col1, col2, col3 in data[-2:]:
         if col1 == 'Lucro R$':
             worksheet.write(row, 0, col1, extended_header_format)
-            worksheet.write(row, 1, col2, extended_header_format)
+            worksheet.write(row, 1, col2, extended_header_format_n)
             worksheet.write(row, 2, col3, extended_header_format)
         else:
-            worksheet.write(row, 0, col1, cell_format)
-            worksheet.write(row, 1, col2, cell_format)
-            worksheet.write(row, 2, col3, cell_format)
+            worksheet.write(row, 0, col1, cell_format_n)
+            worksheet.write(row, 1, col2, cell_format_n)
+            worksheet.write(row, 2, col3, cell_format_n)
         row += 1
 
     workbook.close()
@@ -1883,121 +1909,91 @@ def export_orcamento_pdf(request, rubrica_id):
 
     doc = SimpleDocTemplate(response, pagesize=letter)
     elements = []
+    
+    locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
+    header_style = [
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#64656A')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]
+
+    cell_style = [
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#64656A')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]
+    
+    rubrica.valor_sugerido = locale.currency(rubrica.valor_sugerido, grouping=True)
+    rubrica.valor_tributos = locale.currency(rubrica.valor_tributos, grouping=True)
+    rubrica.custo_hora = locale.currency(rubrica.custo_hora, grouping=True)
+    rubrica.beneficios = locale.currency(rubrica.beneficios, grouping=True)
+    rubrica.valor_outros = locale.currency(rubrica.valor_outros, grouping=True)
+    rubrica.valor_lucro = locale.currency(rubrica.valor_lucro, grouping=True)
+    
     data1 = [
-        ['Descrição', 'Valor'],
-        ['Orçamento Id', rubrica.orcamento_id],
+        ['ORÇAMENTO ID:', rubrica.orcamento_id],
         ['Cliente', rubrica.cliente],
+        ['Qtd Funcionários Alocados', rubrica.quantidade],
         ['Capacidade Produtiva', rubrica.capacidade_produtiva],
-        ['Qtd Funcionários', rubrica.quantidade],
-        ['Total Custo HR/Func.', rubrica.custo_hora],
-        ['Total Benefícios', rubrica.beneficios],
-        ['Total Condomínio', rubrica.condominio],
     ]
 
     data2 = [
-        ['Descrição', 'Aliquotas'],
-        ['Outros', str(rubrica.outros) + '%'],
-        ['Impostos', str(rubrica.tributos) + '%'],
-        ['Lucro', str(rubrica.lucros) + '%'],
-    ]
-
-    data3 = [
-        ['Descrição', 'Valor'],
-        ['Outros R$', rubrica.valor_outros],
-        ['Impostos R$', rubrica.valor_tributos],
-        ['Lucro R$', rubrica.valor_lucro],
+        ['Valor Sugerido', rubrica.valor_sugerido, '%'],
+        ['Impostos ( - )', rubrica.valor_tributos, str(rubrica.tributos)],
+        ['Custo HR/Func. ( - )', rubrica.custo_hora, ''],
+        ['Benefícios ( - )', rubrica.beneficios, ''],
+        ['Outros ( - )', rubrica.valor_outros, str(rubrica.outros)],
     ]
 
     table_data1 = []
     for col1, col2 in data1:
         table_data1.append([col1, col2])
 
-    t1 = Table(table_data1, colWidths=[230, 130])
-    t1.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#333333')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ]))
+    t1 = Table(table_data1, colWidths=[230, 180])
+    t1.setStyle(TableStyle(header_style))
+    
 
     elements.append(t1)
 
     elements.append(Spacer(1, 12))
 
     table_data2 = []
-    for col1, col2 in data2:
-        table_data2.append([col1, col2])
+    for col1, col2, col3 in data2:
+        table_data2.append([col1, col2, col3])
 
-    t2 = Table(table_data2, colWidths=[230, 130])
-    t2.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#333333')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ]))
+    t2 = Table(table_data2, colWidths=[230, 90])
+    t2.setStyle(TableStyle(header_style))
 
     elements.append(t2)
 
-    elements.append(Spacer(1, 12))
+    # elements.append(Spacer(1, 12))
+    
+    for despesa in despesas_dinamicas:
+        despesa.valor = locale.currency(despesa.valor, grouping=True)
 
-    table_data3 = []
-    for col1, col2 in data3:
-        table_data3.append([col1, col2])
-
-    t3 = Table(table_data3, colWidths=[230, 130])
-    t3.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#333333')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ]))
-
-    elements.append(t3)
-
-    elements.append(Spacer(1, 12))
-
-    header = ['Despesas Adicionadas', 'Valor']
+    header = ['Despesas Adicionadas', '', '']
     table_data = [header]
     for despesa in despesas_dinamicas:
-        table_data.append([despesa.descricao, despesa.valor])
+        table_data.append([despesa.descricao + ' ( - )', despesa.valor, ''])
 
-    t = Table(table_data, colWidths=[230, 130])
-    t.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#333333')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ]))
+    t = Table(table_data, colWidths=[230, 90, 90])
+    t.setStyle(TableStyle(cell_style))
 
     elements.append(t)
 
-    elements.append(Spacer(1, 12))
-    
-    extended_header = ['Valor Sugerido', rubrica.valor_sugerido]
+    # elements.append(Spacer(1, 12))
+
+    extended_header = ['Lucro R$', rubrica.valor_lucro, str(rubrica.lucros)]
     table_data = [extended_header]
-    t = Table(table_data, colWidths=[230, 130])
-    t.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#333333')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ]))
+    t = Table(table_data, colWidths=[230, 90, 90])
+    t.setStyle(TableStyle(header_style))
 
     elements.append(t)
 
