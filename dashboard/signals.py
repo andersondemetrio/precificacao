@@ -23,7 +23,6 @@ def recalcula_encargos(sender, instance, **kwargs):
     fgts_decimo_terceiro = decimo_terceiro * 0.08
     multa_rescisoria = (fgts + fgts_ferias + fgts_decimo_terceiro) * 0.4
 
-    # Atualiza os encargos
     for employee in Employee.objects.filter(cargo=instance):
         employee.periculosidade = periculosidade
         employee.fgts = fgts

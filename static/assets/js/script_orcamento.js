@@ -35,9 +35,8 @@ function calcularTotalSugerido() {
     const lucro = parseFloat(document.getElementById("orcamentoLucro").value) || 0;
 
     var valores = document.querySelectorAll('[name^="valor_"]');
-    var valoresAdicionais = 0;  // Inicializa com 0
+    var valoresAdicionais = 0;  
 
-    // Itera pelos elementos e soma seus valores convertidos para float
     valores.forEach(function (elemento) {
         valoresAdicionais += parseFloat(elemento.value) || 0;
     });
@@ -73,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
         calcularTotalSugerido();
     }
 
-    setInitialSuggestedValue(); // Chame a função para definir o valor inicial
+    setInitialSuggestedValue();
 
     window.addEventListener("beforeprint", hideElementsOnPrint);
 
@@ -203,11 +202,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-
-// document.getElementById("imprimirDetalhes").addEventListener("click", function () {
-//     // Código para remover os botões aqui
-//     window.print();
-// });
 
 function adicionarDespesa() {
     const despesasAdicionais = document.getElementById("despesasAdicionais");
