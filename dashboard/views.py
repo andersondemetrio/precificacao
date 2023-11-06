@@ -19,6 +19,7 @@ from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.http import HttpResponseServerError
 import json
+import locale
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -64,6 +65,7 @@ from django.db import connection
 from django.http import HttpResponseServerError
 from django.db.models import F, Sum
 import xlsxwriter
+import xlrd
 import io
 from django.http import FileResponse
 
@@ -121,12 +123,12 @@ def inserir_mao_de_obra(request):
 
         if len(cpf) == 11:
             if not Colaboradores.objects.filter(cpf=cpf):
-                empresa_do_admin = request.user.colaboradores.empresa_id
+                # empresa_do_admin = request.user.colaboradores.empresa_id
                 mao_de_obra = Colaboradores(
                     matricula=matricula,
                     nome=nome,
                     cpf=cpf,
-                    empresa_id=empresa_do_admin,
+                    # empresa_id=empresa_do_admin,
                 )
                 mao_de_obra.save()
                 return redirect('dashboard')
@@ -141,11 +143,11 @@ def inserir_mao_de_obra(request):
 
 
 def buscar_colaborador(request):
-    colaborador_logado = request.user.colaboradores
-    empresa_id_colaborador = colaborador_logado.empresa.id 
+    # colaborador_logado = request.user.colaboradores
+    # empresa_id_colaborador = colaborador_logado.empresa.id 
     
     q = request.GET.get('search')   
-    colaboradores = Colaboradores.objects.filter(Q(nome__icontains=q)& Q(empresa_id=empresa_id_colaborador)).order_by('id')
+    colaboradores = Colaboradores.objects.filter(Q(nome__icontains=q)).order_by('id')
     return render(request, 'pesquisa_colaborador.html', {'colaborador': colaboradores})
 
 
@@ -194,8 +196,8 @@ def deletar_colaborador(request, colaborador_id):
 # Funções do CRUD de cargos
 
 def inserir_cargo(request):
-    administrador_logado = request.user.colaboradores
-    empresa_do_admin = administrador_logado.empresa_id
+    # administrador_logado = request.user.colaboradores
+    # empresa_do_admin = administrador_logado.empresa_id
     
     if request.method == 'POST':
         nome_cargo = request.POST['nome_cargo']
@@ -204,7 +206,7 @@ def inserir_cargo(request):
         cargo = Cargos(
             nome_cargo=nome_cargo,
             salario=salario,
-            empresa_id=empresa_do_admin,
+            # empresa_id=empresa_do_admin,
         )   
 
         cargo.save()
@@ -249,12 +251,12 @@ def cargos_vieww(request):
 
 
 def buscar_cargo(request):
-    colaborador_logado = request.user.colaboradores
-    empresa_id_colaborador = colaborador_logado.empresa.id 
+    # colaborador_logado = request.user.colaboradores
+    # empresa_id_colaborador = colaborador_logado.empresa.id 
     
     q = request.GET.get('search')   
     
-    cargos = Cargos.objects.filter(Q(nome_cargo__icontains=q) & Q(empresa_id=empresa_id_colaborador)).order_by('id')
+    cargos = Cargos.objects.filter(Q(nome_cargo__icontains=q)).order_by('id')
     return render(request, 'pesquisa_cargo.html', {'cargo': cargos})
 
 
@@ -278,8 +280,8 @@ def deletar_cargo(request, cargo_id):
 # Funções do CRUD de endereços
 
 def inserir_endereco(request):
-    administrador_logado = request.user.colaboradores
-    empresa_do_admin = administrador_logado.empresa_id
+    # administrador_logado = request.user.colaboradores
+    # empresa_do_admin = administrador_logado.empresa_id
     
     if request.method == 'POST':
         cep = request.POST['cep']
@@ -290,7 +292,7 @@ def inserir_endereco(request):
         cidade = request.POST['cidade']
         estado = request.POST['estado']
         Endereco.objects.create(cep=cep, logradouro=logradouro, numero=numero, complemento=complemento, bairro=bairro, cidade=cidade, 
-                                estado=estado,empresa_endereco_id=empresa_do_admin)
+                                estado=estado)
         return redirect('dashboard')
     return render(request, 'dashboard1.html', context={})
 
@@ -313,12 +315,12 @@ def detalhes_endereco(request, id):
 
 
 def buscar_endereco(request):
-    colaborador_logado = request.user.colaboradores
-    empresa_id_colaborador = colaborador_logado.empresa.id
+    # colaborador_logado = request.user.colaboradores
+    # empresa_id_colaborador = colaborador_logado.empresa.id
      
     q = request.GET.get('search')
        
-    endereco = Endereco.objects.filter(Q(logradouro__icontains=q) & Q(empresa_endereco_id=empresa_id_colaborador)).order_by('id')
+    endereco = Endereco.objects.filter(Q(logradouro__icontains=q)).order_by('id')
     return render(request, 'pesquisa_endereco.html', {'endereco': endereco})
 
 
@@ -410,11 +412,11 @@ def detalhes_empresa(request, id):
 
 
 def buscar_empresa(request):
-    colaborador_logado = request.user.colaboradores
-    empresa_id_colaborador = colaborador_logado.empresa.id 
+    # colaborador_logado = request.user.colaboradores
+    # empresa_id_colaborador = colaborador_logado.empresa.id 
     
     q = request.GET.get('search')   
-    empresa = Empresa.objects.filter(Q(nome_empresa__icontains=q)& Q(id=empresa_id_colaborador)).order_by('id')
+    empresa = Empresa.objects.filter(Q(nome_empresa__icontains=q)).order_by('id')
     return render(request, 'pesquisa_empresa.html', {'empresa': empresa})
 
 
@@ -513,20 +515,20 @@ def detalhes_calendario(request, id):
 
 
 def buscar_calendario(request):
-    colaborador_logado = request.user.colaboradores
-    empresa_id_colaborador = colaborador_logado.empresa.id 
+    # colaborador_logado = request.user.colaboradores
+    # empresa_id_colaborador = colaborador_logado.empresa.id 
     
     q = request.GET.get('searchCal')   
     
-    calendario = CalendarioMensal.objects.filter(Q(ano__icontains=q)& Q(empresa_id=empresa_id_colaborador)).order_by('ano', 'mes')
+    calendario = CalendarioMensal.objects.filter(Q(ano__icontains=q)).order_by('ano', 'mes')
     return render(request, 'pesquisa_calendario.html', {'calendario': calendario})
         
 
 # Funções do CRUD de Despesas Condominio
 
 def inserir_gasto_fixo(request):
-    administrador_logado = request.user.colaboradores
-    empresa_do_admin = administrador_logado.empresa_id
+    # administrador_logado = request.user.colaboradores
+    # empresa_do_admin = administrador_logado.empresa_id
     
     if request.method == 'POST':
         descricao = request.POST['descricao']
@@ -540,7 +542,7 @@ def inserir_gasto_fixo(request):
         else:
             tipo = 'Lista Mês'
             
-        gasto_fixo = GastosFixos(descricao=descricao, valor=valor, mes=mes, ano=ano, tipo=tipo, empresa_id=empresa_do_admin)
+        gasto_fixo = GastosFixos(descricao=descricao, valor=valor, mes=mes, ano=ano, tipo=tipo)
         gasto_fixo.save()
         calcular_gastos_ano_corrente(request)
         
@@ -567,11 +569,11 @@ def detalhes_gasto_fixo(request, id):
 
 
 def buscar_gasto_fixo(request):
-    colaborador_logado = request.user.colaboradores
-    empresa_id_colaborador = colaborador_logado.empresa.id
+    # colaborador_logado = request.user.colaboradores
+    # empresa_id_colaborador = colaborador_logado.empresa.id
      
     q = request.GET.get('search')   
-    gastosfixos = GastosFixos.objects.filter(Q(descricao__icontains=q)& Q(empresa_id=empresa_id_colaborador)).order_by('ano', 'mes')
+    gastosfixos = GastosFixos.objects.filter(Q(descricao__icontains=q)).order_by('ano', 'mes')
     return render(request, 'pesquisa_gasto_fixo.html', {'gastosfixos': gastosfixos})
 
 
@@ -617,8 +619,8 @@ def deletar_gasto_fixo(request, gasto_fixo_id):
 #Funções do CRUD de Encargo
 
 def inserir_encargo(request):
-    administrador_logado = request.user.colaboradores
-    empresa_do_admin = administrador_logado.empresa_id
+    # administrador_logado = request.user.colaboradores
+    # empresa_do_admin = administrador_logado.empresa_id
     
     if request.method == 'POST':
         colaborador_id = request.POST['funcionario']
@@ -669,7 +671,7 @@ def inserir_encargo(request):
             beneficios=beneficios,
             rateio=rateio,
             custo_mes=custo_mes,
-            empresa_id=empresa_do_admin,
+            # empresa_id=empresa_do_admin,
         )
         
         colaborador.setor = setor
@@ -682,11 +684,11 @@ def inserir_encargo(request):
 
 
 def buscar_encargo(request):    
-    colaborador_logado = request.user.colaboradores
-    empresa_id_colaborador = colaborador_logado.empresa.id
+    # colaborador_logado = request.user.colaboradores
+    # empresa_id_colaborador = colaborador_logado.empresa.id
     
     q = request.GET.get('search')
-    encargo = Employee.objects.filter(empresa__id=empresa_id_colaborador)
+    encargo = Employee.objects.all()    
 
     if q:
         if q.isdigit():
@@ -753,8 +755,8 @@ def deletar_encargo(request, encargo_id):
 #Funções do CRUD de Beneficios
 
 def inserir_beneficio(request):
-    administrador_logado = request.user.colaboradores
-    empresa_do_admin = administrador_logado.empresa_id
+    # administrador_logado = request.user.colaboradores
+    # empresa_do_admin = administrador_logado.empresa_id
     
     if request.method == 'POST':
         descricao = request.POST['descricao']
@@ -766,7 +768,7 @@ def inserir_beneficio(request):
             descricao=descricao,
             valor=valor,
             cargo=cargo,
-            empresa_id=empresa_do_admin,
+            # empresa_id=empresa_do_admin,
         )
         beneficio.save()
         calcular_soma_beneficio_funcionario(request)
@@ -777,12 +779,12 @@ def inserir_beneficio(request):
 
 
 def buscar_beneficio(request): 
-    colaborador_logado = request.user.colaboradores
-    empresa_id_colaborador = colaborador_logado.empresa.id
+    # colaborador_logado = request.user.colaboradores
+    # empresa_id_colaborador = colaborador_logado.empresa.id
     
     q = request.GET.get('search')
 
-    beneficio = Beneficios.objects.filter(Q(descricao__icontains=q) & Q(empresa_id=empresa_id_colaborador)).order_by('cargo__nome_cargo')
+    beneficio = Beneficios.objects.filter(Q(descricao__icontains=q)).order_by('cargo__nome_cargo')
 
     return render(request, 'pesquisa_beneficio.html', {'beneficio': beneficio})
 
@@ -819,8 +821,8 @@ def deletar_beneficio(request, beneficio_id):
 #Funções do CRUD de Vincular Cargos
 
 def inserir_vinculo(request):
-    administrador_logado = request.user.colaboradores
-    empresa_do_admin = administrador_logado.empresa_id
+    # administrador_logado = request.user.colaboradores
+    # empresa_do_admin = administrador_logado.empresa_id
     
     if request.method == 'POST':
         horas_str = request.POST['horas']
@@ -882,7 +884,7 @@ def inserir_vinculo(request):
             total_condominio=total_condominio,
             total_custo=total_custo,
             auxiliarcalculo=auxiliar_calculo,
-            empresa_id=empresa_do_admin,
+            # empresa_id=empresa_do_admin,
         )
         vinculo.save()
         # calcular_soma_beneficio_funcionario(request)
@@ -893,12 +895,12 @@ def inserir_vinculo(request):
 
 
 def buscar_vinculo(request): 
-    colaborador_logado = request.user.colaboradores
-    empresa_id_colaborador = colaborador_logado.empresa.id
+    # colaborador_logado = request.user.colaboradores
+    # empresa_id_colaborador = colaborador_logado.empresa.id
     
     q = request.GET.get('search')   
     
-    vinculo = DescricaoObra.objects.filter(Q(orcamento_id__icontains=q) & Q(empresa_id=empresa_id_colaborador)).order_by('orcamento_id', 'cargo__nome_cargo')
+    vinculo = DescricaoObra.objects.filter(Q(orcamento_id__icontains=q)).order_by('orcamento_id', 'cargo__nome_cargo')
     return render(request, 'pesquisa_vinculo.html', {'vinculo': vinculo})
 
 
@@ -934,8 +936,8 @@ def deletar_vinculo(request, vinculo_id):
 #Funções do CRUD do Orçamento   
 
 def inserir_orcamento(request):
-    administrador_logado = request.user.colaboradores
-    empresa_do_admin = administrador_logado.empresa_id
+    # administrador_logado = request.user.colaboradores
+    # empresa_do_admin = administrador_logado.empresa_id
     numero_novo_orcamento = request.GET.get('numeroNovoOrcamento', '')           
     
     descricao_obras = DescricaoObra.objects.filter(orcamento_id__iexact=numero_novo_orcamento)
@@ -982,7 +984,7 @@ def inserir_orcamento(request):
         
         rubrica = Rubrica.objects.create(orcamento_id=numero_novo_orcamento, capacidade_produtiva=capacidade_produtiva, cliente=cliente, quantidade=total_prestadores, custo_hora=custo_total, beneficios=totalSoma, 
                                condominio=custo_condominio, outros=outros, tributos=tributos, lucros=lucros, status='Aberto', valor_sugerido=valor_sugerido, valor_outros=valor_outros, valor_tributos=valor_tributos,
-                               valor_lucro=valor_lucro, empresa_id=empresa_do_admin)
+                               valor_lucro=valor_lucro)
 
         descricoes = request.POST.getlist('descricao[]')
         valores = request.POST.getlist('valor[]')
@@ -992,7 +994,7 @@ def inserir_orcamento(request):
                 descricao = descricoes[i]
                 valor = valores[i]
 
-                despesa = DespesasDinamicas(descricao=descricao, valor=valor, rubrica=rubrica, empresa_id=empresa_do_admin)
+                despesa = DespesasDinamicas(descricao=descricao, valor=valor, rubrica=rubrica)
                 despesa.save()
 
         return redirect('dashboard')
@@ -1122,12 +1124,12 @@ def detalhes_orcamento(request, id):
 
 
 def buscar_orcamento(request): 
-    colaborador_logado = request.user.colaboradores
-    empresa_id_colaborador = colaborador_logado.empresa.id
+    # colaborador_logado = request.user.colaboradores
+    # empresa_id_colaborador = colaborador_logado.empresa.id
     
     q = request.GET.get('search')   
     
-    orcamento = Rubrica.objects.filter(Q(orcamento_id__icontains=q) & Q(empresa_id=empresa_id_colaborador)).order_by('orcamento_id')    
+    orcamento = Rubrica.objects.filter(Q(orcamento_id__icontains=q)).order_by('orcamento_id')    
     return render(request, 'pesquisa_orcamento.html', {'orcamento': orcamento})
 
 
@@ -1779,72 +1781,118 @@ def export_orcamento(request, rubrica_id):
     cell_format.set_align('center')
     cell_format.set_align('vcenter')
     
+    cell_format_n = workbook.add_format()
+    cell_format_n.set_border(1) 
+    cell_format_n.set_align('center')
+    cell_format_n.set_align('vcenter')
+    cell_format_n.set_num_format('#,##0.00')
+    
     header_format = workbook.add_format()
     header_format.set_border(1)
     header_format.set_align('center')
     header_format.set_align('vcenter')
-    header_format.set_bg_color('#333333')
+    header_format.set_bg_color('#64656A')
     header_format.set_font_color('white')
     header_format.set_bold()
     
+    header_format_n = workbook.add_format()
+    header_format_n.set_border(1)
+    header_format_n.set_align('center')
+    header_format_n.set_align('vcenter')
+    header_format_n.set_bg_color('#64656A')
+    header_format_n.set_font_color('white')
+    header_format_n.set_bold()
+    header_format_n.set_num_format('#,##0.00')
+       
     data = [
-        ['Descrição', 'Valor'],
-        ['Orçamento Id', rubrica.orcamento_id],
-        ['Cliente', rubrica.cliente],
-        ['Capacidade Produtiva', rubrica.capacidade_produtiva],
-        ['Qtd Funcionários', rubrica.quantidade],
-        ['Total Custo HR/Func.', rubrica.custo_hora],
-        ['Total Benefícios', rubrica.beneficios],
-        ['Total Condomínio', rubrica.condominio],
-        ['Descrição', 'Aliquotas'],
-        ['Outros', str(rubrica.outros) + '%'],
-        ['Impostos', str(rubrica.tributos) + '%'],
-        ['Lucro', str(rubrica.lucros) + '%'],
-        ['Descrição', 'Valor'],
-        ['Outros R$', rubrica.valor_outros],
-        ['Impostos R$', rubrica.valor_tributos],
-        ['Lucro R$', rubrica. valor_lucro],
+        ['ORÇAMENTO ID:', rubrica.orcamento_id,''],
+        ['Cliente', rubrica.cliente, ''],
+        ['Qtd Funcionários Alocados', rubrica.quantidade, ''],
+        ['Capacidade Produtiva', rubrica.capacidade_produtiva, ''],
+        ['', '', ''],   
+        ['Valor Sugerido', rubrica.valor_sugerido, '%'],
+        ['Impostos ( - )', rubrica.valor_tributos, str(rubrica.tributos)],
+        ['Custo HR/Func. ( - )', rubrica.custo_hora, ''],
+        ['Benefícios ( - )', rubrica.beneficios, ''],
+        ['Outros ( - )', rubrica.valor_outros, str(rubrica.outros)],
     ]
   
     worksheet.set_column('A:A', 50)
     worksheet.set_column('B:B', 30)
+    worksheet.set_column('C:C', 15)
+    
+    row = 0
 
-    for row, (col1, col2) in enumerate(data):
-        if col1 == 'Descrição': 
+    worksheet.merge_range(row, 1, row, 2, '', header_format)
+    row += 1    
+    worksheet.merge_range(row, 1, row, 2, '', header_format)    
+    row += 1
+    worksheet.merge_range(row, 1, row, 2, '', header_format)    
+    row += 1    
+    worksheet.merge_range(row, 1, row, 2, '', header_format)
+    row += 1    
+    worksheet.merge_range(4, 0, 4, 4, '', '')
+    row += 1    
+
+    for row, (col1, col2, col3) in enumerate(data):
+        if col1 == 'ORÇAMENTO ID:' or col1 == 'Valor Sugerido':
             worksheet.write(row, 0, col1, header_format)
-            worksheet.write(row, 1, col2, header_format)
+            worksheet.write(row, 1, col2, header_format_n)
+            worksheet.write(row, 2, col3, header_format)
         else:
-            worksheet.write(row, 0, col1, cell_format)
-            worksheet.write(row, 1, col2, cell_format)
+            worksheet.write(row, 0, col1, cell_format_n)
+            worksheet.write(row, 1, col2, cell_format_n)
+            worksheet.write(row, 2, col3, cell_format_n)
 
     row += 1
 
-    header = ['Despesas Adicionadas', 'Valor']
+    header = ['Despesas Adicionadas', '', '']
     for col, col_name in enumerate(header):
         worksheet.write(row, col, col_name, header_format)
 
     row += 1
 
     for despesa in despesas_dinamicas:
-        worksheet.write(row, 0, despesa.descricao, cell_format)
-        worksheet.write(row, 1, despesa.valor, cell_format)
+        worksheet.write(row, 0, despesa.descricao + ' ( - )', cell_format_n)
+        worksheet.write(row, 1, despesa.valor, cell_format_n)
+        worksheet.write(row, 2, '', cell_format_n)
         row += 1
         
     extended_header_format = workbook.add_format()
     extended_header_format.set_border(1)
     extended_header_format.set_align('center')
     extended_header_format.set_align('vcenter')
-    extended_header_format.set_bg_color('#333333')  
+    extended_header_format.set_bg_color('#64656A')  
     extended_header_format.set_font_color('white') 
     extended_header_format.set_bold()
+    
+    extended_header_format_n = workbook.add_format()
+    extended_header_format_n.set_border(1)
+    extended_header_format_n.set_align('center')
+    extended_header_format_n.set_align('vcenter')
+    extended_header_format_n.set_bg_color('#64656A')  
+    extended_header_format_n.set_font_color('white') 
+    extended_header_format_n.set_bold()
+    extended_header_format_n.set_num_format('#,##0.00')
+
+    worksheet.merge_range(row, 0, row, 2, '', extended_header_format)    
+    row += 1
         
     data.extend([
-        ['Valor Sugerido', rubrica.valor_sugerido],
+        ['Condomínio ( - )', rubrica.condominio, ''],
+        ['Lucro R$', rubrica. valor_lucro, str(rubrica.lucros)],
     ])
     
-    for col1, col2 in data[-1:]:
-        worksheet.write(row, 0, col1, extended_header_format)
-        worksheet.write(row, 1, col2, extended_header_format)
+
+    for col1, col2, col3 in data[-2:]:
+        if col1 == 'Lucro R$':
+            worksheet.write(row, 0, col1, extended_header_format)
+            worksheet.write(row, 1, col2, extended_header_format_n)
+            worksheet.write(row, 2, col3, extended_header_format)
+        else:
+            worksheet.write(row, 0, col1, cell_format_n)
+            worksheet.write(row, 1, col2, cell_format_n)
+            worksheet.write(row, 2, col3, cell_format_n)
         row += 1
 
     workbook.close()
@@ -1861,121 +1909,91 @@ def export_orcamento_pdf(request, rubrica_id):
 
     doc = SimpleDocTemplate(response, pagesize=letter)
     elements = []
+    
+    locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
+    header_style = [
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#64656A')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]
+
+    cell_style = [
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#64656A')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]
+    
+    rubrica.valor_sugerido = locale.currency(rubrica.valor_sugerido, grouping=True)
+    rubrica.valor_tributos = locale.currency(rubrica.valor_tributos, grouping=True)
+    rubrica.custo_hora = locale.currency(rubrica.custo_hora, grouping=True)
+    rubrica.beneficios = locale.currency(rubrica.beneficios, grouping=True)
+    rubrica.valor_outros = locale.currency(rubrica.valor_outros, grouping=True)
+    rubrica.valor_lucro = locale.currency(rubrica.valor_lucro, grouping=True)
+    
     data1 = [
-        ['Descrição', 'Valor'],
-        ['Orçamento Id', rubrica.orcamento_id],
+        ['ORÇAMENTO ID:', rubrica.orcamento_id],
         ['Cliente', rubrica.cliente],
+        ['Qtd Funcionários Alocados', rubrica.quantidade],
         ['Capacidade Produtiva', rubrica.capacidade_produtiva],
-        ['Qtd Funcionários', rubrica.quantidade],
-        ['Total Custo HR/Func.', rubrica.custo_hora],
-        ['Total Benefícios', rubrica.beneficios],
-        ['Total Condomínio', rubrica.condominio],
     ]
 
     data2 = [
-        ['Descrição', 'Aliquotas'],
-        ['Outros', str(rubrica.outros) + '%'],
-        ['Impostos', str(rubrica.tributos) + '%'],
-        ['Lucro', str(rubrica.lucros) + '%'],
-    ]
-
-    data3 = [
-        ['Descrição', 'Valor'],
-        ['Outros R$', rubrica.valor_outros],
-        ['Impostos R$', rubrica.valor_tributos],
-        ['Lucro R$', rubrica.valor_lucro],
+        ['Valor Sugerido', rubrica.valor_sugerido, '%'],
+        ['Impostos ( - )', rubrica.valor_tributos, str(rubrica.tributos)],
+        ['Custo HR/Func. ( - )', rubrica.custo_hora, ''],
+        ['Benefícios ( - )', rubrica.beneficios, ''],
+        ['Outros ( - )', rubrica.valor_outros, str(rubrica.outros)],
     ]
 
     table_data1 = []
     for col1, col2 in data1:
         table_data1.append([col1, col2])
 
-    t1 = Table(table_data1, colWidths=[230, 130])
-    t1.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#333333')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ]))
+    t1 = Table(table_data1, colWidths=[230, 180])
+    t1.setStyle(TableStyle(header_style))
+    
 
     elements.append(t1)
 
     elements.append(Spacer(1, 12))
 
     table_data2 = []
-    for col1, col2 in data2:
-        table_data2.append([col1, col2])
+    for col1, col2, col3 in data2:
+        table_data2.append([col1, col2, col3])
 
-    t2 = Table(table_data2, colWidths=[230, 130])
-    t2.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#333333')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ]))
+    t2 = Table(table_data2, colWidths=[230, 90])
+    t2.setStyle(TableStyle(header_style))
 
     elements.append(t2)
 
-    elements.append(Spacer(1, 12))
+    # elements.append(Spacer(1, 12))
+    
+    for despesa in despesas_dinamicas:
+        despesa.valor = locale.currency(despesa.valor, grouping=True)
 
-    table_data3 = []
-    for col1, col2 in data3:
-        table_data3.append([col1, col2])
-
-    t3 = Table(table_data3, colWidths=[230, 130])
-    t3.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#333333')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ]))
-
-    elements.append(t3)
-
-    elements.append(Spacer(1, 12))
-
-    header = ['Despesas Adicionadas', 'Valor']
+    header = ['Despesas Adicionadas', '', '']
     table_data = [header]
     for despesa in despesas_dinamicas:
-        table_data.append([despesa.descricao, despesa.valor])
+        table_data.append([despesa.descricao + ' ( - )', despesa.valor, ''])
 
-    t = Table(table_data, colWidths=[230, 130])
-    t.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#333333')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ]))
+    t = Table(table_data, colWidths=[230, 90, 90])
+    t.setStyle(TableStyle(cell_style))
 
     elements.append(t)
 
-    elements.append(Spacer(1, 12))
-    
-    extended_header = ['Valor Sugerido', rubrica.valor_sugerido]
+    # elements.append(Spacer(1, 12))
+
+    extended_header = ['Lucro R$', rubrica.valor_lucro, str(rubrica.lucros)]
     table_data = [extended_header]
-    t = Table(table_data, colWidths=[230, 130])
-    t.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#333333')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ]))
+    t = Table(table_data, colWidths=[230, 90, 90])
+    t.setStyle(TableStyle(header_style))
 
     elements.append(t)
 

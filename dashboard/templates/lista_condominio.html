@@ -36,7 +36,7 @@
                                         <td class="td-horas formatarValor">{{ custo_condominio }}</td>
                                     </tr>
                                     <tr>
-                                        <th class="th-inicio">HORAS PRODUTIVAS(Mês)</th>
+                                        <th class="th-inicio">HORAS PRODUTIVAS (Mês)</th>
                                         <td class="td-horas">{{ auxiliar_calculo.total_meses_horasprodutivas|floatformat:2 }}</td>
                                     </tr>
                                     <tr>
@@ -50,11 +50,11 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th class="th-inicio">CAPACIDADE PRODUTIVA(Prestadores)</th>
+                                        <th class="th-inicio">CAPACIDADE PRODUTIVA (Prestadores)</th>
                                         <td class="td-horas">{{ auxiliar_calculo.total_prestadores }}</td>
                                     </tr>
                                     <tr>
-                                        <th class="th-inicio">HORA CONDOMÍNIO PERCÁPTA</th>
+                                        <th class="th-inicio">HORA CONDOMÍNIO PER CAPITA</th>
                                         <td class="td-horas formatarValor">
                                         {% if custo_hora_percapta is not None %}
                                             {{ custo_hora_percapta }}

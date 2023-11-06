@@ -38,8 +38,11 @@ function calcularTotalSugerido() {
     var valoresAdicionais = 0;  
 
     valores.forEach(function (elemento) {
-        valoresAdicionais += parseFloat(elemento.value) || 0;
+        var valorComVirgula = elemento.value;  // Obtém o valor do campo com vírgula
+        var valorComPonto = valorComVirgula.replace(',', '.');  // Substitui a vírgula por ponto
+        valoresAdicionais += parseFloat(valorComPonto) || 0;
     });
+    console.log(valoresAdicionais);
 
     const totalSugerido = parseFloat(custoHora) + beneficios + condominio;
 
@@ -108,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
             <div class="form-group col-md-4">
                 <label for="valor">Valor:</label>
-                <input type="number" class="form-control valorOrcNovo" id="valorOrcNovo" name="valor[]" required>
+                <input type="text" class="form-control valorOrcNovo" id="valorOrcNovo" name="valor[]" oninput="replaceCommaWithDot(this)" required>
             </div>
             <div class="form-group col-md-2">
                 <button type="button" class="btn btn-danger removerCampo div-button-remove">Remover</button>
@@ -216,7 +219,7 @@ function adicionarDespesa() {
         </div>
         <div class="form-group col-md-4">
             <label for="valor">Valor:</label>
-            <input type="number" class="form-control valorOrcNovo" name="valorAd[]" required>
+            <input type="text" class="form-control valorOrcNovo" name="valorAd[]" oninput="replaceCommaWithDot(this)" required>
         </div>
         <div class="form-group col-md-2">
             <button type="button" class="btn btn-danger removerDespesa" style="margin-top: 20px;">Remover</button>
